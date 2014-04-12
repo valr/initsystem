@@ -1,0 +1,4 @@
+initd
+=====
+
+An init system
