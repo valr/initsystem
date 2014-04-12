@@ -1,0 +1,82 @@
+# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+
+#TODO:
+#https://github.com/strake/init
+#http://git.2f30.org/fs/tree
+#http://ftp.linux.org.tr/slackware/slackware_source/a/sysvinit-scripts/scripts/
+
+pkgname=initd-initscript
+pkgver=1.0.0
+pkgrel=1
+pkgdesc='An init system'
+arch=('i686' 'x86_64')
+#url="https://github.com/valr/init-initscript"
+license=('GPL')
+groups=('initd')
+depends=('initd-busybox' 'initd-perp' 'tzdata' 'kbd' 'systemd')
+source=('init'
+        'shutdown'
+        'initd.c'
+        'initd-initscript'
+        'initd-shutdown'
+        'etc-initd-service-udev-rc.main'
+        'LICENSE')
+md5sums=('509e55f10e665c303581f1e065d7b54a'
+         '7ce7e41967d36c2d6f05317e2a9e0105'
+         '4c0f389736e3ea82616cdd652ab540ce'
+         'c0baf6c00ea7b804473cd9a4b073c94e'
+         '0d522d231c6497d47d73ad3b60d59b54'
+         '1d7cf027dc25fa4d73ea42b395c0c4b6'
+         '4641e94ec96f98fabc56ff9cc48be14b')
+
+build() {
+  cd "${srcdir}"
+
+  cc -o initd initd.c
+}
+
+package() {
+
+  # directories
+
+  install -dm755 "${pkgdir}"/etc/initd/script
+  install -dm755 "${pkgdir}"/etc/initd/service
+
+  # binaries
+
+  install -Dm755 "${srcdir}"/init             "${pkgdir}"/usr/bin/init
+  install -Dm755 "${srcdir}"/shutdown         "${pkgdir}"/usr/bin/shutdown
+
+  install -Dm755 "${srcdir}"/initd            "${pkgdir}"/usr/bin/initd
+  install -Dm755 "${srcdir}"/initd-initscript "${pkgdir}"/usr/bin/initd-initscript
+  install -Dm755 "${srcdir}"/initd-shutdown   "${pkgdir}"/usr/bin/initd-shutdown
+
+  # symlinks
+
+  cd "${pkgdir}"/usr/bin
+
+  ln -s shutdown halt
+  ln -s shutdown poweroff
+  ln -s shutdown reboot
+
+  ln -s initd-shutdown initd-halt
+  ln -s initd-shutdown initd-poweroff
+  ln -s initd-shutdown initd-reboot
+
+  # services
+
+#todo:
+#  install -Dm755 "${srcdir}"/etc-initd-service-udev-rc.main "${pkgdir}"/etc/initd/service/udev/rc.main
+#  chmod +t "${pkgdir}"/etc/initd/service/udev
+#  touch "${pkgdir}"/etc/initd/service/udev/flag.down
+
+#  install -Dm755 "${srcdir}"/opt-s6-service-svscan-crash   "${pkgdir}"/opt/s6/service/svscan/crash
+#  install -Dm755 "${srcdir}"/opt-s6-service-svscan-finish  "${pkgdir}"/opt/s6/service/svscan/finish
+#  install -Dm755 "${srcdir}"/opt-s6-service-svscan-log-run "${pkgdir}"/opt/s6/service/svscan-log/run
+#  install -Dm755 "${srcdir}"/opt-s6-service-getty-tty1-run "${pkgdir}"/opt/s6/service/getty-tty1/run
+#  install -Dm755 "${srcdir}"/opt-s6-service-udev-run       "${pkgdir}"/opt/s6/service/udev/run
+
+  # license
+
+  install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/initd-initscript/LICENSE
+}

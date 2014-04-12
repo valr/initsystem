@@ -1,0 +1,185 @@
+#!/usr/bin/ash
+
+# This file is part of initd
+#
+# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# Howto extract the initramfs content:
+# busybox cpio -i -d -H newc -F initramfs-linux.cpio
+
+set -e
+set -u
+
+PATH="/opt/busybox"
+
+################################################################################
+# parameter ####################################################################
+################################################################################
+
+if [ $(id -u) -ne 0 ]; then
+  echo "ERROR: this script should be run as root"
+  exit 1
+fi
+
+if [ $# -ne 2 ]; then
+  echo "ERROR: wrong number of parameters"
+  echo "Usage: `basename $0` -p linux|linux-lts"
+  exit 1
+fi
+
+if [ "$1" != "-p" ]; then
+  echo "ERROR: expecting -p as first parameter"
+  exit 1
+fi
+
+if [ "$2" != "linux" ] && [ "$2" != "linux-lts" ]; then
+  echo "ERROR: expecting 'linux' or 'linux-lts' as second parameter"
+  exit 1
+fi
+
+LINUX="$2"
+
+################################################################################
+# base directory ###############################################################
+################################################################################
+
+echo "Generating initramfs-${LINUX}.cpio.gz..."
+
+BASE=$(mktemp -d /tmp/initramfs.XXXXXX)
+
+################################################################################
+# directory structure ##########################################################
+################################################################################
+
+for DIR in /bin /dev /etc /lib /mnt /newroot /proc /root /run /sbin /sys /tmp /usr /var; do
+  mkdir "${BASE}"/"${DIR}"
+done
+
+################################################################################
+# /etc #########################################################################
+################################################################################
+
+echo "root:x:0:0:root:/root:/bin/sh" >> "${BASE}"/etc/passwd
+
+echo "root:x:0:root" >> "${BASE}"/etc/group
+echo "tty:x:5:" >> "${BASE}"/etc/group
+
+umask 077
+grep "^root:" /etc/shadow >> "${BASE}"/etc/shadow
+umask 022
+
+dumpkmap >> "${BASE}"/etc/keymap.kmap
+
+cp /etc/localtime "${BASE}"/etc/localtime
+
+################################################################################
+# /bin #########################################################################
+################################################################################
+
+cp /usr/bin/busybox "${BASE}"/bin
+cp /usr/bin/busybox-suid "${BASE}"/bin
+
+cd "${BASE}"/bin
+
+for APPLET in $(./busybox --list); do
+  ln -s busybox "${APPLET}"
+done
+
+for APPLET in $(./busybox-suid --list); do
+  ln -s busybox-suid "${APPLET}"
+done
+
+cp /usr/bin/fsck.ext3static "${BASE}"/bin/fsck.ext3
+cp /usr/bin/fsck.ext4static "${BASE}"/bin/fsck.ext4
+
+################################################################################
+# /lib/modules #################################################################
+################################################################################
+
+add_module() {
+  # find module in linux package files
+  MOD_NM1=`echo "$1" | tr '-' '_'`
+  MOD_NM2=`echo "$1" | tr '_' '-'`
+
+  MOD_PTH=`grep -E "(/${MOD_NM1}.ko.gz|/${MOD_NM2}.ko.gz)" "${MOD_PKG}"/files`
+  MOD_PTH="${MOD_PTH#usr}"
+
+  # module not found
+  if [ -z "${MOD_PTH}" ]; then
+    echo "ERROR: module $1 not found"
+    return 1
+  fi
+
+  # install module in initramfs
+  install -D -m644 "${MOD_PTH}" "${BASE}"/"${MOD_PTH}"
+
+  MOD_NAM=`basename "${MOD_PTH}" .ko.gz`
+  if [ $# -eq 1 ]; then
+    echo "${MOD_NAM}" >> "${BASE}"/etc/modules
+  fi
+
+  # find module dependencies
+  DEP=`grep /"${MOD_NAM}".ko.gz: "${MOD_DEP}"/modules.dep | cut -d ':' -f 2`
+
+  for MOD in `echo "${DEP}"`; do
+    # find dependency name
+    MOD=`basename "${MOD}" .ko.gz`
+
+    # recursively add every dependency
+    add_module "${MOD}" "$1"
+  done
+}
+
+if [ -r /etc/initd/mkinitramfs.conf ]; then
+  MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
+
+  MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d '/' -f 1,2,3,4`
+  MOD_DEP="${MOD_DEP#usr}"
+
+  grep -E -v "^[[:blank:]]*(#|$)" /etc/initd/mkinitramfs.conf | while read MODULE; do
+    add_module "${MODULE}"
+  done
+
+  depmod -b "${BASE}" `basename ${MOD_DEP}`
+  sort -u "${BASE}"/etc/modules -o "${BASE}"/etc/modules
+else
+  echo "ERROR: file /etc/initd/mkinitramfs.conf doesn't exist or is not readable"
+fi
+
+################################################################################
+# initscript ###################################################################
+################################################################################
+
+cp /usr/bin/initd-initramfs "${BASE}"/init
+
+################################################################################
+# initramfs ####################################################################
+################################################################################
+
+cd "${BASE}"
+
+umask 077
+find . | cpio -o -H newc | gzip > "../initramfs-${LINUX}.cpio.gz"
+umask 022
+
+cd ..
+
+mv "initramfs-${LINUX}.cpio.gz" /boot
+
+rm -rf "${BASE}"
+
+echo "Generation done"

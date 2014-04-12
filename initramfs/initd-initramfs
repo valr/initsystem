@@ -1,0 +1,247 @@
+#!/bin/ash
+
+# This file is part of initd
+#
+# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+set -u
+
+PATH="/bin:/sbin"
+export PATH
+
+cd /
+umask 022
+
+################################################################################
+# sanity check #################################################################
+################################################################################
+
+if [ $$ != 1 ]; then
+  echo "error: this script should be pid 1"
+  exit 1
+fi
+
+################################################################################
+# functions ####################################################################
+################################################################################
+
+reboot_system() {
+  echo "initramfs: rebooting in 7 seconds"
+
+  sleep 7
+  umount -a -r
+  reboot -f
+}
+
+rescue_shell() {
+  if [ -f /etc/keymap.kmap ]; then
+    echo "initramfs: loading keymap"
+    loadkmap < /etc/keymap.kmap
+  fi
+
+  echo "initramfs: dropping to rescue shell"
+  echo "initramfs: 'setsid cttyhack sh' to get a controlling terminal"
+
+  sulogin /dev/console
+  reboot_system
+}
+
+################################################################################
+# in-memory filesystems ########################################################
+################################################################################
+
+echo "initramfs: mounting in-memory filesystems"
+
+mount -t proc proc /proc -o nosuid,nodev,noexec                          || rescue_shell
+mount -t sysfs sys /sys -o nosuid,nodev,noexec                           || rescue_shell
+mount -t tmpfs run /run -o nosuid,nodev,mode=0755                        || rescue_shell
+mount -t devtmpfs dev /dev -o nosuid,mode=0755                           || rescue_shell
+mkdir -p /dev/pts                                                        || rescue_shell
+mount -t devpts pts /dev/pts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 || rescue_shell
+mkdir -p /dev/shm                                                        || rescue_shell
+mount -t tmpfs shm /dev/shm -o nosuid,nodev                              || rescue_shell
+
+################################################################################
+# kernel command line ##########################################################
+################################################################################
+
+echo "initramfs: parsing kernel command line"
+
+for COMMAND in `cat /proc/cmdline`; do
+  case "${COMMAND}" in
+    break\=*)
+      BREAK="${COMMAND#break=}"
+      ;;
+    init\=*)
+      INIT="${COMMAND#init=}"
+      ;;
+    root\=*)
+      ROOT="${COMMAND#root=}"
+      ;;
+    rootfstype\=*)
+      TYPE="${COMMAND#rootfstype=}"
+      ;;
+  esac
+done
+
+if [ "${BREAK-}" = "initramfs-early" ]; then
+  echo "initramfs: break on initramfs-early"
+  rescue_shell
+fi
+
+if [ -z "${INIT-}" ]; then
+  echo "initramfs: missing init=the_binary (e.g. /sbin/init) on kernel command line"
+  rescue_shell
+fi
+
+if [ -z "${ROOT-}" ]; then
+  echo "initramfs: missing root=the_device (e.g. /dev/sda1) on kernel command line"
+  rescue_shell
+fi
+
+if [ -z "${TYPE-}" ]; then
+  echo "initramfs: missing rootfstype=the_filesystem_type (e.g. ext4) on kernel command line"
+  rescue_shell
+fi
+
+################################################################################
+# hardware clock ###############################################################
+################################################################################
+
+echo "initramfs: setting clock"
+
+hwclock -t -u
+
+################################################################################
+# modules ######################################################################
+################################################################################
+
+if [ -f /etc/modules ]; then
+  echo "initramfs: loading modules"
+
+  while IFS= read -r MOD; do
+    modprobe "${MOD}"
+  done < /etc/modules
+fi
+
+################################################################################
+# filesystems ##################################################################
+################################################################################
+
+wait_filesystem() {
+  for i in $(seq $2); do
+    if [ -e "$1" ]; then
+      return 0
+    fi
+
+    sleep .25
+  done
+
+  return 1
+}
+
+echo "initramfs: waiting for root filesystem"
+
+wait_filesystem "${ROOT}" 40
+
+if [ $? -ne 0 ]; then
+  echo "initramfs: timeout reached for ${ROOT}"
+  rescue_shell
+fi
+
+echo "initramfs: checking root filesystem"
+
+touch /etc/fstab
+ln -s /proc/self/mounts /etc/mtab
+
+fsck -T -t "${TYPE}" "${ROOT}"; STATUS=$?
+
+if [ $STATUS -ne 0 ] && [ $STATUS -ne 1 ] && [ $STATUS -ne 32 ]; then
+  echo "initramfs: fsck error ${STATUS} encountered on ${ROOT}"
+
+  if [ $STATUS -eq 2 ]; then
+    reboot_system
+  fi
+
+  rescue_shell
+fi
+
+echo "initramfs: mounting root filesystem read-only"
+
+mount -r -t "${TYPE}" "${ROOT}" /newroot
+
+if [ $? -ne 0 ]; then
+  echo "initramfs: cannot mount ${ROOT} with type ${TYPE}"
+  rescue_shell
+fi
+
+echo "initramfs: checking other filesystems"
+
+cp -f /newroot/etc/fstab /etc/fstab
+
+fsck -T -A -R; STATUS=$?
+
+if [ $STATUS -ne 0 ] && [ $STATUS -ne 1 ] && [ $STATUS -ne 32 ]; then
+  echo "initramfs: fsck error ${STATUS} encountered"
+
+  if [ $STATUS -eq 2 ]; then
+    reboot_system
+  fi
+
+  rescue_shell
+fi
+
+################################################################################
+# init #########################################################################
+################################################################################
+
+echo "initramfs: checking init"
+
+if [ ! -x /newroot/"${INIT}" ]; then
+  echo "initramfs: init program ${INIT} doesn't exist or is not executable"
+  rescue_shell
+fi
+
+if [ "${BREAK-}" = "initramfs-late" ]; then
+  echo "initramfs: break on initramfs-late"
+  rescue_shell
+fi
+
+################################################################################
+# in-memory filesystems ########################################################
+################################################################################
+
+echo "initramfs: unmounting in-memory filesystems"
+
+umount /dev/shm || rescue_shell
+umount /dev/pts || rescue_shell
+umount /dev     || rescue_shell
+umount /run     || rescue_shell
+umount /sys     || rescue_shell
+umount /proc    || rescue_shell
+
+################################################################################
+# swiching root ################################################################
+################################################################################
+
+echo "initramfs: switching root filesystem"
+
+exec switch_root /newroot "${INIT}"
+
+echo "initramfs: cannot switch to /newroot and execute ${INIT}"
+
+rescue_shell

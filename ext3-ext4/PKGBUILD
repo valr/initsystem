@@ -1,0 +1,40 @@
+# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+
+_pkgname=e2fsprogs
+pkgname=initd-ext3-ext4
+pkgver=1.42.9
+pkgrel=1
+pkgdesc='Ext3/4 filesystem utilities for an init system'
+arch=('i686' 'x86_64')
+url='https://github.com/valr/initd-ext3-ext4'
+license=('GPL' 'LGPL' 'MIT')
+groups=('initd')
+depends=('initd-busybox')
+makedepends=('bc')
+source=("http://downloads.sourceforge.net/sourceforge/${_pkgname}/${_pkgname}-${pkgver}.tar.gz"
+        'MIT-LICENSE')
+sha1sums=('fb8e3662302bcab1682d567d6ee0ff051faa1bbd'
+          'f4a0d5b0cdb980e3fedd6f5e7dde0b0ffb7bbdfb')
+
+build() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+
+  LDFLAGS=-static \
+  ./configure --prefix=/usr --with-root-prefix="" --libdir=/usr/lib \
+              --disable-fsck --disable-uuidd
+
+  make
+}
+
+package() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+
+  # binaries
+
+  install -Dm755 e2fsck/e2fsck "${pkgdir}"/usr/bin/fsck.ext3static
+  install -Dm755 e2fsck/e2fsck "${pkgdir}"/usr/bin/fsck.ext4static
+
+  # license
+
+  install -Dm644 "${srcdir}"/MIT-LICENSE "${pkgdir}"/usr/share/licenses/initd-ext3-ext4/MIT-LICENSE
+}

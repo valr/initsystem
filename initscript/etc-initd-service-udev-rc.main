@@ -1,0 +1,63 @@
+#!/usr/bin/ash
+
+# This file is part of initd
+#
+# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+set -u
+
+exec 2>&1
+
+TARGET="$1"
+SERVICE="$2"
+
+start() {
+  (
+    # FIXME: this could be an infinite loop
+    while ! /opt/busybox/pidof systemd-udevd >/dev/null; do
+      sleep .25
+    done
+
+    /usr/bin/udevadm trigger --action=add --type=subsystems
+    /usr/bin/udevadm trigger --action=add --type=devices
+  ) &
+
+  exec /usr/lib/systemd/systemd-udevd
+}
+
+reset() {
+  case "$3" in
+    'exit')
+      echo "*** ${SERVICE}: exited with code $4"
+      ;;
+    'signal')
+      echo "*** ${SERVICE}: killed by signal $5"
+      ;;
+    * )
+      echo "*** ${SERVICE}: stopped ($3)"
+      ;;
+  esac
+
+  exit 0
+}
+
+eval "${TARGET}" "$@"
+
+# this should not be needed anymore
+#echo "shutdown: stopping devices handler"
+#
+#/usr/bin/udevadm control --exit

@@ -1,0 +1,30 @@
+# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+
+pkgname=initd-initramfs
+pkgver=1.0.0
+pkgrel=1
+pkgdesc='Initramfs image creation utility for an init system'
+arch=('any')
+url='https://github.com/valr/initd-initramfs'
+license=('GPL')
+groups=('initd')
+depends=('initd-busybox' 'initd-ext3-ext4' 'initd-initscript')
+install='initd-initramfs.install'
+source=('mkinitramfs'
+        'initd-initramfs'
+        'LICENSE')
+md5sums=('de039248be8d318b8877053b69074114'
+         'f881fc14faa1a5b5999e12f50aa91c10'
+         '4641e94ec96f98fabc56ff9cc48be14b')
+
+package() {
+
+  # binaries
+
+  install -Dm755 mkinitramfs     "${pkgdir}"/usr/bin/mkinitramfs
+  install -Dm755 initd-initramfs "${pkgdir}"/usr/bin/initd-initramfs
+
+  # license
+
+  install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/initd-initramfs/LICENSE
+}

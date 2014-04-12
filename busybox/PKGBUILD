@@ -1,0 +1,84 @@
+# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+
+_pkgname=busybox
+pkgname=initd-busybox
+pkgver=1.22.1
+pkgrel=1
+pkgdesc='Utilities for an init system'
+arch=('i686' 'x86_64')
+url='https://github.com/valr/initd-busybox'
+license=('GPL')
+groups=('initd')
+makedepends=('make' 'gcc' 'sed' 'ncurses')
+provides=('busybox')
+conflicts=('busybox')
+source=("http://www.busybox.net/downloads/${_pkgname}-${pkgver}.tar.bz2"
+        "config_nosuid"
+        "config_suid")
+md5sums=('337d1a15ab1cb1d4ed423168b1eb7d7e'
+         '1dea0205bebddd01e9405fed26cb3e98'
+         'ca723fd90670451d978bc8d74245be65')
+
+prepare() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+
+  sed -i '1,1i#include <sys/resource.h>' include/libbb.h
+
+  cp -r "${srcdir}/${_pkgname}-${pkgver}" "${srcdir}"/nosuid
+  cp -r "${srcdir}/${_pkgname}-${pkgver}" "${srcdir}"/suid
+
+  cp "${srcdir}"/config_nosuid "${srcdir}"/nosuid/.config
+  cp "${srcdir}"/config_suid "${srcdir}"/suid/.config
+
+  sed -i 's|LDLIBS += m crypt|LDLIBS += m|' "${srcdir}"/nosuid/Makefile.flags
+}
+
+build() {
+  cd "${srcdir}"/nosuid
+  make
+
+  cd "${srcdir}"/suid
+  make
+}
+
+package() {
+  # setuid applets:
+  # applets that have 'BB_SUID_REQUIRE' in include/applets.src.h
+  # crontab, login, passwd, su ,vlock ,wall
+
+  # binaries
+
+  cd "${srcdir}"/nosuid
+  install -Dm755 busybox "${pkgdir}"/usr/bin/busybox
+
+  cd "${srcdir}"/suid
+  install -Dm4755 busybox "${pkgdir}"/usr/bin/busybox-suid
+
+  # symlinks: install ash in /usr/bin
+
+  cd "${pkgdir}"/usr/bin
+  ln -s /usr/bin/busybox ash
+
+  # symlinks: install all applets in /opt/busybox
+
+  install -d "${pkgdir}"/opt/busybox
+  cd "${pkgdir}"/opt/busybox
+
+  for APPLET in $("${pkgdir}"/usr/bin/busybox --list); do
+    case "${APPLET}" in
+      halt|poweroff|reboot)
+        ;;
+      *)
+        ln -s /usr/bin/busybox "${APPLET}"
+        ;;
+    esac
+  done
+
+  for APPLET in $("${pkgdir}"/usr/bin/busybox-suid --list); do
+    ln -s /usr/bin/busybox-suid "${APPLET}"
+  done
+
+  # license
+
+  install -Dm644 "${srcdir}"/nosuid/LICENSE "${pkgdir}"/usr/share/licenses/initd-busybox/LICENSE
+}
