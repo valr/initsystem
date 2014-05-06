@@ -1,31 +1,27 @@
 # Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
 
-_pkgname=busybox
-pkgname=initd-busybox
+pkgname=busybox
 pkgver=1.22.1
 pkgrel=1
-pkgdesc='Utilities for an init system'
+pkgdesc='Utilities for rescue and embedded systems'
 arch=('i686' 'x86_64')
-url='https://github.com/valr/initd-busybox'
+url='http://www.busybox.net/'
 license=('GPL')
-groups=('initd')
-makedepends=('make' 'gcc' 'sed' 'ncurses')
-provides=('busybox')
-conflicts=('busybox')
-source=("http://www.busybox.net/downloads/${_pkgname}-${pkgver}.tar.bz2"
-        "config_nosuid"
-        "config_suid")
+makedepends=('make' 'gcc' 'sed' 'ncurses' 'musl')
+source=("http://www.busybox.net/downloads/${pkgname}-${pkgver}.tar.bz2"
+        'config_nosuid'
+        'config_suid')
 md5sums=('337d1a15ab1cb1d4ed423168b1eb7d7e'
          '1dea0205bebddd01e9405fed26cb3e98'
          'ca723fd90670451d978bc8d74245be65')
 
 prepare() {
-  cd "${srcdir}/${_pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   sed -i '1,1i#include <sys/resource.h>' include/libbb.h
 
-  cp -r "${srcdir}/${_pkgname}-${pkgver}" "${srcdir}"/nosuid
-  cp -r "${srcdir}/${_pkgname}-${pkgver}" "${srcdir}"/suid
+  cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/nosuid
+  cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/suid
 
   cp "${srcdir}"/config_nosuid "${srcdir}"/nosuid/.config
   cp "${srcdir}"/config_suid "${srcdir}"/suid/.config
@@ -34,6 +30,12 @@ prepare() {
 }
 
 build() {
+  export CC=musl-gcc
+  export HOSTCC=gcc
+  export HOSTCFLAGS='-D_POSIX_C_SOURCE=200112L'
+  export CFLAGS='-static'
+  export CFLAGS_busybox='-Wl,-z,muldefs'
+
   cd "${srcdir}"/nosuid
   make
 
@@ -80,5 +82,5 @@ package() {
 
   # license
 
-  install -Dm644 "${srcdir}"/nosuid/LICENSE "${pkgdir}"/usr/share/licenses/initd-busybox/LICENSE
+  install -Dm644 "${srcdir}"/nosuid/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }

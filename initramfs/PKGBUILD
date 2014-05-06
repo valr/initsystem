@@ -1,19 +1,19 @@
 # Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
 
-pkgname=initd-initramfs
+pkgname=initramfs
 pkgver=1.0.0
 pkgrel=1
-pkgdesc='Initramfs image creation utility for an init system'
+pkgdesc='Initramfs image creation utility'
 arch=('any')
-url='https://github.com/valr/initd-initramfs'
+url='https://github.com/valr/initd'
 license=('GPL')
 groups=('initd')
-depends=('initd-busybox' 'initd-ext3-ext4' 'initd-initscript')
-install='initd-initramfs.install'
+depends=('busybox' 'fsck')
+install='initramfs.install'
 source=('mkinitramfs'
-        'initd-initramfs'
+        'initramfs'
         'LICENSE')
-md5sums=('de039248be8d318b8877053b69074114'
+md5sums=('14b1cf0ae05ca878fcbd8308a9b31f96'
          'f881fc14faa1a5b5999e12f50aa91c10'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
@@ -21,10 +21,10 @@ package() {
 
   # binaries
 
-  install -Dm755 mkinitramfs     "${pkgdir}"/usr/bin/mkinitramfs
-  install -Dm755 initd-initramfs "${pkgdir}"/usr/bin/initd-initramfs
+  install -Dm755 mkinitramfs "${pkgdir}"/usr/bin/mkinitramfs
+  install -Dm755 initramfs   "${pkgdir}"/usr/bin/initramfs
 
   # license
 
-  install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/initd-initramfs/LICENSE
+  install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }

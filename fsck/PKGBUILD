@@ -1,0 +1,48 @@
+# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+
+_pkgname=e2fsprogs
+pkgname=fsck
+pkgver=1.42.9
+pkgrel=1
+pkgdesc='fsck filesystem utility for ext3/4'
+arch=('i686' 'x86_64')
+url='https://github.com/valr/initd'
+license=('GPL' 'LGPL' 'MIT')
+groups=('initd')
+makedepends=('bc' 'musl')
+source=("http://downloads.sourceforge.net/sourceforge/${_pkgname}/${_pkgname}-${pkgver}.tar.gz"
+        'MIT-LICENSE')
+sha1sums=('fb8e3662302bcab1682d567d6ee0ff051faa1bbd'
+          'f4a0d5b0cdb980e3fedd6f5e7dde0b0ffb7bbdfb')
+
+prepare() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+
+  sed -i 's|#include <linux/fd.h>|/*#include <linux/fd.h>*/|' misc/filefrag.c
+}
+
+build() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+
+  CC=musl-gcc CFLAGS='-D__uint64_t=u_int64_t' LDFLAGS='-static' \
+  ./configure --prefix=/usr --with-root-prefix="" --libdir=/usr/lib \
+              --enable-fsck \
+              --disable-backtrace --disable-debugfs --disable-imager \
+              --disable-resizer --disable-defrag --enable-e2initrd-helper \
+              --disable-tls --disable-uuidd --disable-nls --disable-rpath
+
+  make
+}
+
+package() {
+  cd "${srcdir}/${_pkgname}-${pkgver}"
+
+  # binaries
+
+  install -Dm755 e2fsck/e2fsck "${pkgdir}"/usr/bin/fsck.ext3-static
+  install -Dm755 e2fsck/e2fsck "${pkgdir}"/usr/bin/fsck.ext4-static
+
+  # license
+
+  install -Dm644 "${srcdir}"/MIT-LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/MIT-LICENSE
+}

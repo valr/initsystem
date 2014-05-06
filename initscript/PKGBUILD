@@ -10,10 +10,10 @@ pkgver=1.0.0
 pkgrel=1
 pkgdesc='An init system'
 arch=('i686' 'x86_64')
-#url="https://github.com/valr/init-initscript"
+url='https://github.com/valr/initd'
 license=('GPL')
 groups=('initd')
-depends=('initd-busybox' 'initd-perp' 'tzdata' 'kbd' 'systemd')
+depends=('busybox' 'musl' 'perp' 'tzdata' 'kbd' 'systemd')
 source=('init'
         'shutdown'
         'initd.c'
@@ -32,7 +32,7 @@ md5sums=('509e55f10e665c303581f1e065d7b54a'
 build() {
   cd "${srcdir}"
 
-  cc -o initd initd.c
+  musl-gcc -static -o initd initd.c
 }
 
 package() {

@@ -103,8 +103,8 @@ for APPLET in $(./busybox-suid --list); do
   ln -s busybox-suid "${APPLET}"
 done
 
-cp /usr/bin/fsck.ext3static "${BASE}"/bin/fsck.ext3
-cp /usr/bin/fsck.ext4static "${BASE}"/bin/fsck.ext4
+cp /usr/bin/fsck.ext3-static "${BASE}"/bin/fsck.ext3
+cp /usr/bin/fsck.ext4-static "${BASE}"/bin/fsck.ext4
 
 ################################################################################
 # /lib/modules #################################################################
@@ -144,27 +144,27 @@ add_module() {
   done
 }
 
-if [ -r /etc/initd/mkinitramfs.conf ]; then
+if [ -r /etc/mkinitramfs.conf ]; then
   MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
 
   MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d '/' -f 1,2,3,4`
   MOD_DEP="${MOD_DEP#usr}"
 
-  grep -E -v "^[[:blank:]]*(#|$)" /etc/initd/mkinitramfs.conf | while read MODULE; do
+  grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.conf | while read MODULE; do
     add_module "${MODULE}"
   done
 
   depmod -b "${BASE}" `basename ${MOD_DEP}`
   sort -u "${BASE}"/etc/modules -o "${BASE}"/etc/modules
 else
-  echo "ERROR: file /etc/initd/mkinitramfs.conf doesn't exist or is not readable"
+  echo "ERROR: file /etc/mkinitramfs.conf doesn't exist or is not readable"
 fi
 
 ################################################################################
 # initscript ###################################################################
 ################################################################################
 
-cp /usr/bin/initd-initramfs "${BASE}"/init
+cp /usr/bin/initramfs "${BASE}"/init
 
 ################################################################################
 # initramfs ####################################################################

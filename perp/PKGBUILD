@@ -1,63 +1,36 @@
 # Maintainer: valere dot monseur at ymail dot com
 
-_pkgname=perp
-pkgname=initd-perp
+pkgname=perp
 pkgver=2.07
 pkgrel=1
 pkgdesc='A persistent process supervisor'
 arch=('i686' 'x86_64')
 url='http://b0llix.net/perp/'
 license=('GPL')
-groups=('initd')
-depends=('initd-busybox')
-provides=('perp')
-conflicts=('perp')
-backup=('etc/initd/service/.boot/rc.perp'
-        'etc/initd/service/.boot/rc.log'
-        'etc/initd/service/.boot/rlimit.conf')
-install='initd-perp.install'
-source=("http://b0llix.net/perp/distfiles/${_pkgname}-${pkgver}.tar.gz"
-        'rc.perp'
-        'rc.log'
-        'rlimit.conf'
-        'LICENSE')
-md5sums=('a2acc7425d556d9635a25addcee9edb5'
-         '98fb71b07aa91c45f24aa3bc8bc1b933'
-         'a48156322fea9468a6fcde19849f980c'
-         'aaddc3c2646b5fe7b5a16c4c4479d1fc'
-         '4641e94ec96f98fabc56ff9cc48be14b')
+makedepends=('musl')
+source=("http://b0llix.net/perp/distfiles/${pkgname}-${pkgver}.tar.gz")
+md5sums=('a2acc7425d556d9635a25addcee9edb5')
 
 prepare() {
-  cd "${srcdir}/${_pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
-  # sed -i "s#-DNDEBUG -O2#-DNDEBUG -O2 -static#" conf.mk
-  sed -i "s#/usr/sbin#/usr/bin#" conf.mk
+  sed -i "s|CC = gcc|CC = musl-gcc|" conf.mk
+  sed -i "s|-DNDEBUG -O2|-DNDEBUG -O2 -static|" conf.mk
+  sed -i "s|/usr/sbin|/usr/bin|" conf.mk
 }
 
 build() {
-  cd "${srcdir}/${_pkgname}-${pkgver}"
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   make
 }
 
 package() {
-  cd "${srcdir}/${_pkgname}-${pkgver}"
-
-  # directories
-
-  install -dm755 "${pkgdir}"/etc/initd/service
-  install -dm755 "${pkgdir}"/etc/initd/service/.boot
-  install -dm2755 "${pkgdir}"/var/log/initd
+  cd "${srcdir}/${pkgname}-${pkgver}"
 
   # binaries
 
   make DESTDIR="${pkgdir}" install
-
-  # configuration
-
-  install -m755 "${srcdir}"/rc.perp "${pkgdir}"/etc/initd/service/.boot
-  install -m755 "${srcdir}"/rc.log "${pkgdir}"/etc/initd/service/.boot
-  install -m644 "${srcdir}"/rlimit.conf "${pkgdir}"/etc/initd/service/.boot
 
   # cleaning
 
@@ -67,5 +40,5 @@ package() {
 
   # license
 
-  install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/initd-perp/LICENSE
+  install -Dm644 LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }

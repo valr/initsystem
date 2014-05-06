@@ -1,0 +1,14 @@
+
+post_install() {
+  ls -d /var/lib/pacman/local/linux-3.* &>/dev/null && mkinitramfs -p linux
+  ls -d /var/lib/pacman/local/linux-lts-3.* &>/dev/null && mkinitramfs -p linux-lts
+}
+
+post_upgrade() {
+  post_install
+}
+
+post_remove() {
+  rm -f /boot/initramfs-linux.cpio.gz
+  rm -f /boot/initramfs-linux-lts.cpio.gz
+}
