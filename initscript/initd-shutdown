@@ -145,34 +145,11 @@ swapoff -a
 
 echo "shutdown: unmounting other filesystems"
 
-#test
-echo "BEFORE:"
-mount
-sleep 3
-#end test
-
-
 umount -a -r
-
-
-#test
-echo "AFTER:"
-mount -t proc proc /proc -o nosuid,nodev,noexec
-mount
-sleep 3
-#end test
 
 echo "shutdown: remounting root filesystem read-only"
 
 mount -o remount,ro /
-
-
-#test
-echo "FINALLY:"
-mount
-sleep 10
-#end test
-
 
 ################################################################################
 # finish #######################################################################

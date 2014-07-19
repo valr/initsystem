@@ -13,8 +13,8 @@ install='initramfs.install'
 source=('mkinitramfs'
         'initramfs'
         'LICENSE')
-md5sums=('6cd5f4ccc78d3b17d00dd8ada6a3dc51'
-         '5f1f1b5e0b84ab92215be854e088380d'
+md5sums=('b57f46dc25abc4f3dbeeabadf65a8dab'
+         'd5ecad915c3f9a491a0b733c8e096c23'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {

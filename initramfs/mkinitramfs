@@ -78,7 +78,7 @@ done
 echo "root:x:0:0:root:/root:/bin/sh" > "${BASE}"/etc/passwd
 
 echo "root:x:0:root" > "${BASE}"/etc/group
-echo "tty:x:5:" >> "${BASE}"/etc/group
+echo "tty:x:5:"     >> "${BASE}"/etc/group
 
 umask 077
 grep "^root:" /etc/shadow > "${BASE}"/etc/shadow
@@ -157,7 +157,7 @@ if [ -r /etc/mkinitramfs.conf ]; then
   done
 
   depmod -b "${BASE}" `basename ${MOD_DEP}`
-  sort -u "${BASE}"/etc/modules > "${BASE}"/etc/modules
+  sort -u -o "${BASE}"/etc/modules "${BASE}"/etc/modules
 else
   echo "ERROR: file /etc/mkinitramfs.conf doesn't exist or is not readable"
 fi

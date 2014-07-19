@@ -23,9 +23,9 @@ source=('init'
         'LICENSE')
 md5sums=('8ef4cbdadc55f77ce46cac953dabc68d'
          '4c0f389736e3ea82616cdd652ab540ce'
-         '59e2f0862b96e7eb79634ffb6cf98ccc'
+         'c05968083ac8650f305c319f857d546d'
          '7ce7e41967d36c2d6f05317e2a9e0105'
-         '807b0c839b9693f82b8eec5b18b407ed'
+         'fc4bd242f72d989c30e5d4e6a17d3b1d'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {

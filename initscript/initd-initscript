@@ -41,15 +41,15 @@ fi
 
 echo "initscript: mounting in-memory filesystems"
 
-mount -t proc proc /proc -o nosuid,nodev,noexec
-mount -t sysfs sys /sys -o nosuid,nodev,noexec
-mount -t tmpfs run /run -o nosuid,nodev,mode=0755
-mount -t devtmpfs dev /dev -o nosuid,mode=0755
+mount -t proc -o nosuid,nodev,noexec proc /proc
+mount -t sysfs -o nosuid,nodev,noexec sys /sys
+mount -t tmpfs -o nosuid,nodev,mode=0755 run /run
+mount -t devtmpfs -o nosuid,mode=0755 dev /dev
 mkdir -p /dev/pts
-mount -t devpts pts /dev/pts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0
+mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts
 mkdir -p /dev/shm
-mount -t tmpfs shm /dev/shm -o nosuid,nodev
-mount -t efivarfs efi /sys/firmware/efi/efivars -o nosuid,nodev,noexec
+mount -t tmpfs -o nosuid,nodev shm /dev/shm
+mount -t efivarfs -o nosuid,nodev,noexec efi /sys/firmware/efi/efivars
 
 ################################################################################
 # filesystems ##################################################################
