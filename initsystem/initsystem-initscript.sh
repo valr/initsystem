@@ -1,6 +1,6 @@
 #!/usr/bin/ash
 
-# This file is part of initd
+# This file is part of initsystem
 #
 # Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
 #

@@ -1,6 +1,6 @@
 #!/usr/bin/ash
 
-# This file is part of initd
+# This file is part of initsystem
 #
 # Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
 #
@@ -83,19 +83,21 @@ wait_pids() {
   return 1
 }
 
+echo "shutdown: syncing"
+
 sync
 
 echo "shutdown: sending SIGTERM to processes"
 
 killall5 -15 # SIGTERM
-wait_pids 240
+wait_pids 360
 
 if [ $? -ne 0 ]; then
 
   echo "shutdown: sending SIGKILL to processes"
 
   killall5 -9 # SIGKILL
-  wait_pids 240
+  wait_pids 360
 fi
 
 ################################################################################
@@ -156,15 +158,15 @@ mount -o remount,ro /
 ################################################################################
 
 case `basename $0` in
-  initd-halt)
+  initsystem-halt.sh)
     echo "shutdown: system is halting"
     /usr/bin/busybox halt -f
     ;;
-  initd-poweroff)
+  initsystem-poweroff.sh)
     echo "shutdown: system is shutting down"
     /usr/bin/busybox poweroff -f
     ;;
-  initd-reboot)
+  initsystem-reboot.sh)
     echo "shutdown: system is rebooting"
     /usr/bin/busybox reboot -f
     ;;

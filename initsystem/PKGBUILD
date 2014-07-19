@@ -6,20 +6,22 @@
 #http://ftp.linux.org.tr/slackware/slackware_source/a/sysvinit-scripts/scripts/
 #scripts android
 
-pkgname=initscript
+# !!! need to change github !!!
+
+pkgname=initsystem
 pkgver=1.0.0
 pkgrel=1
 pkgdesc='An init system'
-url='https://github.com/valr/initd'
+url='https://github.com/valr/initsystem'
 license=('GPL')
-groups=('initd')
+groups=('initsystem')
 arch=('x86_64')
 depends=('busybox' 'musl-cross-x86_64' 'musl-libc' 'systemd' 'kbd')
-source=('init'
-        'initd.c'
-        'initd-initscript'
+source=('initsystem.sh'
+        'initsystem.c'
+        'initsystem-initscript.sh'
         'shutdown'
-        'initd-shutdown'
+        'initsystem-shutdown.sh'
         'LICENSE')
 md5sums=('8ef4cbdadc55f77ce46cac953dabc68d'
          '4c0f389736e3ea82616cdd652ab540ce'
@@ -31,36 +33,35 @@ md5sums=('8ef4cbdadc55f77ce46cac953dabc68d'
 build() {
   cd "${srcdir}"
 
-  /opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -static -o initd initd.c
+  /opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -static -o initsystem initsystem.c
 }
 
 package() {
 
   # directories
 
-  install -dm755 "${pkgdir}"/etc/initd/script
-  install -dm755 "${pkgdir}"/etc/initd/service
+  install -dm755 "${pkgdir}"/etc/initsystem/script
+  install -dm755 "${pkgdir}"/etc/initsystem/service
 
   # binaries
 
-  install -Dm755 "${srcdir}"/init             "${pkgdir}"/usr/bin/init
-  install -Dm755 "${srcdir}"/initd            "${pkgdir}"/usr/bin/initd
-  install -Dm755 "${srcdir}"/initd-initscript "${pkgdir}"/usr/bin/initd-initscript
-  install -Dm755 "${srcdir}"/shutdown         "${pkgdir}"/usr/bin/shutdown
-  install -Dm755 "${srcdir}"/initd-shutdown   "${pkgdir}"/usr/bin/initd-shutdown
+  install -Dm755 "${srcdir}"/initsystem.sh            "${pkgdir}"/usr/bin/initsystem.sh
+  install -Dm755 "${srcdir}"/initsystem               "${pkgdir}"/usr/bin/initsystem
+  install -Dm755 "${srcdir}"/initsystem-initscript.sh "${pkgdir}"/usr/bin/initsystem-initscript.sh
+  install -Dm755 "${srcdir}"/shutdown                 "${pkgdir}"/usr/bin/shutdown
+  install -Dm755 "${srcdir}"/initsystem-shutdown.sh   "${pkgdir}"/usr/bin/initsystem-shutdown.sh
 
   # symlinks
 
   cd "${pkgdir}"/usr/bin
 
   ln -s shutdown halt
-  ln -s initd-shutdown initd-halt
-
   ln -s shutdown poweroff
-  ln -s initd-shutdown initd-poweroff
-
   ln -s shutdown reboot
-  ln -s initd-shutdown initd-reboot
+
+  ln -s initsystem-shutdown.sh initsystem-halt.sh
+  ln -s initsystem-shutdown.sh initsystem-poweroff.sh
+  ln -s initsystem-shutdown.sh initsystem-reboot.sh
 
   # services
 
@@ -77,5 +78,5 @@ package() {
 
   # license
 
-  install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/initd-initscript/LICENSE
+  install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }

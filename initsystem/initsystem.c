@@ -1,5 +1,5 @@
 /*
- * This file is part of initd
+ * This file is part of initsystem
  *
  * Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
  *
@@ -112,7 +112,7 @@ int main (int argc, char **argv)
     sigaction (SIGUSR1, &signal_action, 0);
     sigaction (SIGUSR2, &signal_action, 0);
 
-    init_pid = spawn_command (parse_command ("initd-initscript"));
+    init_pid = spawn_command (parse_command ("initsystem-initscript.sh"));
 
     if (init_pid > 0)
     {
@@ -155,15 +155,15 @@ int main (int argc, char **argv)
                 switch (signal_number)
                 {
                     case SIGUSR1:
-                        shutdown_pid = spawn_command (parse_command ("initd-reboot"));
+                        shutdown_pid = spawn_command (parse_command ("initsystem-reboot.sh"));
                         break;
 
                     case SIGUSR2:
-                        shutdown_pid = spawn_command (parse_command ("initd-halt"));
+                        shutdown_pid = spawn_command (parse_command ("initsystem-halt.sh"));
                         break;
 
                     default:
-                        shutdown_pid = spawn_command (parse_command ("initd-poweroff"));
+                        shutdown_pid = spawn_command (parse_command ("initsystem-poweroff.sh"));
                         break;
                 }
             }

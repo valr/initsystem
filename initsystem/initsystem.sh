@@ -1,6 +1,6 @@
 #!/usr/bin/ash
 
-# This file is part of initd
+# This file is part of initsystem
 #
 # Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
 #
@@ -20,36 +20,24 @@
 
 set -u
 
-PATH="/opt/busybox"
+PATH="/sbin:/bin:/usr/sbin:/usr/bin"
 export PATH
+
+cd /
+umask 0
 
 ################################################################################
 # sanity check #################################################################
 ################################################################################
 
-if [ $(id -u) != 0 ]; then
-  echo "error: this script should be run as root"
+if [ $$ != 1 ]; then
+  echo "error: this script should be pid 1"
   exit 1
 fi
 
 ################################################################################
-# shutdown #####################################################################
+# pid 1 ########################################################################
 ################################################################################
 
-case `basename $0` in
-  halt)
-    kill -12 1 # SIGUSR2
-    ;;
-  poweroff)
-    kill -15 1 # SIGTERM
-    ;;
-  reboot)
-    kill -10 1 # SIGUSR1
-    ;;
-  *)
-    echo "usage: halt|poweroff|reboot"
-    exit 1
-    ;;
-esac
-
-exit 0
+exec /usr/bin/initsystem \
+  "/opt/busybox/getty -l /opt/busybox/login 38400 tty2 linux"
