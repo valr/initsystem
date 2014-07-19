@@ -20,7 +20,7 @@
 
 set -u
 
-PATH="/usr/bin"
+PATH="/sbin:/bin:/usr/sbin:/usr/bin"
 export PATH
 
 cd /
@@ -40,5 +40,4 @@ fi
 ################################################################################
 
 exec /usr/bin/initd \
-  "/usr/bin/perpboot /etc/initd/service" \
   "/opt/busybox/getty -l /opt/busybox/login 38400 tty2 linux"

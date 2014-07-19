@@ -36,7 +36,7 @@ if [ $PPID != 1 ]; then
 fi
 
 ################################################################################
-# terminal setting and sync ####################################################
+# terminal settings and sync ###################################################
 ################################################################################
 
 stty onlcr
@@ -131,7 +131,7 @@ echo "shutdown: unmounting swap-backed filesystems"
 
 for MOUNT in `grep ' tmpfs ' /proc/self/mountinfo | sort -r -k1,1 | cut -d ' ' -f 5`; do
   case "${MOUNT}" in
-    /proc|/sys|/run|/dev|/dev/pts|/dev/shm)
+    /proc|/sys|/run|/dev|/dev/pts|/dev/shm|/sys/firmware/efi/efivars)
       ;;
     *)
       umount -r "${MOUNT}"
@@ -170,7 +170,7 @@ mount -o remount,ro /
 #test
 echo "FINALLY:"
 mount
-sleep 3
+sleep 10
 #end test
 
 
@@ -192,7 +192,7 @@ case `basename $0` in
     /usr/bin/busybox reboot -f
     ;;
   *)
-    echo "error: unexpected shutdown condition"
+    echo "error: unexpected shutdown condition, halting now"
     /usr/bin/busybox halt -f
     ;;
 esac

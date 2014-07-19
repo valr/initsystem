@@ -61,6 +61,8 @@ echo "Generating initramfs-${LINUX}.cpio.gz..."
 
 BASE=$(mktemp -d /tmp/initramfs.XXXXXX)
 
+trap 'rm -rf "${BASE}"; exit 1' INT TERM EXIT
+
 ################################################################################
 # directory structure ##########################################################
 ################################################################################
@@ -73,16 +75,16 @@ done
 # /etc #########################################################################
 ################################################################################
 
-echo "root:x:0:0:root:/root:/bin/sh" >> "${BASE}"/etc/passwd
+echo "root:x:0:0:root:/root:/bin/sh" > "${BASE}"/etc/passwd
 
-echo "root:x:0:root" >> "${BASE}"/etc/group
+echo "root:x:0:root" > "${BASE}"/etc/group
 echo "tty:x:5:" >> "${BASE}"/etc/group
 
 umask 077
-grep "^root:" /etc/shadow >> "${BASE}"/etc/shadow
+grep "^root:" /etc/shadow > "${BASE}"/etc/shadow
 umask 022
 
-dumpkmap >> "${BASE}"/etc/keymap.kmap
+dumpkmap > "${BASE}"/etc/keymap.kmap
 
 cp /etc/localtime "${BASE}"/etc/localtime
 
@@ -155,7 +157,7 @@ if [ -r /etc/mkinitramfs.conf ]; then
   done
 
   depmod -b "${BASE}" `basename ${MOD_DEP}`
-  sort -u "${BASE}"/etc/modules -o "${BASE}"/etc/modules
+  sort -u "${BASE}"/etc/modules > "${BASE}"/etc/modules
 else
   echo "ERROR: file /etc/mkinitramfs.conf doesn't exist or is not readable"
 fi
@@ -183,3 +185,7 @@ mv "initramfs-${LINUX}.cpio.gz" /boot
 rm -rf "${BASE}"
 
 echo "Generation done"
+
+trap - INT TERM EXIT
+
+exit 0

@@ -4,17 +4,17 @@ pkgname=initramfs
 pkgver=1.0.0
 pkgrel=1
 pkgdesc='Initramfs image creation utility'
-arch=('any')
 url='https://github.com/valr/initd'
 license=('GPL')
 groups=('initd')
+arch=('any')
 depends=('busybox' 'fsck')
 install='initramfs.install'
 source=('mkinitramfs'
         'initramfs'
         'LICENSE')
-md5sums=('14b1cf0ae05ca878fcbd8308a9b31f96'
-         'f881fc14faa1a5b5999e12f50aa91c10'
+md5sums=('6cd5f4ccc78d3b17d00dd8ada6a3dc51'
+         '5f1f1b5e0b84ab92215be854e088380d'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {

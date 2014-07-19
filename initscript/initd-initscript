@@ -49,6 +49,7 @@ mkdir -p /dev/pts
 mount -t devpts pts /dev/pts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0
 mkdir -p /dev/shm
 mount -t tmpfs shm /dev/shm -o nosuid,nodev
+mount -t efivarfs efi /sys/firmware/efi/efivars -o nosuid,nodev,noexec
 
 ################################################################################
 # filesystems ##################################################################
@@ -196,10 +197,6 @@ dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=$POOL_SIZE &>/dev/null
 
 echo "initscript: setting volatile and temporary files"
 
-# tmpfiles
-
-#/usr/bin/systemd-tmpfiles --prefix=/dev --create
-#/usr/bin/systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
 /usr/bin/systemd-tmpfiles --create --remove --exclude-prefix=/dev
 rm -f /run/nologin
 
@@ -241,3 +238,9 @@ umask 022
 #for SCRIPT in `find /etc/init.d -name *.sh -print | sort`; do
 #  [ -x "${SCRIPT}" ] && "${SCRIPT}" start
 #done
+
+################################################################################
+# services #####################################################################
+################################################################################
+
+# todo

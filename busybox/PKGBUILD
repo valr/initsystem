@@ -4,43 +4,44 @@ pkgname=busybox
 pkgver=1.22.1
 pkgrel=1
 pkgdesc='Utilities for rescue and embedded systems'
-arch=('i686' 'x86_64')
 url='http://www.busybox.net/'
 license=('GPL')
-makedepends=('make' 'gcc' 'sed' 'ncurses' 'musl')
+arch=('x86_64')
+makedepends=('make' 'gcc' 'sed' 'ncurses' 'musl-cross-x86_64' 'musl-libc')
 source=("http://www.busybox.net/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
         'config_suid')
 md5sums=('337d1a15ab1cb1d4ed423168b1eb7d7e'
-         '1dea0205bebddd01e9405fed26cb3e98'
-         'ca723fd90670451d978bc8d74245be65')
+         'f0ec6f16030f84ec8f179c226cab9ccb'
+         '818cd3efba9954cf33a9f8563e94e6d4')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   sed -i '1,1i#include <sys/resource.h>' include/libbb.h
 
-  cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/nosuid
-  cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/suid
+  # nosuid
 
+  cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/nosuid
   cp "${srcdir}"/config_nosuid "${srcdir}"/nosuid/.config
-  cp "${srcdir}"/config_suid "${srcdir}"/suid/.config
 
   sed -i 's|LDLIBS += m crypt|LDLIBS += m|' "${srcdir}"/nosuid/Makefile.flags
+  sed -i 's|# include <net/ethernet.h>||' "${srcdir}"/nosuid/networking/ifplugd.c
+
+  # suid
+
+  cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/suid
+  cp "${srcdir}"/config_suid "${srcdir}"/suid/.config
 }
 
 build() {
-  export CC=musl-gcc
-  export HOSTCC=gcc
-  export HOSTCFLAGS='-D_POSIX_C_SOURCE=200112L'
-  export CFLAGS='-static'
-  export CFLAGS_busybox='-Wl,-z,muldefs'
-
   cd "${srcdir}"/nosuid
-  make
+  make CC=/opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+    CFLAGS='-static -D_GNU_SOURCE -Wl,-z,muldefs'
 
   cd "${srcdir}"/suid
-  make
+  make CC=/opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+    CFLAGS='-static -D_GNU_SOURCE -Wl,-z,muldefs'
 }
 
 package() {

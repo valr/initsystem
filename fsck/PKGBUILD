@@ -2,17 +2,17 @@
 
 _pkgname=e2fsprogs
 pkgname=fsck
-pkgver=1.42.9
+pkgver=1.42.10
 pkgrel=1
 pkgdesc='fsck filesystem utility for ext3/4'
-arch=('i686' 'x86_64')
 url='https://github.com/valr/initd'
 license=('GPL' 'LGPL' 'MIT')
 groups=('initd')
-makedepends=('bc' 'musl')
+arch=('x86_64')
+makedepends=('bc' 'musl-cross-x86_64' 'musl-libc')
 source=("http://downloads.sourceforge.net/sourceforge/${_pkgname}/${_pkgname}-${pkgver}.tar.gz"
         'MIT-LICENSE')
-sha1sums=('fb8e3662302bcab1682d567d6ee0ff051faa1bbd'
+sha1sums=('06eba8a78ce1d5032fdcaf34f09025f01ceaca79'
           'f4a0d5b0cdb980e3fedd6f5e7dde0b0ffb7bbdfb')
 
 prepare() {
@@ -24,11 +24,12 @@ prepare() {
 build() {
   cd "${srcdir}/${_pkgname}-${pkgver}"
 
-  CC=musl-gcc CFLAGS='-D__uint64_t=u_int64_t' LDFLAGS='-static' \
+  CC=/opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+  CFLAGS='-D_GNU_SOURCE -D__uint64_t=u_int64_t' LDFLAGS='-static' \
   ./configure --prefix=/usr --with-root-prefix="" --libdir=/usr/lib \
               --enable-fsck \
               --disable-backtrace --disable-debugfs --disable-imager \
-              --disable-resizer --disable-defrag --enable-e2initrd-helper \
+              --disable-resizer --disable-defrag --disable-e2initrd-helper \
               --disable-tls --disable-uuidd --disable-nls --disable-rpath
 
   make

@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.22.1
-# Mon Mar 31 10:44:08 2014
+# Sat Jul 19 12:20:00 2014
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -13,7 +13,7 @@ CONFIG_HAVE_DOT_CONFIG=y
 # General Configuration
 #
 CONFIG_DESKTOP=y
-CONFIG_EXTRA_COMPAT=y
+# CONFIG_EXTRA_COMPAT is not set
 CONFIG_INCLUDE_SUSv2=y
 # CONFIG_USE_PORTABLE_CODE is not set
 CONFIG_PLATFORM_LINUX=y

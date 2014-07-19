@@ -20,7 +20,7 @@
 
 set -u
 
-PATH="/bin:/sbin"
+PATH="/sbin:/bin"
 export PATH
 
 cd /
@@ -74,6 +74,7 @@ mkdir -p /dev/pts                                                        || resc
 mount -t devpts pts /dev/pts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 || rescue_shell
 mkdir -p /dev/shm                                                        || rescue_shell
 mount -t tmpfs shm /dev/shm -o nosuid,nodev                              || rescue_shell
+mount -t efivarfs efi /sys/firmware/efi/efivars -o nosuid,nodev,noexec   || rescue_shell
 
 ################################################################################
 # kernel command line ##########################################################
@@ -227,12 +228,13 @@ fi
 
 echo "initramfs: unmounting in-memory filesystems"
 
-umount /dev/shm || rescue_shell
-umount /dev/pts || rescue_shell
-umount /dev     || rescue_shell
-umount /run     || rescue_shell
-umount /sys     || rescue_shell
-umount /proc    || rescue_shell
+umount /sys/firmware/efi/efivars || rescue_shell
+umount /dev/shm                  || rescue_shell
+umount /dev/pts                  || rescue_shell
+umount /dev                      || rescue_shell
+umount /run                      || rescue_shell
+umount /sys                      || rescue_shell
+umount /proc                     || rescue_shell
 
 ################################################################################
 # swiching root ################################################################
