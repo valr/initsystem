@@ -8,13 +8,13 @@ url='https://github.com/valr/initsystem'
 license=('GPL')
 groups=('initsystem')
 arch=('any')
-depends=('busybox' 'fsck')
+depends=('busybox' 'fsck-ext' 'fsck-fat')
 install='initramfs.install'
 source=('mkinitramfs'
         'initramfs'
         'LICENSE')
-md5sums=('b57f46dc25abc4f3dbeeabadf65a8dab'
-         'd5ecad915c3f9a491a0b733c8e096c23'
+md5sums=('e9a6c3d9874f1f316ba99619aabb03ff'
+         'de5e289aff560e523ad67d3c595256e5'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {

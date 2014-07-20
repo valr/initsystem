@@ -78,7 +78,7 @@ done
 echo "root:x:0:0:root:/root:/bin/sh" > "${BASE}"/etc/passwd
 
 echo "root:x:0:root" > "${BASE}"/etc/group
-echo "tty:x:5:"     >> "${BASE}"/etc/group
+echo "tty:x:5:" >> "${BASE}"/etc/group
 
 umask 077
 grep "^root:" /etc/shadow > "${BASE}"/etc/shadow
@@ -107,6 +107,8 @@ done
 
 cp /usr/bin/fsck.ext3-static "${BASE}"/bin/fsck.ext3
 cp /usr/bin/fsck.ext4-static "${BASE}"/bin/fsck.ext4
+cp /usr/bin/fsck.fat-static "${BASE}"/bin/fsck.fat
+cp /usr/bin/fsck.fat-static "${BASE}"/bin/fsck.vfat
 
 ################################################################################
 # /lib/modules #################################################################
@@ -135,7 +137,7 @@ add_module() {
   fi
 
   # find module dependencies
-  DEP=`grep /"${MOD_NAM}".ko.gz: "${MOD_DEP}"/modules.dep | cut -d ':' -f 2`
+  DEP=`grep /"${MOD_NAM}".ko.gz: "${MOD_DEP}"/modules.dep | cut -d':' -f2`
 
   for MOD in `echo "${DEP}"`; do
     # find dependency name
@@ -149,7 +151,7 @@ add_module() {
 if [ -r /etc/mkinitramfs.conf ]; then
   MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
 
-  MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d '/' -f 1,2,3,4`
+  MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d'/' -f1,2,3,4`
   MOD_DEP="${MOD_DEP#usr}"
 
   grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.conf | while read MODULE; do

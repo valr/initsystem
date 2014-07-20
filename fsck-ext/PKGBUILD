@@ -1,7 +1,7 @@
 # Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
 
 _pkgname=e2fsprogs
-pkgname=fsck
+pkgname=fsck-ext
 pkgver=1.42.10
 pkgrel=1
 pkgdesc='fsck filesystem utility for ext3/4'

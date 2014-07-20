@@ -131,7 +131,7 @@ echo "shutdown: writing wtmp record"
 
 echo "shutdown: unmounting swap-backed filesystems"
 
-for MOUNT in `grep ' tmpfs ' /proc/self/mountinfo | sort -r -k1,1 | cut -d ' ' -f 5`; do
+for MOUNT in `grep ' tmpfs ' /proc/self/mountinfo | sort -r -t' ' -n -k1,1 | cut -d ' ' -f 5`; do
   case "${MOUNT}" in
     /proc|/sys|/run|/dev|/dev/pts|/dev/shm|/sys/firmware/efi/efivars)
       ;;
@@ -151,6 +151,7 @@ umount -a -r
 
 echo "shutdown: remounting root filesystem read-only"
 
+mount -t proc -o nosuid,nodev,noexec proc /proc
 mount -o remount,ro /
 
 ################################################################################

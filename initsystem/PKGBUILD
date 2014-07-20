@@ -23,11 +23,11 @@ source=('initsystem.sh'
         'shutdown'
         'initsystem-shutdown.sh'
         'LICENSE')
-md5sums=('8ef4cbdadc55f77ce46cac953dabc68d'
-         '4c0f389736e3ea82616cdd652ab540ce'
-         'c05968083ac8650f305c319f857d546d'
-         '7ce7e41967d36c2d6f05317e2a9e0105'
-         'fc4bd242f72d989c30e5d4e6a17d3b1d'
+md5sums=('fa6e981bdcdd37cfa528da0c50b15613'
+         '7489d399e39e70b6b91e077a8ef3df27'
+         '87de179c06c76855c6dde97c0c8581cf'
+         'de80051f150b4a3a8c268464116fe4fb'
+         '4c21382793285565b8d660b9a826ff80'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {

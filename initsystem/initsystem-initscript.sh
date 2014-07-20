@@ -124,13 +124,13 @@ echo "initscript: waiting devices to settle"
 if [ -s /etc/vconsole.conf ]; then
   echo "initscript: setting console keymap and font"
 
-  KEYMAP=`grep KEYMAP /etc/vconsole.conf | cut -d '=' -f 2`
+  KEYMAP=`grep KEYMAP /etc/vconsole.conf | cut -d'=' -f2`
 
   if [ ! -z "${KEYMAP}" ]; then
     /usr/bin/loadkeys "${KEYMAP}"
   fi
 
-  FONT=`grep FONT /etc/vconsole.conf | cut -d '=' -f 2`
+  FONT=`grep FONT /etc/vconsole.conf | cut -d'=' -f2`
 
   if [ ! -z "${FONT}" ]; then
     for TTY in /dev/tty[0-9]*; do

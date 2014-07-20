@@ -1,7 +1,7 @@
 Initsystem
 ==========
 
-An init system
+An init system (what a surprise!)
 
 Installation
 ============
