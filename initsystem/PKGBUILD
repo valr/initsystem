@@ -1,16 +1,8 @@
-# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
-
-#TODO:
-#https://github.com/strake/init
-#http://git.2f30.org/fs/tree
-#http://ftp.linux.org.tr/slackware/slackware_source/a/sysvinit-scripts/scripts/
-#scripts android
-
-# !!! need to change github !!!
+# Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=initsystem
 pkgver=1.0.0
-pkgrel=1
+pkgrel=50
 pkgdesc='An init system'
 url='https://github.com/valr/initsystem'
 license=('GPL')
@@ -23,11 +15,11 @@ source=('initsystem.sh'
         'shutdown'
         'initsystem-shutdown.sh'
         'LICENSE')
-md5sums=('fa6e981bdcdd37cfa528da0c50b15613'
+md5sums=('c3a1828f87d1f5ff76070872e7f97c57'
          '7489d399e39e70b6b91e077a8ef3df27'
-         '87de179c06c76855c6dde97c0c8581cf'
+         '20c09b5641d20b8c0399746016e4931a'
          'de80051f150b4a3a8c268464116fe4fb'
-         '4c21382793285565b8d660b9a826ff80'
+         '295fcf2cd231c75a6a5baaaea15ad998'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {

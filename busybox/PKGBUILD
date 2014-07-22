@@ -1,11 +1,12 @@
-# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+# Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=busybox
 pkgver=1.22.1
-pkgrel=1
+pkgrel=50
 pkgdesc='Utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
+groups=('initsystem')
 arch=('x86_64')
 makedepends=('make' 'gcc' 'sed' 'ncurses' 'musl-cross-x86_64' 'musl-libc')
 source=("http://www.busybox.net/downloads/${pkgname}-${pkgver}.tar.bz2"
@@ -57,10 +58,11 @@ package() {
   cd "${srcdir}"/suid
   install -Dm4755 busybox "${pkgdir}"/usr/bin/busybox-suid
 
-  # symlinks: install ash in /usr/bin
+  # symlinks: install some applets in /usr/bin
 
   cd "${pkgdir}"/usr/bin
   ln -s /usr/bin/busybox ash
+  ln -s /usr/bin/busybox logread
 
   # symlinks: install all applets in /opt/busybox
 

@@ -47,17 +47,13 @@ echo "shutdown: syncing"
 sync
 
 ################################################################################
-# services #####################################################################
+# script & daemon ##############################################################
 ################################################################################
 
 #echo "shutdown: stopping services"
 #
 #sv -w 120 force-stop /etc/init.d/*.sv
 #sv exit /etc/init.d/*.sv
-
-################################################################################
-# scripts ######################################################################
-################################################################################
 
 #echo "shutdown: stopping scripts"
 #
@@ -66,7 +62,7 @@ sync
 #done
 
 ################################################################################
-# kill processes ###############################################################
+# kill remaining processes #####################################################
 ################################################################################
 
 wait_pids() {
@@ -83,10 +79,6 @@ wait_pids() {
   return 1
 }
 
-echo "shutdown: syncing"
-
-sync
-
 echo "shutdown: sending SIGTERM to processes"
 
 killall5 -15 # SIGTERM
@@ -99,6 +91,10 @@ if [ $? -ne 0 ]; then
   killall5 -9 # SIGKILL
   wait_pids 360
 fi
+
+echo "shutdown: syncing"
+
+sync
 
 ################################################################################
 # random seed ##################################################################
@@ -131,7 +127,7 @@ echo "shutdown: writing wtmp record"
 
 echo "shutdown: unmounting swap-backed filesystems"
 
-for MOUNT in `grep ' tmpfs ' /proc/self/mountinfo | sort -r -t' ' -n -k1,1 | cut -d ' ' -f 5`; do
+for MOUNT in `grep ' tmpfs ' /proc/self/mountinfo | sort -r -t ' ' -n -k1,1 | cut -d ' ' -f 5`; do
   case "${MOUNT}" in
     /proc|/sys|/run|/dev|/dev/pts|/dev/shm|/sys/firmware/efi/efivars)
       ;;
@@ -151,12 +147,17 @@ umount -a -r
 
 echo "shutdown: remounting root filesystem read-only"
 
+# a bit or paranioa because above umount command should have remounted ro
 mount -t proc -o nosuid,nodev,noexec proc /proc
 mount -o remount,ro /
 
 ################################################################################
 # finish #######################################################################
 ################################################################################
+
+sync
+
+sleep 3
 
 case `basename $0` in
   initsystem-halt.sh)

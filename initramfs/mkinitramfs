@@ -137,7 +137,7 @@ add_module() {
   fi
 
   # find module dependencies
-  DEP=`grep /"${MOD_NAM}".ko.gz: "${MOD_DEP}"/modules.dep | cut -d':' -f2`
+  DEP=`grep /"${MOD_NAM}".ko.gz: "${MOD_DEP}"/modules.dep | cut -d ':' -f 2`
 
   for MOD in `echo "${DEP}"`; do
     # find dependency name
@@ -151,7 +151,7 @@ add_module() {
 if [ -r /etc/mkinitramfs.conf ]; then
   MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
 
-  MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d'/' -f1,2,3,4`
+  MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d '/' -f 1,2,3,4`
   MOD_DEP="${MOD_DEP#usr}"
 
   grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.conf | while read MODULE; do

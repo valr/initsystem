@@ -1,9 +1,9 @@
-# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+# Maintainer: valr <valere dot monseur at ymail dot com>
 
 _pkgname=dosfstools
 pkgname=fsck-fat
 pkgver=3.0.26
-pkgrel=1
+pkgrel=50
 pkgdesc='fsck filesystem utility for vfat'
 url='https://github.com/valr/initsystem'
 license=('GPL2')

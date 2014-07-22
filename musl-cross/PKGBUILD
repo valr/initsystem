@@ -1,8 +1,8 @@
-# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+# Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=musl-cross-x86_64
 pkgver=1.1.2
-pkgrel=1
+pkgrel=50
 pkgdesc='A musl libc cross-compiler for x86_64'
 url='http://musl.codu.org/'
 license=('MIT')

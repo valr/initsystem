@@ -83,7 +83,7 @@ hwclock -t -u
 
 echo "initscript: starting devices handler"
 
-/usr/lib/systemd/systemd-udevd --daemon
+/usr/bin/udevd --daemon
 
 /usr/bin/udevadm trigger --action=add --type=subsystems
 /usr/bin/udevadm trigger --action=add --type=devices
@@ -124,13 +124,13 @@ echo "initscript: waiting devices to settle"
 if [ -s /etc/vconsole.conf ]; then
   echo "initscript: setting console keymap and font"
 
-  KEYMAP=`grep KEYMAP /etc/vconsole.conf | cut -d'=' -f2`
+  KEYMAP=`grep KEYMAP /etc/vconsole.conf | cut -d '=' -f 2`
 
   if [ ! -z "${KEYMAP}" ]; then
     /usr/bin/loadkeys "${KEYMAP}"
   fi
 
-  FONT=`grep FONT /etc/vconsole.conf | cut -d'=' -f2`
+  FONT=`grep FONT /etc/vconsole.conf | cut -d '=' -f 2`
 
   if [ ! -z "${FONT}" ]; then
     for TTY in /dev/tty[0-9]*; do
@@ -230,7 +230,7 @@ dmesg > /var/log/dmesg
 umask 022
 
 ################################################################################
-# scripts ######################################################################
+# script & daemon ##############################################################
 ################################################################################
 
 #echo "initscript: starting scripts"
@@ -238,9 +238,3 @@ umask 022
 #for SCRIPT in `find /etc/init.d -name *.sh -print | sort`; do
 #  [ -x "${SCRIPT}" ] && "${SCRIPT}" start
 #done
-
-################################################################################
-# services #####################################################################
-################################################################################
-
-# todo

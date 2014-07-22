@@ -1,9 +1,9 @@
-# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+# Maintainer: valr <valere dot monseur at ymail dot com>
 
 _pkgname=musl
 pkgname=musl-libc
 pkgver=1.1.3
-pkgrel=1
+pkgrel=50
 pkgdesc='An implementation of the C/POSIX standard library'
 url='http://www.musl-libc.org/'
 license=('MIT')

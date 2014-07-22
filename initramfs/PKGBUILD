@@ -1,8 +1,8 @@
-# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+# Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=initramfs
 pkgver=1.0.0
-pkgrel=1
+pkgrel=50
 pkgdesc='Initramfs image creation utility'
 url='https://github.com/valr/initsystem'
 license=('GPL')
@@ -13,7 +13,7 @@ install='initramfs.install'
 source=('mkinitramfs'
         'initramfs'
         'LICENSE')
-md5sums=('e9a6c3d9874f1f316ba99619aabb03ff'
+md5sums=('6936daef8becc5a3adafb5c010cc55af'
          'de5e289aff560e523ad67d3c595256e5'
          '4641e94ec96f98fabc56ff9cc48be14b')
 

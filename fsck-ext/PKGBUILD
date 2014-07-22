@@ -1,9 +1,9 @@
-# Maintainer: Valère Monseur <valere dot monseur at ymail dot com>
+# Maintainer: valr <valere dot monseur at ymail dot com>
 
 _pkgname=e2fsprogs
 pkgname=fsck-ext
 pkgver=1.42.10
-pkgrel=1
+pkgrel=50
 pkgdesc='fsck filesystem utility for ext3/4'
 url='https://github.com/valr/initsystem'
 license=('GPL' 'LGPL' 'MIT')
