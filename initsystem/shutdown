@@ -46,8 +46,30 @@ case `basename $0` in
   reboot)
     kill -10 1 # SIGUSR1
     ;;
+  shutdown)
+    if [ $# -lt 1 ]; then
+      echo "usage: shutdown -h|-p|-r"
+      exit 1
+    fi
+
+    case $1 in
+      -h)
+        kill -12 1 # SIGUSR2
+        ;;
+      -p)
+        kill -15 1 # SIGTERM
+        ;;
+      -r)
+        kill -10 1 # SIGUSR1
+        ;;
+      *)
+        echo "usage: shutdown -h|-p|-r"
+        exit 1
+        ;;
+    esac
+    ;;
   *)
-    echo "usage: halt|poweroff|reboot"
+    echo "usage: halt|poweroff|reboot|shutdown"
     exit 1
     ;;
 esac

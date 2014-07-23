@@ -1,14 +1,13 @@
+#!/bin/bash
 
-post_install() {
+build() {
   for PRESET in /etc/mkinitcpio.d/*.preset; do
     mkinitramfs `basename "${PRESET}" .preset`
   done
 }
 
-post_upgrade() {
-  post_install
-}
-
-post_remove() {
-  rm /boot/initramfs-*.cpio.gz
+help() {
+  cat <<HELPEOF
+This hook generates initramfs for initsystem.
+HELPEOF
 }

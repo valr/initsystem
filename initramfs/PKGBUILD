@@ -12,9 +12,11 @@ depends=('busybox' 'fsck-ext' 'fsck-fat')
 install='initramfs.install'
 source=('mkinitramfs'
         'initramfs'
+        'initramfs.mkinitcpio'
         'LICENSE')
-md5sums=('6936daef8becc5a3adafb5c010cc55af'
+md5sums=('5560d61be524fe403669aff21328ac46'
          'de5e289aff560e523ad67d3c595256e5'
+         '9f1c6ff05b3f32f8ea72e919fac41d40'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
@@ -23,6 +25,9 @@ package() {
 
   install -Dm755 mkinitramfs "${pkgdir}"/usr/bin/mkinitramfs
   install -Dm755 initramfs   "${pkgdir}"/usr/bin/initramfs
+
+  # install mkinitcpio hook
+  install -Dm644 "${srcdir}"/initramfs.mkinitcpio "${pkgdir}"/usr/lib/initcpio/install/initramfs
 
   # license
 

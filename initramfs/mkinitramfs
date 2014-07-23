@@ -35,23 +35,18 @@ if [ $(id -u) -ne 0 ]; then
   exit 1
 fi
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 1 ]; then
   echo "ERROR: wrong number of parameters"
-  echo "Usage: `basename $0` -p linux|linux-lts"
+  echo "Usage: `basename $0` linux|linux-lts"
   exit 1
 fi
 
-if [ "$1" != "-p" ]; then
-  echo "ERROR: expecting -p as first parameter"
+if [ "$1" != "linux" ] && [ "$1" != "linux-lts" ]; then
+  echo "ERROR: expecting 'linux' or 'linux-lts' as parameter"
   exit 1
 fi
 
-if [ "$2" != "linux" ] && [ "$2" != "linux-lts" ]; then
-  echo "ERROR: expecting 'linux' or 'linux-lts' as second parameter"
-  exit 1
-fi
-
-LINUX="$2"
+LINUX="$1"
 
 ################################################################################
 # base directory ###############################################################
