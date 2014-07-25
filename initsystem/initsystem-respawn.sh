@@ -20,30 +20,23 @@
 
 set -u
 
-PATH="/sbin:/bin:/usr/sbin:/usr/bin"
+PATH="/opt/busybox"
 export PATH
 
 cd /
-umask 0
+umask 022
 
 ################################################################################
 # sanity check #################################################################
 ################################################################################
 
-if [ $$ != 1 ]; then
-  echo "error: this script should be pid 1"
+if [ $PPID != 1 ]; then
+  echo "error: this script should have ppid 1"
   exit 1
 fi
 
 ################################################################################
-# pid 1 ########################################################################
+# respawn command ##############################################################
 ################################################################################
 
-exec /usr/bin/initsystem \
-  "/opt/busybox/syslogd -n -C32768" \
-  "/opt/busybox/getty -l /opt/busybox/login 38400 tty1 linux" \
-  "/opt/busybox/getty -l /opt/busybox/login 38400 tty2 linux" \
-  "/opt/busybox/getty -l /opt/busybox/login 38400 tty3 linux" \
-  "/opt/busybox/getty -l /opt/busybox/login 38400 tty4 linux" \
-  "/opt/busybox/getty -l /opt/busybox/login 38400 tty5 linux" \
-  "/opt/busybox/getty -l /opt/busybox/login 38400 tty6 linux"
+exec getty -l "${PATH}"/login 38400 tty1 linux

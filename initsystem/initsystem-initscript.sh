@@ -238,3 +238,10 @@ umask 022
 #for SCRIPT in `find /etc/init.d -name *.sh -print | sort`; do
 #  [ -x "${SCRIPT}" ] && "${SCRIPT}" start
 #done
+
+#/opt/busybox/syslogd -n -C32768
+#/opt/busybox/getty -l /opt/busybox/login 38400 tty2 linux
+#/opt/busybox/getty -l /opt/busybox/login 38400 tty3 linux
+#/opt/busybox/getty -l /opt/busybox/login 38400 tty4 linux
+#/opt/busybox/getty -l /opt/busybox/login 38400 tty5 linux
+#/opt/busybox/getty -l /opt/busybox/login 38400 tty6 linux

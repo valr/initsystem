@@ -9,39 +9,34 @@ license=('GPL')
 groups=('initsystem')
 arch=('x86_64')
 depends=('busybox' 'musl-cross-x86_64' 'musl-libc' 'systemd' 'kbd')
-source=('initsystem.sh'
-        'initsystem.c'
+source=('initsystem.c'
         'initsystem-initscript.sh'
-        'shutdown'
+        'initsystem-respawn.sh'
         'initsystem-shutdown.sh'
+        'shutdown'
         'LICENSE')
-md5sums=('c3a1828f87d1f5ff76070872e7f97c57'
-         '7489d399e39e70b6b91e077a8ef3df27'
-         '20c09b5641d20b8c0399746016e4931a'
+md5sums=('2ab0fc31d64b22e99fa11fb954ae23be'
+         '4a20311fea2ee6f3fd96c0e9b61e2e1e'
+         '470a3d51bf14138d1239de9741f7d53d'
+         'bf2912b79abb3c6b33489dbc1d8eca46'
          '4949f2a65cb7e796e81479d09a8cec88'
-         '295fcf2cd231c75a6a5baaaea15ad998'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
   cd "${srcdir}"
 
-  /opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -static -o initsystem initsystem.c
+  /opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -Wall -static -o initsystem initsystem.c
 }
 
 package() {
 
-  # directories
-
-  install -dm755 "${pkgdir}"/etc/initsystem/script
-  install -dm755 "${pkgdir}"/etc/initsystem/service
-
   # binaries
 
-  install -Dm755 "${srcdir}"/initsystem.sh            "${pkgdir}"/usr/bin/initsystem.sh
   install -Dm755 "${srcdir}"/initsystem               "${pkgdir}"/usr/bin/initsystem
   install -Dm755 "${srcdir}"/initsystem-initscript.sh "${pkgdir}"/usr/bin/initsystem-initscript.sh
-  install -Dm755 "${srcdir}"/shutdown                 "${pkgdir}"/usr/bin/shutdown
+  install -Dm755 "${srcdir}"/initsystem-respawn.sh    "${pkgdir}"/usr/bin/initsystem-respawn.sh
   install -Dm755 "${srcdir}"/initsystem-shutdown.sh   "${pkgdir}"/usr/bin/initsystem-shutdown.sh
+  install -Dm755 "${srcdir}"/shutdown                 "${pkgdir}"/usr/bin/shutdown
 
   # symlinks
 
