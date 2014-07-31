@@ -74,7 +74,6 @@ mkdir -p /dev/pts                                                        || resc
 mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts || rescue_shell
 mkdir -p /dev/shm                                                        || rescue_shell
 mount -t tmpfs -o nosuid,nodev shm /dev/shm                              || rescue_shell
-mount -t efivarfs -o nosuid,nodev,noexec efi /sys/firmware/efi/efivars   || rescue_shell
 
 ################################################################################
 # kernel command line ##########################################################
@@ -228,13 +227,12 @@ fi
 
 echo "initramfs: unmounting in-memory filesystems"
 
-umount /sys/firmware/efi/efivars || rescue_shell
-umount /dev/shm                  || rescue_shell
-umount /dev/pts                  || rescue_shell
-umount /dev                      || rescue_shell
-umount /run                      || rescue_shell
-umount /sys                      || rescue_shell
-umount /proc                     || rescue_shell
+umount /dev/shm || rescue_shell
+umount /dev/pts || rescue_shell
+umount /dev     || rescue_shell
+umount /run     || rescue_shell
+umount /sys     || rescue_shell
+umount /proc    || rescue_shell
 
 ################################################################################
 # swiching root ################################################################

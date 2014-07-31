@@ -4,7 +4,7 @@ _pkgname=dosfstools
 pkgname=fsck-fat
 pkgver=3.0.26
 pkgrel=50
-pkgdesc='fsck filesystem utility for vfat'
+pkgdesc='fsck utility for fat filesystems'
 url='https://github.com/valr/initsystem'
 license=('GPL2')
 groups=('initsystem')
@@ -23,11 +23,6 @@ build() {
 package () {
   cd "${srcdir}/${_pkgname}-${pkgver}"
 
-  # binaries
-
   install -Dm755 fsck.fat "${pkgdir}"/usr/bin/fsck.fat-static
-
-  # license
-
   install -Dm644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/COPYING
 }

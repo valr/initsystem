@@ -16,7 +16,7 @@ source=('initsystem.c'
         'shutdown'
         'LICENSE')
 md5sums=('2ab0fc31d64b22e99fa11fb954ae23be'
-         '4a20311fea2ee6f3fd96c0e9b61e2e1e'
+         '50fb0aab7ab4519c941b448505029f76'
          '470a3d51bf14138d1239de9741f7d53d'
          'bf2912b79abb3c6b33489dbc1d8eca46'
          '4949f2a65cb7e796e81479d09a8cec88'

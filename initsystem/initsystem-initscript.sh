@@ -50,6 +50,7 @@ mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts
 mkdir -p /dev/shm
 mount -t tmpfs -o nosuid,nodev shm /dev/shm
 mount -t efivarfs -o nosuid,nodev,noexec efi /sys/firmware/efi/efivars
+mount -t cgroup cgroup /sys/fs/cgroup
 
 ################################################################################
 # filesystems ##################################################################

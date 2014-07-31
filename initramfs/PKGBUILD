@@ -14,8 +14,8 @@ source=('mkinitramfs'
         'initramfs'
         'initramfs.mkinitcpio'
         'LICENSE')
-md5sums=('5560d61be524fe403669aff21328ac46'
-         'de5e289aff560e523ad67d3c595256e5'
+md5sums=('a71c9fd51374165ebc7095ac4f910b01'
+         'a679f16bb8e2e7c277f5e228f18bd720'
          '9f1c6ff05b3f32f8ea72e919fac41d40'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
@@ -27,6 +27,7 @@ package() {
   install -Dm755 initramfs   "${pkgdir}"/usr/bin/initramfs
 
   # install mkinitcpio hook
+
   install -Dm644 "${srcdir}"/initramfs.mkinitcpio "${pkgdir}"/usr/lib/initcpio/install/initramfs
 
   # license

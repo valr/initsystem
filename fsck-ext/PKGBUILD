@@ -4,7 +4,7 @@ _pkgname=e2fsprogs
 pkgname=fsck-ext
 pkgver=1.42.10
 pkgrel=50
-pkgdesc='fsck filesystem utility for ext3/4'
+pkgdesc='fsck utility for ext filesystems'
 url='https://github.com/valr/initsystem'
 license=('GPL' 'LGPL' 'MIT')
 groups=('initsystem')
@@ -38,12 +38,6 @@ build() {
 package() {
   cd "${srcdir}/${_pkgname}-${pkgver}"
 
-  # binaries
-
-  install -Dm755 e2fsck/e2fsck "${pkgdir}"/usr/bin/fsck.ext3-static
-  install -Dm755 e2fsck/e2fsck "${pkgdir}"/usr/bin/fsck.ext4-static
-
-  # license
-
+  install -Dm755 e2fsck/e2fsck "${pkgdir}"/usr/bin/fsck.ext-static
   install -Dm644 "${srcdir}"/MIT-LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/MIT-LICENSE
 }

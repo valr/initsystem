@@ -100,8 +100,10 @@ for APPLET in $(./busybox-suid --list); do
   ln -s busybox-suid "${APPLET}"
 done
 
-cp /usr/bin/fsck.ext3-static "${BASE}"/bin/fsck.ext3
-cp /usr/bin/fsck.ext4-static "${BASE}"/bin/fsck.ext4
+cp /usr/bin/fsck.ext-static "${BASE}"/bin/fsck.ext2
+cp /usr/bin/fsck.ext-static "${BASE}"/bin/fsck.ext3
+cp /usr/bin/fsck.ext-static "${BASE}"/bin/fsck.ext4
+
 cp /usr/bin/fsck.fat-static "${BASE}"/bin/fsck.fat
 cp /usr/bin/fsck.fat-static "${BASE}"/bin/fsck.vfat
 
