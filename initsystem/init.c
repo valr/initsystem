@@ -41,11 +41,11 @@
 #include <sys/wait.h>
 
 #ifndef MAX_ARG_NUM
-#define MAX_ARG_NUM 64
+#define MAX_ARG_NUM 16
 #endif
 
 #ifndef MAX_ARG_LEN
-#define MAX_ARG_LEN 4096
+#define MAX_ARG_LEN 256
 #endif
 
 volatile sig_atomic_t signal_number = 0;
@@ -142,7 +142,7 @@ int main (int argc, char **argv)
     sigaction (SIGUSR1, &signal_action, 0);
     sigaction (SIGUSR2, &signal_action, 0);
 
-    init_pid = spawn_command (parse_command ("initsystem-initscript.sh"));
+    init_pid = spawn_command (parse_command ("/etc/rc"));
     init_timeout = get_time () + 300;
 
     while (init_pid)
@@ -172,7 +172,7 @@ int main (int argc, char **argv)
         if (respawn_pid == 0 || respawn_pid == dead_pid)
         {
             if (signal_number == 0)
-                respawn_pid = spawn_command (parse_command ("initsystem-respawn.sh"));
+                respawn_pid = spawn_command (parse_command ("/etc/rc.respawn"));
             else
                 respawn_pid = 0;
         }
@@ -184,15 +184,15 @@ int main (int argc, char **argv)
                 switch (signal_number)
                 {
                     case SIGTERM:
-                        shutdown_pid = spawn_command (parse_command ("initsystem-poweroff.sh"));
+                        shutdown_pid = spawn_command (parse_command ("/etc/rc.shutdown poweroff"));
                         break;
 
                     case SIGUSR1:
-                        shutdown_pid = spawn_command (parse_command ("initsystem-reboot.sh"));
+                        shutdown_pid = spawn_command (parse_command ("/etc/rc.shutdown reboot"));
                         break;
 
                     case SIGUSR2:
-                        shutdown_pid = spawn_command (parse_command ("initsystem-halt.sh"));
+                        shutdown_pid = spawn_command (parse_command ("/etc/rc.shutdown halt"));
                         break;
                 }
 

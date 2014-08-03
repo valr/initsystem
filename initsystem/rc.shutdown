@@ -18,8 +18,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-set -u
-
 PATH="/opt/busybox"
 export PATH
 
@@ -36,14 +34,14 @@ if [ $PPID != 1 ]; then
 fi
 
 ################################################################################
-# terminal settings and sync ###################################################
+# terminal settings ############################################################
 ################################################################################
+
+echo ""
+echo "shutdown: change terminal settings"
 
 chvt 1
 stty onlcr
-
-echo " "
-echo "shutdown: syncing"
 
 sync
 
@@ -61,6 +59,8 @@ sync
 #for SCRIPT in `find /etc/init.d -name *.sh -print | sort -r`; do
 #  [ -x "${SCRIPT}" ] && "${SCRIPT}" stop
 #done
+
+sync
 
 ################################################################################
 # kill remaining processes #####################################################
@@ -92,8 +92,6 @@ if [ $? -ne 0 ]; then
   killall5 -9 # SIGKILL
   wait_pids 360
 fi
-
-echo "shutdown: syncing"
 
 sync
 
@@ -160,21 +158,20 @@ sync;sync;sync
 
 sleep 3
 
-case `basename $0` in
-  initsystem-halt.sh)
+case $1 in
+  halt)
     echo "shutdown: system is halting"
     /usr/bin/busybox halt -f
     ;;
-  initsystem-poweroff.sh)
+  poweroff)
     echo "shutdown: system is shutting down"
     /usr/bin/busybox poweroff -f
     ;;
-  initsystem-reboot.sh)
+  reboot)
     echo "shutdown: system is rebooting"
     /usr/bin/busybox reboot -f
     ;;
-  *)
-    echo "error: unexpected shutdown condition, halting now"
-    /usr/bin/busybox halt -f
-    ;;
 esac
+
+echo "error: unexpected shutdown condition, halting now"
+/usr/bin/busybox halt -f

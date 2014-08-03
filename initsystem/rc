@@ -18,8 +18,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-set -u
-
 PATH="/opt/busybox"
 export PATH
 
@@ -77,6 +75,14 @@ fi
 echo "initscript: setting clock"
 
 hwclock -t -u
+
+################################################################################
+# volatile and temporary files #################################################
+################################################################################
+
+echo "initscript: setting volatile and temporary files"
+
+/usr/bin/tmpfiles --prefix=/dev
 
 ################################################################################
 # devices ######################################################################
@@ -198,8 +204,7 @@ dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=$POOL_SIZE &>/dev/null
 
 echo "initscript: setting volatile and temporary files"
 
-/usr/bin/systemd-tmpfiles --create --remove --exclude-prefix=/dev
-rm -f /run/nologin
+/usr/bin/tmpfiles --exclude-prefix=/dev
 
 ################################################################################
 # sysctl #######################################################################
@@ -233,6 +238,8 @@ umask 022
 ################################################################################
 # script & daemon ##############################################################
 ################################################################################
+
+rm -f /run/nologin
 
 #echo "initscript: starting scripts"
 #

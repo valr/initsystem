@@ -9,34 +9,37 @@ license=('GPL')
 groups=('initsystem')
 arch=('x86_64')
 depends=('busybox' 'musl-cross-x86_64' 'musl-libc' 'systemd' 'kbd')
-source=('initsystem.c'
-        'initsystem-initscript.sh'
-        'initsystem-respawn.sh'
-        'initsystem-shutdown.sh'
+source=('init.c'
+        'rc'
+        'rc.respawn'
+        'rc.shutdown'
+        'tmpfiles'
         'shutdown'
         'LICENSE')
-md5sums=('2ab0fc31d64b22e99fa11fb954ae23be'
-         '50fb0aab7ab4519c941b448505029f76'
-         '470a3d51bf14138d1239de9741f7d53d'
-         'bf2912b79abb3c6b33489dbc1d8eca46'
-         '4949f2a65cb7e796e81479d09a8cec88'
+md5sums=('79d5372e15f1239b2d7c32016b4cef91'
+         'd0818e65e9adf8722a924a4c7fee78a6'
+         '55d7c09f35ce8daa96668599a8ec60f2'
+         '49ca68f1e9f4bdf6cff04164741d64b5'
+         '6e7860e985e466d9a081464c2524e313'
+         'c6f7bdb2aa70c3040849a88a62bcaafa'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
   cd "${srcdir}"
 
-  /opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -Wall -static -o initsystem initsystem.c
+  /opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -Wall -static -o init init.c
 }
 
 package() {
 
   # binaries
 
-  install -Dm755 "${srcdir}"/initsystem               "${pkgdir}"/usr/bin/initsystem
-  install -Dm755 "${srcdir}"/initsystem-initscript.sh "${pkgdir}"/usr/bin/initsystem-initscript.sh
-  install -Dm755 "${srcdir}"/initsystem-respawn.sh    "${pkgdir}"/usr/bin/initsystem-respawn.sh
-  install -Dm755 "${srcdir}"/initsystem-shutdown.sh   "${pkgdir}"/usr/bin/initsystem-shutdown.sh
-  install -Dm755 "${srcdir}"/shutdown                 "${pkgdir}"/usr/bin/shutdown
+  install -Dm755 "${srcdir}"/init        "${pkgdir}"/sbin/init
+  install -Dm755 "${srcdir}"/rc          "${pkgdir}"/etc/rc
+  install -Dm755 "${srcdir}"/rc.respawn  "${pkgdir}"/etc/rc.respawn
+  install -Dm755 "${srcdir}"/rc.shutdown "${pkgdir}"/etc/rc.shutdown
+  install -Dm755 "${srcdir}"/tmpfiles    "${pkgdir}"/usr/bin/tmpfiles
+  install -Dm755 "${srcdir}"/shutdown    "${pkgdir}"/usr/bin/shutdown
 
   # symlinks
 
@@ -45,10 +48,6 @@ package() {
   ln -s shutdown halt
   ln -s shutdown poweroff
   ln -s shutdown reboot
-
-  ln -s initsystem-shutdown.sh initsystem-halt.sh
-  ln -s initsystem-shutdown.sh initsystem-poweroff.sh
-  ln -s initsystem-shutdown.sh initsystem-reboot.sh
 
   # services
 
