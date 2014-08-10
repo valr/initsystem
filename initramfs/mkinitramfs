@@ -19,10 +19,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 # Howto extract the initramfs content:
+# gunzip initramfs-linux.cpio.gz
 # busybox cpio -i -d -H newc -F initramfs-linux.cpio
-
-set -e
-set -u
 
 PATH="/opt/busybox"
 
@@ -30,7 +28,7 @@ PATH="/opt/busybox"
 # parameter ####################################################################
 ################################################################################
 
-if [ $(id -u) -ne 0 ]; then
+if [ `id -u` -ne 0 ]; then
   echo "ERROR: this script should be run as root"
   exit 1
 fi
@@ -43,6 +41,7 @@ fi
 
 if [ "$1" != "linux" ] && [ "$1" != "linux-lts" ]; then
   echo "ERROR: expecting 'linux' or 'linux-lts' as parameter"
+  echo "Usage: `basename $0` linux|linux-lts"
   exit 1
 fi
 
@@ -54,7 +53,7 @@ LINUX="$1"
 
 echo "Generating initramfs-${LINUX}.cpio.gz..."
 
-BASE=$(mktemp -d /tmp/initramfs.XXXXXX)
+BASE=`mktemp -d /tmp/initramfs.XXXXXX`
 
 trap 'rm -rf "${BASE}"; exit 1' INT TERM EXIT
 
@@ -62,7 +61,8 @@ trap 'rm -rf "${BASE}"; exit 1' INT TERM EXIT
 # directory structure ##########################################################
 ################################################################################
 
-for DIR in /bin /dev /etc /lib /mnt /newroot /proc /root /run /sbin /sys /tmp /usr /var; do
+for DIR in /bin /dev /etc /lib /mnt /newroot /proc /root /run /sbin /sys \
+           /tmp /usr /var; do
   mkdir "${BASE}"/"${DIR}"
 done
 
@@ -92,11 +92,11 @@ cp /usr/bin/busybox-suid "${BASE}"/bin
 
 cd "${BASE}"/bin
 
-for APPLET in $(./busybox --list); do
+for APPLET in `./busybox --list`; do
   ln -s busybox "${APPLET}"
 done
 
-for APPLET in $(./busybox-suid --list); do
+for APPLET in `./busybox-suid --list`; do
   ln -s busybox-suid "${APPLET}"
 done
 
@@ -112,7 +112,7 @@ cp /usr/bin/fsck.fat-static "${BASE}"/bin/fsck.vfat
 ################################################################################
 
 add_module() {
-  # find module in linux package files
+  # find module in package files
   MOD_NM1=`echo "$1" | tr '-' '_'`
   MOD_NM2=`echo "$1" | tr '_' '-'`
 
@@ -146,6 +146,7 @@ add_module() {
 }
 
 if [ -r /etc/mkinitramfs.conf ]; then
+  # FIXME: ugly way to identify installed linux kernel
   MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
 
   MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d '/' -f 1,2,3,4`
@@ -165,7 +166,7 @@ fi
 # initscript ###################################################################
 ################################################################################
 
-cp /usr/bin/initramfs "${BASE}"/init
+cp /usr/lib/initramfs/initramfs "${BASE}"/init
 
 ################################################################################
 # initramfs ####################################################################

@@ -25,7 +25,7 @@ package() {
 
   # install the cross-compiler
 
-  mkdir -p "${pkgdir}"/"${PREFIX}"
+  install -d "${pkgdir}"/"${PREFIX}"
 
   cp -R bin               "${pkgdir}"/"${PREFIX}"
   cp -R include           "${pkgdir}"/"${PREFIX}"
@@ -33,7 +33,7 @@ package() {
   cp -R libexec           "${pkgdir}"/"${PREFIX}"
   cp -R x86_64-linux-musl "${pkgdir}"/"${PREFIX}"
 
-  # install the kernel headers (linux-api-headers)
+  # FIXME: install the kernel headers (linux-api-headers)
   # yes, I know it's ugly and shouldn't be done here anyway
 
   ln -s /usr/include/asm-generic "${pkgdir}"/"${PREFIX}"/x86_64-linux-musl/include/asm-generic

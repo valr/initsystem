@@ -1,6 +1,7 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 _pkgname=e2fsprogs
+
 pkgname=fsck-ext
 pkgver=1.42.10
 pkgrel=50
@@ -9,7 +10,7 @@ url='https://github.com/valr/initsystem'
 license=('GPL' 'LGPL' 'MIT')
 groups=('initsystem')
 arch=('x86_64')
-makedepends=('bc' 'musl-cross-x86_64' 'musl-libc')
+makedepends=('musl-cross-x86_64' 'musl-libc')
 source=("http://downloads.sourceforge.net/sourceforge/${_pkgname}/${_pkgname}-${pkgver}.tar.gz"
         'MIT-LICENSE')
 sha1sums=('06eba8a78ce1d5032fdcaf34f09025f01ceaca79'
@@ -25,12 +26,23 @@ build() {
   cd "${srcdir}/${_pkgname}-${pkgver}"
 
   CC=/opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
-  CFLAGS='-D_GNU_SOURCE -D__uint64_t=u_int64_t' LDFLAGS='-static' \
-  ./configure --prefix=/usr --with-root-prefix="" --libdir=/usr/lib \
-              --enable-fsck \
-              --disable-backtrace --disable-debugfs --disable-imager \
-              --disable-resizer --disable-defrag --disable-e2initrd-helper \
-              --disable-tls --disable-uuidd --disable-nls --disable-rpath
+  CFLAGS='-D_GNU_SOURCE -D__uint64_t=u_int64_t' \
+  LDFLAGS='-static' \
+  ./configure \
+    --prefix=/usr \
+    --libdir=/usr/lib \
+    --disable-uuidd \
+    --disable-backtrace \
+    --disable-debugfs \
+    --disable-imager \
+    --disable-resizer \
+    --disable-defrag \
+    --enable-fsck \
+    --disable-e2initrd-helper \
+    --disable-tls \
+    --disable-nls \
+    --disable-rpath \
+    --with-root-prefix=""
 
   make
 }
@@ -39,5 +51,6 @@ package() {
   cd "${srcdir}/${_pkgname}-${pkgver}"
 
   install -Dm755 e2fsck/e2fsck "${pkgdir}"/usr/bin/fsck.ext-static
+
   install -Dm644 "${srcdir}"/MIT-LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/MIT-LICENSE
 }

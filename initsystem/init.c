@@ -196,7 +196,7 @@ int main (int argc, char **argv)
                         break;
                 }
 
-                shutdown_timeout = get_time () + 300;
+                shutdown_timeout = get_time () + 360;
             }
 
             if (shutdown_pid == 0 || shutdown_pid == dead_pid || shutdown_timeout <= get_time ())

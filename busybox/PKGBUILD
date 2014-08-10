@@ -8,7 +8,7 @@ url='http://www.busybox.net/'
 license=('GPL')
 groups=('initsystem')
 arch=('x86_64')
-makedepends=('make' 'gcc' 'sed' 'ncurses' 'musl-cross-x86_64' 'musl-libc')
+makedepends=('musl-cross-x86_64' 'musl-libc')
 source=("http://www.busybox.net/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
         'config_suid')
@@ -64,12 +64,12 @@ package() {
   ln -s /usr/bin/busybox ash
   ln -s /usr/bin/busybox logread
 
-  # symlinks: install all applets in /opt/busybox
+  # symlinks: install (almost) all applets in /opt/busybox
 
   install -d "${pkgdir}"/opt/busybox
   cd "${pkgdir}"/opt/busybox
 
-  for APPLET in $("${pkgdir}"/usr/bin/busybox --list); do
+  for APPLET in `"${pkgdir}"/usr/bin/busybox --list`; do
     case "${APPLET}" in
       halt|poweroff|reboot)
         ;;
@@ -79,7 +79,7 @@ package() {
     esac
   done
 
-  for APPLET in $("${pkgdir}"/usr/bin/busybox-suid --list); do
+  for APPLET in `"${pkgdir}"/usr/bin/busybox-suid --list`; do
     ln -s /usr/bin/busybox-suid "${APPLET}"
   done
 

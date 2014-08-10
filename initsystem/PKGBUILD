@@ -16,12 +16,12 @@ source=('init.c'
         'tmpfiles'
         'shutdown'
         'LICENSE')
-md5sums=('79d5372e15f1239b2d7c32016b4cef91'
-         'd0818e65e9adf8722a924a4c7fee78a6'
-         '55d7c09f35ce8daa96668599a8ec60f2'
-         '49ca68f1e9f4bdf6cff04164741d64b5'
-         '6e7860e985e466d9a081464c2524e313'
-         'c6f7bdb2aa70c3040849a88a62bcaafa'
+md5sums=('2c22b7b55d84caee9c70f272e9a456eb'
+         'fbb04b43b5bc88029bf164c49671cf9d'
+         '0622ba6ad1aab20c3b495468f5e9ab72'
+         'a49a3d5751a19e06d33820f694ea3ab2'
+         '24316390198e8bd085ec6a48302a7471'
+         '4a35235213032b3a7685fff7e681abea'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {

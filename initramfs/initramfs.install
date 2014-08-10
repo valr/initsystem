@@ -1,14 +1,16 @@
 
 post_install() {
-  for PRESET in /etc/mkinitcpio.d/*.preset; do
-    mkinitramfs `basename "${PRESET}" .preset`
-  done
+  printf '==> You have to define the required modules in your initramfs\n'
+  printf '    in the file /etc/mkinitramfs.conf and generate your image(s) before rebooting.\n\n'
+  printf '    Command to define the required modules:\n'
+  printf '    for i in `lsinitcpio /boot/initramfs-linux.img | grep .ko`; do basename "$i" .ko; done\n\n'
+  printf '    Command to generate the image(s):\n'
+  printf '    mkinitramfs linux\n'
+  printf '    mkinitramfs linux-lts\n'
 }
 
 post_upgrade() {
-  post_install
-}
-
-post_remove() {
-  rm /boot/initramfs-*.cpio.gz
+  for PRESET in /etc/mkinitcpio.d/*.preset; do
+    mkinitramfs `basename "${PRESET}" .preset`
+  done
 }

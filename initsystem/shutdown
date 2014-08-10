@@ -19,13 +19,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 PATH="/opt/busybox"
-export PATH
 
 ################################################################################
 # sanity check #################################################################
 ################################################################################
 
-if [ $(id -u) != 0 ]; then
+if [ `id -u` != 0 ]; then
   echo "error: this script should be run as root"
   exit 1
 fi
@@ -50,7 +49,7 @@ case `basename $0` in
       exit 1
     fi
 
-    case $1 in
+    case "$1" in
       -h)
         kill -12 1 # SIGUSR2
         ;;

@@ -12,14 +12,14 @@ groups=('initsystem')
 arch=('i686' 'x86_64')
 backup=('etc/udev/udev.conf')
 depends=('glib2' 'kbd' 'kmod' 'hwids' 'pam' 'util-linux')
-makedepends=('acl' 'dbus' 'hwids' 'kbd' 'kmod' 'pam' 'util-linux' 'glibc'
-             'glib2' 'gobject-introspection' 'gperf' 'gtk-doc' 'intltool')
+makedepends=('glib2' 'kbd' 'kmod' 'hwids' 'pam' 'util-linux'
+             'glibc' 'acl' 'dbus' 'gobject-introspection'
+             'gperf' 'gtk-doc' 'intltool')
 provides=("udev=${_udevver}"
           "libudev=${_udevver}"
           'libgudev-1.0.so'
           'libudev.so'
-          'systemd'
-          'libsystemd') # fake because of archlinux packaging!
+          'systemd' 'libsystemd') # fake because of archlinux packaging
 conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
 options=(!makeflags !libtool)
@@ -27,30 +27,30 @@ source=("${url}/${pkgname}-${pkgver}.tar.gz"
         'initcpio_hooks'
         'initcpio_install')
 md5sums=('da8083b30b44177445b21e8299af23a1'
-         'e99e9189aa2f6084ac28b8ddf605aeb8'
-         '88849afefcef229b8f79be7bbf05c3a2')
+         'e7bbe35b79cddd7c82bf201f6297722d'
+         '1e5610279d24e77e1bf1547edd2f6d10')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   ./configure \
     --prefix=/usr \
-    --with-rootprefix=/usr \
+    --sbindir=/usr/bin \
     --sysconfdir=/etc \
     --libdir=/usr/lib \
-    --sbindir=/usr/bin \
-    --with-firmware-path=/usr/lib/firmware/updates:/usr/lib/firmware \
-    --with-modprobe=/usr/bin/modprobe \
-    --with-html-dir=/usr/share/doc/"${pkgname}-${pkgver}"/html \
-    --enable-gudev \
-    --enable-introspection \
     --enable-split-usr \
-    --enable-rule-generator
+    --enable-introspection \
+    --enable-gudev \
+    --enable-rule-generator \
+    --with-rootprefix=/usr \
+    --with-firmware-path=/usr/lib/firmware/updates:/usr/lib/firmware \
+    --with-html-dir=/usr/share/doc/"${pkgname}-${pkgver}"/html \
+    --with-modprobe=/usr/bin/modprobe
 
     make
 }
 
-package_eudev() {
+package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
   make DESTDIR="${pkgdir}" install
@@ -63,4 +63,6 @@ package_eudev() {
 
   install -Dm644 "${srcdir}"/initcpio_hooks "${pkgdir}"/usr/lib/initcpio/hooks/udev
   install -Dm644 "${srcdir}"/initcpio_install "${pkgdir}"/usr/lib/initcpio/install/udev
+
+  install -Dm644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }

@@ -18,11 +18,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-set -u
-
 PATH="/sbin:/bin"
-export PATH
-
 cd /
 umask 022
 
@@ -66,14 +62,14 @@ rescue_shell() {
 
 echo "initramfs: mounting in-memory filesystems"
 
-mount -t proc -o nosuid,nodev,noexec proc /proc                          || rescue_shell
-mount -t sysfs -o nosuid,nodev,noexec sys /sys                           || rescue_shell
-mount -t tmpfs -o nosuid,nodev,mode=0755 run /run                        || rescue_shell
-mount -t devtmpfs -o nosuid,mode=0755 dev /dev                           || rescue_shell
-mkdir -p /dev/pts                                                        || rescue_shell
-mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts || rescue_shell
-mkdir -p /dev/shm                                                        || rescue_shell
-mount -t tmpfs -o nosuid,nodev shm /dev/shm                              || rescue_shell
+mount -t proc -o nosuid,nodev,noexec proc /proc
+mount -t sysfs -o nosuid,nodev,noexec sys /sys
+mount -t tmpfs -o nosuid,nodev,mode=0755 run /run
+mount -t devtmpfs -o nosuid,mode=0755 dev /dev
+mkdir -p /dev/pts
+mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts
+mkdir -p /dev/shm
+mount -t tmpfs -o nosuid,nodev shm /dev/shm
 
 ################################################################################
 # kernel command line ##########################################################
@@ -104,8 +100,7 @@ if [ "${BREAK-}" = "initramfs-early" ]; then
 fi
 
 if [ -z "${INIT-}" ]; then
-  echo "initramfs: missing init=the_binary (e.g. /sbin/init) on kernel command line"
-  rescue_shell
+  INIT="/sbin/init"
 fi
 
 if [ -z "${ROOT-}" ]; then
@@ -143,7 +138,7 @@ fi
 ################################################################################
 
 wait_filesystem() {
-  for i in $(seq $2); do
+  for i in `seq $2`; do
     if [ -e "$1" ]; then
       return 0
     fi
@@ -227,12 +222,12 @@ fi
 
 echo "initramfs: unmounting in-memory filesystems"
 
-umount /dev/shm || rescue_shell
-umount /dev/pts || rescue_shell
-umount /dev     || rescue_shell
-umount /run     || rescue_shell
-umount /sys     || rescue_shell
-umount /proc    || rescue_shell
+umount /dev/shm
+umount /dev/pts
+umount /dev
+umount /run
+umount /sys
+umount /proc
 
 ################################################################################
 # swiching root ################################################################
@@ -240,7 +235,7 @@ umount /proc    || rescue_shell
 
 echo "initramfs: switching root filesystem"
 
-exec switch_root /newroot "${INIT}"
+exec env -i /bin/switch_root /newroot "${INIT}"
 
 echo "initramfs: cannot switch to /newroot and execute ${INIT}"
 

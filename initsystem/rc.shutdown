@@ -19,8 +19,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 PATH="/opt/busybox"
-export PATH
-
 cd /
 umask 022
 
@@ -38,19 +36,19 @@ fi
 ################################################################################
 
 echo ""
-echo "shutdown: change terminal settings"
+echo "shutdown: changing terminal settings"
 
 chvt 1
 stty onlcr
-
-sync
 
 ################################################################################
 # script & daemon ##############################################################
 ################################################################################
 
-#echo "shutdown: stopping services"
-#
+echo "shutdown: stopping services"
+
+sync
+
 #sv -w 120 force-stop /etc/init.d/*.sv
 #sv exit /etc/init.d/*.sv
 
@@ -67,7 +65,7 @@ sync
 ################################################################################
 
 wait_pids() {
-  for i in $(seq $1); do
+  for i in `seq $1`; do
     killall5 -18; # SIGCONT
 
     if [ $? -eq 2 ]; then
@@ -126,6 +124,7 @@ echo "shutdown: writing wtmp record"
 
 echo "shutdown: unmounting swap-backed filesystems"
 
+# FIXME: not a fully correct way to get a list of filesystems to unmount
 for MOUNT in `grep ' tmpfs ' /proc/self/mountinfo | sort -r -t ' ' -n -k1,1 | cut -d ' ' -f 5`; do
   case "${MOUNT}" in
     /proc|/sys|/run|/dev|/dev/pts|/dev/shm|/sys/firmware/efi/efivars)
@@ -146,7 +145,7 @@ umount -a -r
 
 echo "shutdown: remounting root filesystem read-only"
 
-# a bit or paranioa because above umount command should have remounted ro
+# a bit or paranoia because above umount command should have remounted ro
 mount -t proc -o nosuid,nodev,noexec proc /proc
 mount -o remount,ro /
 
@@ -158,7 +157,7 @@ sync;sync;sync
 
 sleep 3
 
-case $1 in
+case "$1" in
   halt)
     echo "shutdown: system is halting"
     /usr/bin/busybox halt -f
