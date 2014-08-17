@@ -29,29 +29,28 @@ PATH="/opt/busybox"
 ################################################################################
 
 if [ `id -u` -ne 0 ]; then
-  echo "ERROR: this script should be run as root"
+  echo "error: this script should be run as root"
   exit 1
 fi
 
-if [ $# -ne 1 ]; then
-  echo "ERROR: wrong number of parameters"
-  echo "Usage: `basename $0` linux|linux-lts"
-  exit 1
-fi
-
-if [ "$1" != "linux" ] && [ "$1" != "linux-lts" ]; then
-  echo "ERROR: expecting 'linux' or 'linux-lts' as parameter"
-  echo "Usage: `basename $0` linux|linux-lts"
-  exit 1
-fi
-
-LINUX="$1"
+case "$1" in
+  linux)
+    LINUX="$1"
+    ;;
+  linux-lts)
+    LINUX="$1"
+    ;;
+  *)
+    echo "usage: `basename $0` {linux|linux-lts}"
+    exit 1
+    ;;
+esac
 
 ################################################################################
 # base directory ###############################################################
 ################################################################################
 
-echo "Generating initramfs-${LINUX}.cpio.gz..."
+echo "generating initramfs-${LINUX}.cpio.gz..."
 
 BASE=`mktemp -d /tmp/initramfs.XXXXXX`
 
@@ -121,7 +120,7 @@ add_module() {
 
   # module not found
   if [ -z "${MOD_PTH}" ]; then
-    echo "ERROR: module $1 not found"
+    echo "error: module $1 not found"
     return 1
   fi
 
@@ -159,7 +158,7 @@ if [ -r /etc/mkinitramfs.conf ]; then
   depmod -b "${BASE}" `basename ${MOD_DEP}`
   sort -u -o "${BASE}"/etc/modules "${BASE}"/etc/modules
 else
-  echo "ERROR: file /etc/mkinitramfs.conf doesn't exist or is not readable"
+  echo "error: file /etc/mkinitramfs.conf doesn't exist or is not readable"
 fi
 
 ################################################################################
@@ -184,7 +183,7 @@ mv "initramfs-${LINUX}.cpio.gz" /boot
 
 rm -rf "${BASE}"
 
-echo "Generation done"
+echo "generation done"
 
 trap - INT TERM EXIT
 

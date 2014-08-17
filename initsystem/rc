@@ -88,10 +88,7 @@ echo "initscript: setting volatile and temporary files"
 
 echo "initscript: starting devices handler"
 
-/usr/bin/udevd --daemon
-
-/usr/bin/udevadm trigger --action=add --type=subsystems
-/usr/bin/udevadm trigger --action=add --type=devices
+/etc/rc.d/udev start
 
 ################################################################################
 # modules ######################################################################
@@ -113,14 +110,6 @@ for FILE in `find "${DIR1}" "${DIR2}" "${DIR3}" -name *.conf -exec basename '{}'
     modprobe "${MOD}"
   done
 done
-
-################################################################################
-# devices ######################################################################
-################################################################################
-
-echo "initscript: waiting devices to settle"
-
-/usr/bin/udevadm settle
 
 ################################################################################
 # console ######################################################################

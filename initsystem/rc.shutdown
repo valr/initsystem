@@ -58,6 +58,8 @@ sync
 #  [ -x "${SCRIPT}" ] && "${SCRIPT}" stop
 #done
 
+/etc/rc.d/udev stop
+
 sync
 
 ################################################################################
@@ -66,7 +68,7 @@ sync
 
 wait_pids() {
   for i in `seq $1`; do
-    killall5 -18; # SIGCONT
+    killall5 -CONT;
 
     if [ $? -eq 2 ]; then
       return 0
@@ -80,14 +82,14 @@ wait_pids() {
 
 echo "shutdown: sending SIGTERM to processes"
 
-killall5 -15 # SIGTERM
+killall5 -TERM
 wait_pids 360
 
 if [ $? -ne 0 ]; then
 
   echo "shutdown: sending SIGKILL to processes"
 
-  killall5 -9 # SIGKILL
+  killall5 -KILL
   wait_pids 360
 fi
 

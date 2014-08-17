@@ -1,0 +1,162 @@
+#!/bin/ash
+
+# This file is part of initsystem
+#
+# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+. /etc/rc.subr
+
+PATH="/opt/busybox"
+cd /
+umask 022
+
+################################################################################
+# command ######################################################################
+################################################################################
+
+PATH_CMD="/usr/bin/udevd"
+BASE_CMD=`basename "${PATH_CMD}"`
+
+################################################################################
+# functions ####################################################################
+################################################################################
+
+action_start() {
+  printf "starting %s " "${BASE_CMD}"
+
+  if pidof "${BASE_CMD}" 1>/dev/null 2>/dev/null; then
+    printf "=> failed (already running)\n"
+    return 1
+  fi
+
+  # start commands
+  /usr/bin/udevadm hwdb --update
+  /usr/bin/udevd --daemon
+  /usr/bin/udevadm trigger --action=add --type=subsystems
+  /usr/bin/udevadm trigger --action=add --type=devices
+  /usr/bin/udevadm settle --timeout=120
+  # end start commands
+
+  printf "=> done\n"
+  return 0
+}
+
+action_restart() {
+  printf "starting %s " "${BASE_CMD}"
+
+  if pidof "${BASE_CMD}" 1>/dev/null 2>/dev/null; then
+    printf "=> failed (already running)\n"
+    return 1
+  fi
+
+  # start commands
+  /usr/bin/udevd --daemon
+  # end start commands
+
+  printf "=> done\n"
+  return 0
+}
+
+action_stop() {
+  printf "stopping %s " "${BASE_CMD}"
+
+  if ! pidof "${BASE_CMD}" 1>/dev/null 2>/dev/null; then
+    printf "=> failed (not running)\n"
+    return 1
+  fi
+
+  # stop commands
+  /usr/bin/udevadm control --exit
+  # end stop commands
+
+  action_wait "${BASE_CMD}" 28
+
+  killall -q -TERM "${BASE_CMD}"
+  killall -q -CONT "${BASE_CMD}"
+
+  action_wait "${BASE_CMD}" 28
+
+  if [ $? -ne 0 ]; then
+    printf "=> failed (still running)\n"
+    return 1
+  fi
+
+  printf "=> done\n"
+  return 0
+}
+
+action_reload() {
+  printf "reloading %s " "${BASE_CMD}"
+
+  if ! pidof "${BASE_CMD}" 1>/dev/null 2>/dev/null; then
+    printf "=> failed (not running)\n"
+    return 1
+  fi
+
+  # reload commands
+  /usr/bin/udevadm control --reload
+  # end reload commands
+
+  printf "=> done\n"
+  return 0
+}
+
+################################################################################
+# processing ###################################################################
+################################################################################
+
+check_command "${PATH_CMD}" "/usr/bin/udevadm" || exit 1
+
+case "$1" in
+  start)
+    action_start
+    STATUS=$?
+    ;;
+
+  stop)
+    action_stop
+    STATUS=$?
+    ;;
+
+  restart)
+    action_stop
+    action_restart
+    STATUS=$?
+    ;;
+
+  reload)
+    action_reload
+    STATUS=$?
+    ;;
+
+  status)
+    action_status "${BASE_CMD}"
+    STATUS=$?
+    ;;
+
+  wait)
+    action_wait "${BASE_CMD}" 28
+    STATUS=$?
+    ;;
+
+  *)
+    echo "usage: `basename $0` {start|stop|restart|reload|status|wait}"
+    STATUS=1
+    ;;
+esac
+
+exit $STATUS

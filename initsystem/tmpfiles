@@ -404,7 +404,7 @@ for FILE in `find "${DIR1}" "${DIR2}" "${DIR3}" -name *.conf -exec basename '{}'
         ;;
 
       *)
-        echo "Unknown type: ${TYP}"
+        echo "error: unknown type ${TYP}"
         ;;
 
     esac

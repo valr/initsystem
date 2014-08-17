@@ -13,15 +13,19 @@ source=('init.c'
         'rc'
         'rc.respawn'
         'rc.shutdown'
-        'tmpfiles'
         'shutdown'
+        'tmpfiles'
+        'rc.subr'
+        'rc.d.udev'
         'LICENSE')
 md5sums=('2c22b7b55d84caee9c70f272e9a456eb'
-         'fbb04b43b5bc88029bf164c49671cf9d'
+         'e5f933d3dc421471d6261b3d2a9cb468'
          '0622ba6ad1aab20c3b495468f5e9ab72'
-         'a49a3d5751a19e06d33820f694ea3ab2'
-         '24316390198e8bd085ec6a48302a7471'
-         '4a35235213032b3a7685fff7e681abea'
+         'a6a97228538712087a624578d4eb5825'
+         '3a7f605f6087d90d65cb48f11e819325'
+         'faf41c841242d8d499fbaba52397d2dd'
+         '03e7875121e97dae7927293cb6b63027'
+         '347c281129c020797252a92c3eb5047e'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
@@ -38,8 +42,13 @@ package() {
   install -Dm755 "${srcdir}"/rc          "${pkgdir}"/etc/rc
   install -Dm755 "${srcdir}"/rc.respawn  "${pkgdir}"/etc/rc.respawn
   install -Dm755 "${srcdir}"/rc.shutdown "${pkgdir}"/etc/rc.shutdown
-  install -Dm755 "${srcdir}"/tmpfiles    "${pkgdir}"/usr/bin/tmpfiles
   install -Dm755 "${srcdir}"/shutdown    "${pkgdir}"/usr/bin/shutdown
+  install -Dm755 "${srcdir}"/tmpfiles    "${pkgdir}"/usr/bin/tmpfiles
+
+  # services
+
+  install -Dm755 "${srcdir}"/rc.subr   "${pkgdir}"/etc/rc.subr
+  install -Dm755 "${srcdir}"/rc.d.udev "${pkgdir}"/etc/rc.d/udev
 
   # symlinks
 
@@ -48,19 +57,6 @@ package() {
   ln -s shutdown halt
   ln -s shutdown poweroff
   ln -s shutdown reboot
-
-  # services
-
-#todo:
-#  install -Dm755 "${srcdir}"/etc-initd-service-udev-rc.main "${pkgdir}"/etc/initd/service/udev/rc.main
-#  chmod +t "${pkgdir}"/etc/initd/service/udev
-#  touch "${pkgdir}"/etc/initd/service/udev/flag.down
-
-#  install -Dm755 "${srcdir}"/opt-s6-service-svscan-crash   "${pkgdir}"/opt/s6/service/svscan/crash
-#  install -Dm755 "${srcdir}"/opt-s6-service-svscan-finish  "${pkgdir}"/opt/s6/service/svscan/finish
-#  install -Dm755 "${srcdir}"/opt-s6-service-svscan-log-run "${pkgdir}"/opt/s6/service/svscan-log/run
-#  install -Dm755 "${srcdir}"/opt-s6-service-getty-tty1-run "${pkgdir}"/opt/s6/service/getty-tty1/run
-#  install -Dm755 "${srcdir}"/opt-s6-service-udev-run       "${pkgdir}"/opt/s6/service/udev/run
 
   # license
 
