@@ -62,7 +62,6 @@ package() {
 
   cd "${pkgdir}"/usr/bin
   ln -s /usr/bin/busybox ash
-  ln -s /usr/bin/busybox logread
 
   # symlinks: install (almost) all applets in /opt/busybox
 

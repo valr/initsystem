@@ -19,12 +19,14 @@
  */
 
 /*
- * Both the initscript and the shutdown script have a timeout period of 5 minutes.
+ * Both the initscript and the shutdown script have a timeout period of
+ * 5 minutes.
+ *
  * When the initscript reaches the timeout period, the rest of the process will
- * simply continue. When the shutdown script reaches the timeout period, the
- * status of the shutdown process is reset as if it was not executed. In such
- * a case, the system admin is the only one to know what has to be done
- * depending on where the shutdown script has blocked.
+ * simply continue.
+ *
+ * When the shutdown script reaches the timeout period, the status of the
+ * shutdown process is reset as if it was not executed.
  */
 
 #include <signal.h>
@@ -39,6 +41,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+#ifndef RESPAWN_CNT
+#define RESPAWN_CNT 6 /* max 9 */
+#endif
 
 #ifndef MAX_ARG_NUM
 #define MAX_ARG_NUM 16
@@ -87,9 +93,7 @@ char** parse_command (char *command)
 
 pid_t spawn_command (char **argv)
 {
-    pid_t pid;
-
-    pid = fork ();
+    pid_t pid = fork ();
 
     switch (pid)
     {
@@ -101,6 +105,7 @@ pid_t spawn_command (char **argv)
             break;
 
         case -1:
+            sleep (3);
             pid = 0;
             break;
     }
@@ -120,8 +125,13 @@ time_t get_time ()
 int main (int argc, char **argv)
 {
     struct sigaction signal_action;
-    pid_t init_pid = 0, shutdown_pid = 0, respawn_pid = 0, dead_pid = 0;
+    pid_t init_pid = 0, shutdown_pid = 0, dead_pid = 0;
     time_t init_timeout = 0, shutdown_timeout = 0;
+
+    int respawn_index;
+    char respawn_command[] = "/etc/rc.respawn x";
+    pid_t respawn_pid[RESPAWN_CNT] = {};
+    time_t respawn_time[RESPAWN_CNT] = {};
 
     if (getpid () != 1)
     {
@@ -169,12 +179,19 @@ int main (int argc, char **argv)
             sleep (1);
         }
 
-        if (respawn_pid == 0 || respawn_pid == dead_pid)
+        for (respawn_index = 0; respawn_index < RESPAWN_CNT; respawn_index++)
         {
-            if (signal_number == 0)
-                respawn_pid = spawn_command (parse_command ("/etc/rc.respawn"));
-            else
-                respawn_pid = 0;
+            if (respawn_pid[respawn_index] == 0 || respawn_pid[respawn_index] == dead_pid)
+            {
+                if (signal_number == 0 && respawn_time[respawn_index] <= get_time ())
+                {
+                    respawn_command[16] = '1' + respawn_index;
+                    respawn_pid[respawn_index] = spawn_command (parse_command (respawn_command));
+                    respawn_time[respawn_index] = get_time () + 7;
+                }
+                else
+                    respawn_pid[respawn_index] = 0;
+            }
         }
 
         if (signal_number != 0)
@@ -196,7 +213,7 @@ int main (int argc, char **argv)
                         break;
                 }
 
-                shutdown_timeout = get_time () + 360;
+                shutdown_timeout = get_time () + 300;
             }
 
             if (shutdown_pid == 0 || shutdown_pid == dead_pid || shutdown_timeout <= get_time ())

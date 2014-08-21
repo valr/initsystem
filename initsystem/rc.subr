@@ -16,34 +16,111 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-check_command() {
-  STATUS=0
+CMD_PATH=""
+CMD_PARM=""
+CMD_PID=""
 
-  for CMD in $@; do
-    if [ ! -x "${CMD}" ]; then
-      printf "${CMD} is not present or not executable => failed\n"
-      STATUS=1
-    fi
-  done
+do_start() {
+  printf "starting %s " `basename "${CMD_PATH}"`
 
-  return $STATUS
+  if pgrep -n -x "${CMD_PATH}" 1>/dev/null 2>/dev/null; then
+    printf "=> failed (already running)\n"
+    return 1
+  fi
+
+  if [ ! -z "${CMD_PID}" ]; then
+    rm -f "${CMD_PID}"
+  fi
+
+  if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
+    eval "$1"
+  else
+    eval "${CMD_PATH}" "${CMD_PARM}"
+  fi
+
+  if [ $? -ne 0 ]; then
+    printf "=> failed\n"
+    return 1
+  else
+    printf "=> done\n"
+    return 0
+  fi
 }
 
-action_status() {
-  PID=`pidof "$1"`
+do_stop() {
+  printf "stopping %s " `basename "${CMD_PATH}"`
 
-  if [ ! -z "${PID}" ]; then
-    printf "%s is running as pid %d\n" "$1" "$PID"
+  if ! pgrep -n -x "${CMD_PATH}" 1>/dev/null 2>/dev/null; then
+    printf "=> failed (not running)\n"
+    return 1
+  fi
+
+  if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
+    eval "$1"
   else
-    printf "%s is not running\n" "$1"
+    pkill -TERM -x "${CMD_PATH}"
+    pkill -CONT -x "${CMD_PATH}"
+
+    do_wait "${CMD_PATH}" 20
+  fi
+
+  if [ $? -ne 0 ]; then
+    printf "=> failed\n"
+    return 1
+  fi
+
+  if [ ! -z "${CMD_PID}" ]; then
+    rm -f "${CMD_PID}"
+  fi
+
+  printf "=> done\n"
+  return 0
+}
+
+do_reload() {
+  printf "reloading %s " `basename "${CMD_PATH}"`
+
+  if ! pgrep -n -x "${CMD_PATH}" 1>/dev/null 2>/dev/null; then
+    printf "=> failed (not running)\n"
+    return 1
+  fi
+
+  if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
+    eval "$1"
+  else
+    pkill -HUP -x "${CMD_PATH}"
+  fi
+
+  if [ $? -ne 0 ]; then
+    printf "=> failed\n"
+    return 1
+  else
+    printf "=> done\n"
+    return 0
+  fi
+}
+
+do_status() {
+  PID=""
+
+  for PID in `pgrep -x "${CMD_PATH}"`; do
+    printf "%s is running as pid %d\n" "${CMD_PATH}" "${PID}"
+  done
+
+  if [ -z "${PID}" ]; then
+    printf "%s is not running\n" "${CMD_PATH}"
   fi
 
   return 0
 }
 
-action_wait() {
+do_wait() {
+  if [ $# -ne 2 ]; then
+    return 2
+  fi
+
   for i in `seq $2`; do
-    if ! pidof "$1" 1>/dev/null 2>/dev/null; then
+    if ! pgrep -n -x "$1" 1>/dev/null 2>/dev/null; then
       return 0
     fi
 

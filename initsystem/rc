@@ -49,6 +49,14 @@ mount -t efivarfs -o nosuid,nodev,noexec efi /sys/firmware/efi/efivars
 mount -t cgroup cgroup /sys/fs/cgroup
 
 ################################################################################
+# system logger ################################################################
+################################################################################
+
+echo "initscript: starting system logger"
+
+/etc/rc.d/syslog start
+
+################################################################################
 # filesystems ##################################################################
 ################################################################################
 
@@ -60,9 +68,9 @@ mount -o remount,rw /
 # hostname #####################################################################
 ################################################################################
 
-if [ -s /etc/hostname ]; then
-  echo "initscript: setting hostname"
+echo "initscript: setting hostname"
 
+if [ -s /etc/hostname ]; then
   hostname -F /etc/hostname
 fi
 
@@ -115,9 +123,9 @@ done
 # console ######################################################################
 ################################################################################
 
-if [ -s /etc/vconsole.conf ]; then
-  echo "initscript: setting console keymap and font"
+echo "initscript: setting console keymap and font"
 
+if [ -s /etc/vconsole.conf ]; then
   KEYMAP=`grep KEYMAP /etc/vconsole.conf | cut -d '=' -f 2`
 
   if [ ! -z "${KEYMAP}" ]; then
@@ -137,9 +145,9 @@ fi
 # loopback #####################################################################
 ################################################################################
 
-if [ -d /sys/class/net/lo ]; then
-  echo "initscript: setting loopback device"
+echo "initscript: setting loopback device"
 
+if [ -d /sys/class/net/lo ]; then
   ip link set up dev lo
 fi
 
@@ -233,10 +241,3 @@ rm -f /run/nologin
 #for SCRIPT in `find /etc/init.d -name *.sh -print | sort`; do
 #  [ -x "${SCRIPT}" ] && "${SCRIPT}" start
 #done
-
-#/opt/busybox/syslogd -n -C32768
-#/opt/busybox/getty -l /opt/busybox/login 38400 tty2 linux
-#/opt/busybox/getty -l /opt/busybox/login 38400 tty3 linux
-#/opt/busybox/getty -l /opt/busybox/login 38400 tty4 linux
-#/opt/busybox/getty -l /opt/busybox/login 38400 tty5 linux
-#/opt/busybox/getty -l /opt/busybox/login 38400 tty6 linux

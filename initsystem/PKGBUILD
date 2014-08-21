@@ -16,16 +16,18 @@ source=('init.c'
         'shutdown'
         'tmpfiles'
         'rc.subr'
+        'rc.d.syslog'
         'rc.d.udev'
         'LICENSE')
-md5sums=('2c22b7b55d84caee9c70f272e9a456eb'
-         'e5f933d3dc421471d6261b3d2a9cb468'
-         '0622ba6ad1aab20c3b495468f5e9ab72'
-         'a6a97228538712087a624578d4eb5825'
+md5sums=('8063252b587fc69fa70d1a8f467abbac'
+         '9665707da7558aabad921e5135abaa57'
+         '2e9ebe16c96033b2f6e942608af008e1'
+         '73ddf4051369e2c73178b15f75cb5ecf'
          '3a7f605f6087d90d65cb48f11e819325'
          'faf41c841242d8d499fbaba52397d2dd'
-         '03e7875121e97dae7927293cb6b63027'
-         '347c281129c020797252a92c3eb5047e'
+         '5c9b8dd6065219452ec080837c60d861'
+         '7fc4bcbcac0931d431d4f013da4263fd'
+         'c3740ec2921b6b77fa07a717fbb3a0fe'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
@@ -38,7 +40,7 @@ package() {
 
   # binaries
 
-  install -Dm755 "${srcdir}"/init        "${pkgdir}"/sbin/init
+  install -Dm755 "${srcdir}"/init        "${pkgdir}"/usr/bin/init
   install -Dm755 "${srcdir}"/rc          "${pkgdir}"/etc/rc
   install -Dm755 "${srcdir}"/rc.respawn  "${pkgdir}"/etc/rc.respawn
   install -Dm755 "${srcdir}"/rc.shutdown "${pkgdir}"/etc/rc.shutdown
@@ -47,8 +49,9 @@ package() {
 
   # services
 
-  install -Dm755 "${srcdir}"/rc.subr   "${pkgdir}"/etc/rc.subr
-  install -Dm755 "${srcdir}"/rc.d.udev "${pkgdir}"/etc/rc.d/udev
+  install -Dm755 "${srcdir}"/rc.subr     "${pkgdir}"/etc/rc.subr
+  install -Dm755 "${srcdir}"/rc.d.syslog "${pkgdir}"/etc/rc.d/syslog
+  install -Dm755 "${srcdir}"/rc.d.udev   "${pkgdir}"/etc/rc.d/udev
 
   # symlinks
 
