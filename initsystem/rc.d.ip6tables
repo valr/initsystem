@@ -65,7 +65,7 @@ x_stop() {
 
 case "$1" in
   start)
-    do_run "starting ${RC_NAME} " "/usr/bin/ip6tables-restore /etc/ip6tables/ip6tables.rules"
+    do_run "starting ${RC_NAME} " "/usr/bin/ip6tables-restore /etc/iptables/ip6tables.rules"
     STATUS=$?
     ;;
 
@@ -76,7 +76,7 @@ case "$1" in
 
   restart)
     do_run "stopping ${RC_NAME} " x_stop
-    do_run "starting ${RC_NAME} " "/usr/bin/ip6tables-restore /etc/ip6tables/ip6tables.rules"
+    do_run "starting ${RC_NAME} " "/usr/bin/ip6tables-restore /etc/iptables/ip6tables.rules"
     STATUS=$?
     ;;
 
