@@ -8,18 +8,19 @@ pkgdesc="Application development toolkit for controlling system-wide privileges"
 arch=(i686 x86_64)
 license=(LGPL)
 url="http://www.freedesktop.org/wiki/Software/polkit"
-depends=(glib2 pam expat systemd js17)
+depends=(glib2 pam expat js17)
 makedepends=(intltool gtk-doc gobject-introspection)
 install=polkit.install
 source=(http://www.freedesktop.org/software/polkit/releases/$pkgname-$pkgver.tar.gz
         polkit.pam)
+groups=('initsystem')
 
 build() {
   cd $pkgname-$pkgver
 
   ./configure --prefix=/usr --sysconfdir=/etc \
       --localstatedir=/var --libexecdir=/usr/lib/polkit-1 \
-      --enable-libsystemd-login=yes --disable-static \
+      --enable-libsystemd-login=no --disable-static \
       --enable-gtk-doc
   make
 }
