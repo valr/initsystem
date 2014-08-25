@@ -13,12 +13,13 @@ arch=(i686 x86_64)
 url="http://www.freedesktop.org/wiki/Software/PulseAudio"
 license=(LGPL AGPL3)
 makedepends=(libasyncns libcap attr libxtst libsm libsamplerate libtool rtkit
-             speex tdb systemd dbus avahi bluez bluez-libs gconf intltool jack2-dbus sbc
+             speex tdb dbus avahi bluez bluez-libs gconf intltool jack2-dbus sbc
              lirc-utils openssl xenstore fftw orc json-c gtk3 webrtc-audio-processing
              check git)
 options=(!emptydirs)
 source=(http://freedesktop.org/software/$pkgbase/releases/$pkgbase-$pkgver.tar.xz)
 sha256sums=('99c13a8b1249ddbd724f195579df79484e9af6418cecf6a15f003a7f36caf939')
+groups=('initsystem')
 
 prepare() {
   cd $pkgbase-$pkgver
@@ -36,7 +37,9 @@ build() {
     --disable-tcpwrap \
     --disable-bluez4 \
     --disable-rpath \
-    --disable-default-build-tests
+    --disable-default-build-tests \
+    --disable-systemd \
+    --disable-systemd-journal
 
   # fight unused direct deps
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
@@ -108,7 +111,7 @@ package_pulseaudio() {
 
 package_libpulse() {
   pkgdesc="$pkgdesc (client library)"
-  depends=(dbus libasyncns libcap libxtst libsm libsndfile json-c systemd)
+  depends=(dbus libasyncns libcap libxtst libsm libsndfile json-c)
   optdepends=('alsa-plugins: ALSA support'
               'avahi: zeroconf support')
   backup=(etc/pulse/client.conf)
