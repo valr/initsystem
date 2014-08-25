@@ -138,10 +138,7 @@ do_run() {
   fi
 
   printf "$1"
-
-  if type "$2" 1>/dev/null 2>/dev/null; then
-    eval "$2"
-  fi
+  eval "$2"
 
   if [ $? -ne 0 ]; then
     printf "=> failed\n"
