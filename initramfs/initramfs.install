@@ -1,10 +1,10 @@
 
 post_install() {
-  printf '==> You have to define the required modules in your initramfs\n'
-  printf '    in the file /etc/mkinitramfs.conf and generate your image(s) before rebooting.\n\n'
-  printf '    Command to define the required modules:\n'
+  printf '==> You have to define list of modules to be loaded by the initramfs\n'
+  printf '    in the file /etc/mkinitramfs.conf and generate the initramfs before rebooting.\n\n'
+  printf '    The list of modules can be defined like this:\n'
   printf '    for i in `lsinitcpio /boot/initramfs-linux.img | grep .ko`; do basename "$i" .ko; done\n\n'
-  printf '    Command to generate the image(s):\n'
+  printf '    After defining or changing the list, re-generate the initramfs like this:\n'
   printf '    mkinitramfs linux\n'
   printf '    mkinitramfs linux-lts\n'
 }

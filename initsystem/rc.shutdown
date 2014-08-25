@@ -22,6 +22,8 @@ PATH="/opt/busybox"
 cd /
 umask 022
 
+. /etc/rc.conf
+
 ################################################################################
 # sanity check #################################################################
 ################################################################################
@@ -42,21 +44,21 @@ chvt 1
 stty onlcr
 
 ################################################################################
-# script & daemon ##############################################################
+# services #####################################################################
 ################################################################################
 
 echo "shutdown: stopping services"
 
 sync
 
-#sv -w 120 force-stop /etc/init.d/*.sv
-#sv exit /etc/init.d/*.sv
+REVERSE_SERVICES=""
+for SERVICE in `echo "${SERVICES}"`; do
+  REVERSE_SERVICES="${SERVICE} ${REVERSE_SERVICES}"
+done
 
-#echo "shutdown: stopping scripts"
-#
-#for SCRIPT in `find /etc/init.d -name *.sh -print | sort -r`; do
-#  [ -x "${SCRIPT}" ] && "${SCRIPT}" stop
-#done
+for SERVICE in `echo "${REVERSE_SERVICES}"`; do
+  /etc/rc.d/"${SERVICE}" stop
+done
 
 /etc/rc.d/udev stop
 /etc/rc.d/syslog stop

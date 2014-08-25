@@ -16,26 +16,28 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-CMD_PATH=""
-CMD_PARM=""
-CMD_PID=""
+RC_NAME=""
+RC_COMMAND=""
+RC_COMMAND_OPTIONS=""
+RC_COMMAND_ENVIRONMENT=""
+RC_PID=""
 
 do_start() {
-  printf "starting %s " `basename "${CMD_PATH}"`
+  printf "starting %s " "${RC_NAME}"
 
-  if pgrep -n -x "${CMD_PATH}" 1>/dev/null 2>/dev/null; then
+  if pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
     printf "=> failed (already running)\n"
     return 1
   fi
 
-  if [ ! -z "${CMD_PID}" ]; then
-    rm -f "${CMD_PID}"
+  if [ ! -z "${RC_PID}" ]; then
+    rm -f "${RC_PID}"
   fi
 
   if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
     eval "$1"
   else
-    eval "${CMD_PATH}" "${CMD_PARM}"
+    eval "${RC_COMMAND_ENVIRONMENT}" "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}"
   fi
 
   if [ $? -ne 0 ]; then
@@ -48,9 +50,9 @@ do_start() {
 }
 
 do_stop() {
-  printf "stopping %s " `basename "${CMD_PATH}"`
+  printf "stopping %s " "${RC_NAME}"
 
-  if ! pgrep -n -x "${CMD_PATH}" 1>/dev/null 2>/dev/null; then
+  if ! pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
     printf "=> failed (not running)\n"
     return 1
   fi
@@ -58,10 +60,10 @@ do_stop() {
   if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
     eval "$1"
   else
-    pkill -TERM -x "${CMD_PATH}"
-    pkill -CONT -x "${CMD_PATH}"
+    pkill -TERM -x "${RC_COMMAND}"
+    pkill -CONT -x "${RC_COMMAND}"
 
-    do_wait "${CMD_PATH}" 20
+    do_wait "${RC_COMMAND}" 20
   fi
 
   if [ $? -ne 0 ]; then
@@ -69,8 +71,8 @@ do_stop() {
     return 1
   fi
 
-  if [ ! -z "${CMD_PID}" ]; then
-    rm -f "${CMD_PID}"
+  if [ ! -z "${RC_PID}" ]; then
+    rm -f "${RC_PID}"
   fi
 
   printf "=> done\n"
@@ -78,9 +80,9 @@ do_stop() {
 }
 
 do_reload() {
-  printf "reloading %s " `basename "${CMD_PATH}"`
+  printf "reloading %s " "${RC_NAME}"
 
-  if ! pgrep -n -x "${CMD_PATH}" 1>/dev/null 2>/dev/null; then
+  if ! pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
     printf "=> failed (not running)\n"
     return 1
   fi
@@ -88,7 +90,7 @@ do_reload() {
   if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
     eval "$1"
   else
-    pkill -HUP -x "${CMD_PATH}"
+    pkill -HUP -x "${RC_COMMAND}"
   fi
 
   if [ $? -ne 0 ]; then
@@ -103,12 +105,12 @@ do_reload() {
 do_status() {
   PID=""
 
-  for PID in `pgrep -x "${CMD_PATH}"`; do
-    printf "%s is running as pid %d\n" "${CMD_PATH}" "${PID}"
+  for PID in `pgrep -x "${RC_COMMAND}"`; do
+    printf "%s is running as pid %d\n" "${RC_COMMAND}" "${PID}"
   done
 
   if [ -z "${PID}" ]; then
-    printf "%s is not running\n" "${CMD_PATH}"
+    printf "%s is not running\n" "${RC_COMMAND}"
   fi
 
   return 0
@@ -128,4 +130,24 @@ do_wait() {
   done
 
   return 1
+}
+
+do_run() {
+  if [ $# -ne 2 ]; then
+    return 2
+  fi
+
+  printf "$1"
+
+  if type "$2" 1>/dev/null 2>/dev/null; then
+    eval "$2"
+  fi
+
+  if [ $? -ne 0 ]; then
+    printf "=> failed\n"
+    return 1
+  else
+    printf "=> done\n"
+    return 0
+  fi
 }

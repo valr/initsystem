@@ -4,7 +4,7 @@ _udevver=215
 
 pkgname='eudev'
 pkgver=1.9
-pkgrel=50
+pkgrel=1
 pkgdesc='userspace device manager'
 url="http://dev.gentoo.org/~blueness/eudev"
 license=('GPL')

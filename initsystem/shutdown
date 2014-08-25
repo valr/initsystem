@@ -44,11 +44,6 @@ case `basename $0` in
     kill -USR1 1
     ;;
   shutdown)
-    if [ $# -lt 1 ]; then
-      echo "usage: shutdown {-h|-p|-r}"
-      exit 1
-    fi
-
     case "$1" in
       -h)
         kill -USR2 1

@@ -28,36 +28,35 @@ umask 022
 # parameters ###################################################################
 ################################################################################
 
-RC_NAME="udev"
-RC_COMMAND="/usr/bin/udevd"
-RC_COMMAND_OPTIONS="--daemon"
+RC_NAME="ip6tables"
 
 ################################################################################
 # functions ####################################################################
 ################################################################################
 
-x_start() {
+x_stop() {
   STATUS=0
 
-  /usr/bin/udevadm hwdb --update                          || STATUS=1
-  eval "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}"            || STATUS=1
-  /usr/bin/udevadm trigger --action=add --type=subsystems || STATUS=1
-  /usr/bin/udevadm trigger --action=add --type=devices    || STATUS=1
-  /usr/bin/udevadm settle --timeout=120                   || STATUS=1
+  /usr/sbin/ip6tables -t filter -F      || STATUS=1
+  /usr/sbin/ip6tables -t filter -X      || STATUS=1
+  /usr/sbin/ip6tables -t filter -Z      || STATUS=1
+  /usr/sbin/ip6tables -t nat -F         || STATUS=1
+  /usr/sbin/ip6tables -t nat -X         || STATUS=1
+  /usr/sbin/ip6tables -t nat -Z         || STATUS=1
+  /usr/sbin/ip6tables -t mangle -F      || STATUS=1
+  /usr/sbin/ip6tables -t mangle -X      || STATUS=1
+  /usr/sbin/ip6tables -t mangle -Z      || STATUS=1
+  /usr/sbin/ip6tables -t raw -F         || STATUS=1
+  /usr/sbin/ip6tables -t raw -X         || STATUS=1
+  /usr/sbin/ip6tables -t raw -Z         || STATUS=1
+  /usr/sbin/ip6tables -t security -F    || STATUS=1
+  /usr/sbin/ip6tables -t security -X    || STATUS=1
+  /usr/sbin/ip6tables -t security -Z    || STATUS=1
+  /usr/sbin/ip6tables -P INPUT ACCEPT   || STATUS=1
+  /usr/sbin/ip6tables -P OUTPUT ACCEPT  || STATUS=1
+  /usr/sbin/ip6tables -P FORWARD ACCEPT || STATUS=1
 
   return $STATUS
-}
-
-x_stop() {
-  /usr/bin/udevadm control --exit
-
-  do_wait "${RC_COMMAND}" 20
-
-  if [ $? -ne 0 ]; then
-    return 1
-  else
-    return 0
-  fi
 }
 
 ################################################################################
@@ -66,33 +65,23 @@ x_stop() {
 
 case "$1" in
   start)
-    do_start x_start
+    do_run "starting ${RC_NAME} " "/usr/bin/ip6tables-restore /etc/ip6tables/ip6tables.rules"
     STATUS=$?
     ;;
 
   stop)
-    do_stop x_stop
+    do_run "stopping ${RC_NAME} " x_stop
     STATUS=$?
     ;;
 
   restart)
-    do_stop x_stop
-    do_start
-    STATUS=$?
-    ;;
-
-  reload)
-    do_reload "/usr/bin/udevadm control --reload"
-    STATUS=$?
-    ;;
-
-  status)
-    do_status
+    do_run "stopping ${RC_NAME} " x_stop
+    do_run "starting ${RC_NAME} " "/usr/bin/ip6tables-restore /etc/ip6tables/ip6tables.rules"
     STATUS=$?
     ;;
 
   *)
-    echo "usage: `basename $0` {start|stop|restart|reload|status}"
+    echo "usage: `basename $0` {start|stop|restart}"
     STATUS=1
     ;;
 esac

@@ -4,7 +4,7 @@ _pkgname=dosfstools
 
 pkgname=fsck-fat
 pkgver=3.0.26
-pkgrel=50
+pkgrel=1
 pkgdesc='fsck utility for fat filesystems'
 url='https://github.com/valr/initsystem'
 license=('GPL2')

@@ -28,37 +28,8 @@ umask 022
 # parameters ###################################################################
 ################################################################################
 
-RC_NAME="udev"
-RC_COMMAND="/usr/bin/udevd"
-RC_COMMAND_OPTIONS="--daemon"
-
-################################################################################
-# functions ####################################################################
-################################################################################
-
-x_start() {
-  STATUS=0
-
-  /usr/bin/udevadm hwdb --update                          || STATUS=1
-  eval "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}"            || STATUS=1
-  /usr/bin/udevadm trigger --action=add --type=subsystems || STATUS=1
-  /usr/bin/udevadm trigger --action=add --type=devices    || STATUS=1
-  /usr/bin/udevadm settle --timeout=120                   || STATUS=1
-
-  return $STATUS
-}
-
-x_stop() {
-  /usr/bin/udevadm control --exit
-
-  do_wait "${RC_COMMAND}" 20
-
-  if [ $? -ne 0 ]; then
-    return 1
-  else
-    return 0
-  fi
-}
+RC_NAME="cups"
+RC_COMMAND="/usr/bin/cupsd"
 
 ################################################################################
 # processing ###################################################################
@@ -66,23 +37,18 @@ x_stop() {
 
 case "$1" in
   start)
-    do_start x_start
-    STATUS=$?
-    ;;
-
-  stop)
-    do_stop x_stop
-    STATUS=$?
-    ;;
-
-  restart)
-    do_stop x_stop
     do_start
     STATUS=$?
     ;;
 
-  reload)
-    do_reload "/usr/bin/udevadm control --reload"
+  stop)
+    do_stop
+    STATUS=$?
+    ;;
+
+  restart)
+    do_stop
+    do_start
     STATUS=$?
     ;;
 
@@ -92,7 +58,7 @@ case "$1" in
     ;;
 
   *)
-    echo "usage: `basename $0` {start|stop|restart|reload|status}"
+    echo "usage: `basename $0` {start|stop|restart|status}"
     STATUS=1
     ;;
 esac

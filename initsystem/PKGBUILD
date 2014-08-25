@@ -2,32 +2,53 @@
 
 pkgname=initsystem
 pkgver=1.0.0
-pkgrel=50
+pkgrel=1
 pkgdesc='An init system'
 url='https://github.com/valr/initsystem'
 license=('GPL')
 groups=('initsystem')
 arch=('x86_64')
-depends=('busybox' 'musl-cross-x86_64' 'musl-libc' 'systemd' 'kbd')
+backup=('etc/rc.conf')
+depends=('musl-cross-x86_64' 'musl-libc' 'busybox' 'eudev' 'kbd')
 source=('init.c'
         'rc'
+        'rc.conf'
         'rc.respawn'
         'rc.shutdown'
         'shutdown'
         'tmpfiles'
         'rc.subr'
+        'rc.d.acpi'
+        'rc.d.alsa'
+        'rc.d.bumblebee'
+        'rc.d.cron'
+        'rc.d.cups'
+        'rc.d.dbus'
+        'rc.d.iptables'
+        'rc.d.ip6tables'
         'rc.d.syslog'
+        'rc.d.tlp'
         'rc.d.udev'
         'LICENSE')
 md5sums=('8063252b587fc69fa70d1a8f467abbac'
-         '9665707da7558aabad921e5135abaa57'
+         '605f9583dbd52f2e26a7df41a68067cf'
+         'cd6cec15484be20a115fef515ede7b36'
          '2e9ebe16c96033b2f6e942608af008e1'
-         '73ddf4051369e2c73178b15f75cb5ecf'
-         '3a7f605f6087d90d65cb48f11e819325'
+         'e5c1382c069b374c223047dcb446b4b5'
+         '71f1f64dc86f79cf7d74c988a85de66f'
          'faf41c841242d8d499fbaba52397d2dd'
-         '5c9b8dd6065219452ec080837c60d861'
-         '7fc4bcbcac0931d431d4f013da4263fd'
-         'c3740ec2921b6b77fa07a717fbb3a0fe'
+         'dce50a04236c2bc6f61c24e3fdcb0ecc'
+         '2bf1df28d03dc23569e72c0da10f9075'
+         'b1282d90d56c263828576937ac471a3a'
+         '55ac446974f84aa98d6ee89283dcaefa'
+         '9f110da586746b2c849e299d792af6e4'
+         '733e8431ffa1b2251c99d6fb199e7d9e'
+         '62eff907fac9fee8f86690515b12021b'
+         'ffe4fac5e0e1a2dbae09e4e4eb88de97'
+         'b146a2335d5f756ff6e0ad9ae766f84f'
+         '38bf8d8f287f9d169c24dc2f0cbece51'
+         'deaeff7066b380149eac9c096a2e2161'
+         'c1925af278eb63edfceb4bc2a72b8092'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
@@ -37,6 +58,10 @@ build() {
 }
 
 package() {
+
+  # configuration
+
+  install -Dm644 "${srcdir}"/rc.conf "${pkgdir}"/etc/rc.conf
 
   # binaries
 
@@ -49,9 +74,18 @@ package() {
 
   # services
 
-  install -Dm755 "${srcdir}"/rc.subr     "${pkgdir}"/etc/rc.subr
-  install -Dm755 "${srcdir}"/rc.d.syslog "${pkgdir}"/etc/rc.d/syslog
-  install -Dm755 "${srcdir}"/rc.d.udev   "${pkgdir}"/etc/rc.d/udev
+  install -Dm755 "${srcdir}"/rc.subr        "${pkgdir}"/etc/rc.subr
+  install -Dm755 "${srcdir}"/rc.d.acpi      "${pkgdir}"/etc/rc.d/acpi
+  install -Dm755 "${srcdir}"/rc.d.alsa      "${pkgdir}"/etc/rc.d/alsa
+  install -Dm755 "${srcdir}"/rc.d.bumblebee "${pkgdir}"/etc/rc.d/bumblebee
+  install -Dm755 "${srcdir}"/rc.d.cron      "${pkgdir}"/etc/rc.d/cron
+  install -Dm755 "${srcdir}"/rc.d.cups      "${pkgdir}"/etc/rc.d/cups
+  install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
+  install -Dm755 "${srcdir}"/rc.d.iptables  "${pkgdir}"/etc/rc.d/iptables
+  install -Dm755 "${srcdir}"/rc.d.ip6tables "${pkgdir}"/etc/rc.d/ip6tables
+  install -Dm755 "${srcdir}"/rc.d.tlp       "${pkgdir}"/etc/rc.d/tlp
+  install -Dm755 "${srcdir}"/rc.d.syslog    "${pkgdir}"/etc/rc.d/syslog
+  install -Dm755 "${srcdir}"/rc.d.udev      "${pkgdir}"/etc/rc.d/udev
 
   # symlinks
 

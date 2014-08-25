@@ -2,24 +2,29 @@
 
 pkgname=initramfs
 pkgver=1.0.0
-pkgrel=50
+pkgrel=1
 pkgdesc='Initramfs image creation utility'
 url='https://github.com/valr/initsystem'
 license=('GPL')
 groups=('initsystem')
 arch=('any')
+backup=('etc/mkinitramfs.conf')
 depends=('busybox' 'fsck-ext' 'fsck-fat')
 install='initramfs.install'
 source=('mkinitramfs'
+        'mkinitramfs.conf'
         'initramfs'
         'initramfs.mkinitcpio'
         'LICENSE')
 md5sums=('87c7720768b0bd51dc9b6f55844fc4cf'
+         '7a4145e85a888e0303b0709596ac8b5e'
          '2ab64ec9d54730b79f8b5a39b96df61f'
          '9f1c6ff05b3f32f8ea72e919fac41d40'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
+  install -Dm644 "${srcdir}"/mkinitramfs.conf "${pkgdir}"/etc/mkinitramfs.conf
+
   install -Dm755 mkinitramfs "${pkgdir}"/usr/bin/mkinitramfs
 
   install -Dm755 initramfs "${pkgdir}"/usr/lib/initramfs/initramfs

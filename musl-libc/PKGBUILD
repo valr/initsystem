@@ -4,7 +4,7 @@ _pkgname=musl
 
 pkgname=musl-libc
 pkgver=1.1.3
-pkgrel=50
+pkgrel=1
 pkgdesc='An implementation of the C/POSIX standard library'
 url='http://www.musl-libc.org/'
 license=('MIT')

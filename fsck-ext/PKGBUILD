@@ -4,7 +4,7 @@ _pkgname=e2fsprogs
 
 pkgname=fsck-ext
 pkgver=1.42.10
-pkgrel=50
+pkgrel=1
 pkgdesc='fsck utility for ext filesystems'
 url='https://github.com/valr/initsystem'
 license=('GPL' 'LGPL' 'MIT')

@@ -28,9 +28,10 @@ umask 022
 # parameters ###################################################################
 ################################################################################
 
-RC_NAME="udev"
-RC_COMMAND="/usr/bin/udevd"
-RC_COMMAND_OPTIONS="--daemon"
+RC_NAME="dbus"
+RC_COMMAND="/usr/bin/dbus-daemon"
+RC_COMMAND_OPTIONS="--system --fork"
+RC_PID="/run/dbus/pid"
 
 ################################################################################
 # functions ####################################################################
@@ -39,25 +40,13 @@ RC_COMMAND_OPTIONS="--daemon"
 x_start() {
   STATUS=0
 
-  /usr/bin/udevadm hwdb --update                          || STATUS=1
-  eval "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}"            || STATUS=1
-  /usr/bin/udevadm trigger --action=add --type=subsystems || STATUS=1
-  /usr/bin/udevadm trigger --action=add --type=devices    || STATUS=1
-  /usr/bin/udevadm settle --timeout=120                   || STATUS=1
+  if [ ! -d /run/dbus ]; then
+    install -m755 -g 81 -o 81 -d /run/dbus || STATUS=1
+  fi
+
+  eval "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}" || STATUS=1
 
   return $STATUS
-}
-
-x_stop() {
-  /usr/bin/udevadm control --exit
-
-  do_wait "${RC_COMMAND}" 20
-
-  if [ $? -ne 0 ]; then
-    return 1
-  else
-    return 0
-  fi
 }
 
 ################################################################################
@@ -71,18 +60,18 @@ case "$1" in
     ;;
 
   stop)
-    do_stop x_stop
+    do_stop
     STATUS=$?
     ;;
 
   restart)
-    do_stop x_stop
-    do_start
+    do_stop
+    do_start x_start
     STATUS=$?
     ;;
 
   reload)
-    do_reload "/usr/bin/udevadm control --reload"
+    do_reload "/usr/bin/dbus-send --print-reply --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig"
     STATUS=$?
     ;;
 

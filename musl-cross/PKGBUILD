@@ -2,7 +2,7 @@
 
 pkgname=musl-cross-x86_64
 pkgver=1.1.2
-pkgrel=50
+pkgrel=1
 pkgdesc='A musl libc cross-compiler for x86_64'
 url='http://musl.codu.org/'
 license=('MIT')

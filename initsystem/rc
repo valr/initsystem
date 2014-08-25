@@ -22,6 +22,8 @@ PATH="/opt/busybox"
 cd /
 umask 022
 
+. /etc/rc.conf
+
 ################################################################################
 # sanity check #################################################################
 ################################################################################
@@ -70,8 +72,8 @@ mount -o remount,rw /
 
 echo "initscript: setting hostname"
 
-if [ -s /etc/hostname ]; then
-  hostname -F /etc/hostname
+if [ ! -z "${HOSTNAME}" ]; then
+  hostname "${HOSTNAME}"
 fi
 
 ################################################################################
@@ -125,20 +127,14 @@ done
 
 echo "initscript: setting console keymap and font"
 
-if [ -s /etc/vconsole.conf ]; then
-  KEYMAP=`grep KEYMAP /etc/vconsole.conf | cut -d '=' -f 2`
+if [ ! -z "${CONSOLE_KEYMAP}" ]; then
+  /usr/bin/loadkeys "${CONSOLE_KEYMAP}"
+fi
 
-  if [ ! -z "${KEYMAP}" ]; then
-    /usr/bin/loadkeys "${KEYMAP}"
-  fi
-
-  FONT=`grep FONT /etc/vconsole.conf | cut -d '=' -f 2`
-
-  if [ ! -z "${FONT}" ]; then
-    for TTY in /dev/tty[0-9]*; do
-      /usr/bin/setfont "$FONT" -C "${TTY}" &> /dev/null
-    done
-  fi
+if [ ! -z "${CONSOLE_FONT}" ]; then
+  for TTY in /dev/tty[0-9]*; do
+    /usr/bin/setfont "${CONSOLE_FONT}" -C "${TTY}" &> /dev/null
+  done
 fi
 
 ################################################################################
@@ -200,6 +196,7 @@ dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=$POOL_SIZE &>/dev/null
 echo "initscript: setting volatile and temporary files"
 
 /usr/bin/tmpfiles --exclude-prefix=/dev
+rm -f /run/nologin
 
 ################################################################################
 # sysctl #######################################################################
@@ -231,13 +228,9 @@ dmesg > /var/log/dmesg
 umask 022
 
 ################################################################################
-# script & daemon ##############################################################
+# services #####################################################################
 ################################################################################
 
-rm -f /run/nologin
-
-#echo "initscript: starting scripts"
-#
-#for SCRIPT in `find /etc/init.d -name *.sh -print | sort`; do
-#  [ -x "${SCRIPT}" ] && "${SCRIPT}" start
-#done
+for SERVICE in `echo "${SERVICES}"`; do
+  /etc/rc.d/"${SERVICE}" start
+done
