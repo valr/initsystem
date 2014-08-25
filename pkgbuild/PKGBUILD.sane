@@ -20,6 +20,7 @@ source=(ftp://ftp.archlinux.org/other/sane/$pkgname-backends-$pkgver.tar.gz
         'saned.service'
         'network.patch'
         'segfault-avahi-fix-kodakio.patch')
+groups=('initsystem')
 
 prepare() {
   cd "${srcdir}/${pkgname}-backends-${pkgver}"
