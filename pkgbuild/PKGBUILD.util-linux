@@ -10,7 +10,7 @@ pkgrel=3
 pkgdesc="Miscellaneous system utilities for Linux"
 url="http://www.kernel.org/pub/linux/utils/util-linux/"
 arch=('i686' 'x86_64')
-makedepends=('systemd' 'python')
+makedepends=('python')
 license=('GPL2')
 options=('strip' 'debug')
 source=("ftp://ftp.kernel.org/pub/linux/utils/$pkgname/v2.25/$pkgname-$pkgver.tar.xz"
@@ -47,7 +47,8 @@ build() {
               --enable-write \
               --enable-mesg \
               --enable-socket-activation \
-              --with-python=3
+              --with-python=3 \
+              --without-systemd
 
   make
 }
@@ -55,10 +56,10 @@ build() {
 package_util-linux() {
   conflicts=('util-linux-ng' 'eject')
   provides=("util-linux-ng=$pkgver" 'eject')
-  depends=('pam' 'shadow' 'coreutils' 'libsystemd' 'libutil-linux')
+  depends=('pam' 'shadow' 'coreutils' 'libutil-linux')
   optdepends=('python: python bindings to libmount')
   install=util-linux.install
-  groups=('base' 'base-devel')
+  groups=('base' 'base-devel' 'initsystem')
   backup=(etc/pam.d/chfn
           etc/pam.d/chsh
           etc/pam.d/login
@@ -98,6 +99,7 @@ package_util-linux() {
 package_libutil-linux() {
   pkgdesc="util-linux runtime libraries"
   provides=('libblkid.so' 'libmount.so' 'libsmartcols.so' 'libuuid.so')
+  groups=('initsystem')
 
   mv "$srcdir/_libutil-linux"/* "$pkgdir"
 }
