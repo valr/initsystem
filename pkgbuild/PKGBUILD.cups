@@ -10,7 +10,7 @@ license=('GPL')
 url="http://www.cups.org/"
 makedepends=('libtiff>=4.0.0' 'libpng>=1.5.7' 'acl' 'pam' 'xdg-utils' 'krb5' 'openssl'
              'cups-filters' 'bc' 'colord' 'xinetd' 'gzip' 'autoconf' 'libusb' 'dbus' 
-             'avahi'  'hicolor-icon-theme' 'systemd' 'inetutils' 'libpaper' 'valgrind')
+             'avahi'  'hicolor-icon-theme' 'inetutils' 'libpaper' 'valgrind')
 source=(#http://mirror.easysw.com/pub/cups/${pkgver}/cups-${pkgver}-source.tar.bz2
         http://www.cups.org/software/${pkgver}/cups-${pkgver}-source.tar.bz2{,.sig}
         cups.logrotate cups.pam
@@ -48,6 +48,7 @@ md5sums=('5d893edc2957005f78e2b2423fdace2e'
          'cb58bf4e0b80eaee383712e5c84a1ab4'
          'b578bcd17949a7203237ba1e31f78ef9'
          '0becd6ab8782b97f19a02c1dc174c75e')
+groups=('initsystem')
 
 prepare() {
 
@@ -101,7 +102,6 @@ build() {
   ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
      --sbindir=/usr/bin \
      --libdir=/usr/lib \
-     --with-systemdsystemunitdir=/usr/lib/systemd/system \
      --with-logdir=/var/log/cups \
      --with-docdir=/usr/share/cups/doc \
      --with-cups-user=daemon \
@@ -158,7 +158,7 @@ backup=(etc/cups/cupsd.conf
         etc/pam.d/cups
         etc/xinetd.d/cups-lpd)
 depends=('acl' 'pam' "libcups>=${pkgver}" 'cups-filters' 'bc' 'colord'
-         'libusb' 'dbus' 'systemd' 'libpaper' 'hicolor-icon-theme')
+         'libusb' 'dbus' 'libpaper' 'hicolor-icon-theme')
 optdepends=('xdg-utils: xdg .desktop file support')
 
   cd ${pkgbase}-${pkgver}
@@ -202,7 +202,4 @@ optdepends=('xdg-utils: xdg .desktop file support')
   rm -v ${pkgdir}/usr/share/cups/data/testprint
   # comment out all conversion rules which use any of the removed filters
   perl -p -i -e 's:^(.*\s+bannertops\s*)$:#\1:' $pkgdir/usr/share/cups/mime/mime.convs
-
-  # Provide native service for arch-daemons generator
-  ln -s cups.service "$pkgdir/usr/lib/systemd/system/cupsd.service"
 }
