@@ -8,13 +8,15 @@ url='https://github.com/valr/initsystem'
 license=('GPL')
 groups=('initsystem')
 arch=('x86_64')
-backup=('etc/rc.conf')
+backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local')
 depends=('musl-cross-x86_64' 'musl-libc' 'busybox' 'eudev' 'kbd')
 source=('init.c'
         'rc'
         'rc.conf'
+        'rc.local'
         'rc.respawn'
         'rc.shutdown'
+        'rc.shutdown.local'
         'shutdown'
         'tmpfiles'
         'rc.subr'
@@ -31,16 +33,18 @@ source=('init.c'
         'rc.d.udev'
         'LICENSE')
 md5sums=('8063252b587fc69fa70d1a8f467abbac'
-         '605f9583dbd52f2e26a7df41a68067cf'
+         'c0f0ebaa3dd2d4da3fc8387da40fc094'
          'cd6cec15484be20a115fef515ede7b36'
+         'ff50ab2abfbc5896c135b98ea9aedffa'
          '2e9ebe16c96033b2f6e942608af008e1'
-         'e5c1382c069b374c223047dcb446b4b5'
+         '36442d322fc617e2a6e69a89eee758a8'
+         'bc1bc45109cc83378b9650fdd8035d05'
          '71f1f64dc86f79cf7d74c988a85de66f'
          'faf41c841242d8d499fbaba52397d2dd'
          'fff6c88678fd4c712d5deea744510a84'
          '2bf1df28d03dc23569e72c0da10f9075'
          '919f07ce1b3171be595a4c7ebed2dbdc'
-         '55ac446974f84aa98d6ee89283dcaefa'
+         '858c013e5f771795371e174b9edc1821'
          '9f110da586746b2c849e299d792af6e4'
          '733e8431ffa1b2251c99d6fb199e7d9e'
          '62eff907fac9fee8f86690515b12021b'
@@ -65,12 +69,14 @@ package() {
 
   # binaries
 
-  install -Dm755 "${srcdir}"/init        "${pkgdir}"/usr/bin/init
-  install -Dm755 "${srcdir}"/rc          "${pkgdir}"/etc/rc
-  install -Dm755 "${srcdir}"/rc.respawn  "${pkgdir}"/etc/rc.respawn
-  install -Dm755 "${srcdir}"/rc.shutdown "${pkgdir}"/etc/rc.shutdown
-  install -Dm755 "${srcdir}"/shutdown    "${pkgdir}"/usr/bin/shutdown
-  install -Dm755 "${srcdir}"/tmpfiles    "${pkgdir}"/usr/bin/tmpfiles
+  install -Dm755 "${srcdir}"/init              "${pkgdir}"/usr/bin/init
+  install -Dm755 "${srcdir}"/rc                "${pkgdir}"/etc/rc
+  install -Dm755 "${srcdir}"/rc.local          "${pkgdir}"/etc/rc.local
+  install -Dm755 "${srcdir}"/rc.respawn        "${pkgdir}"/etc/rc.respawn
+  install -Dm755 "${srcdir}"/rc.shutdown       "${pkgdir}"/etc/rc.shutdown
+  install -Dm755 "${srcdir}"/rc.shutdown.local "${pkgdir}"/etc/rc.shutdown.local
+  install -Dm755 "${srcdir}"/shutdown          "${pkgdir}"/usr/bin/shutdown
+  install -Dm755 "${srcdir}"/tmpfiles          "${pkgdir}"/usr/bin/tmpfiles
 
   # services
 
