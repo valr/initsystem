@@ -20,7 +20,7 @@ arch=(i686 x86_64)
 url="http://www.samba.org"
 license=('GPL3')
 makedepends=('python2' 'docbook-xsl' 'pkg-config' 'libbsd' 'db' 'popt' 'libcups' 
-             'readline' 'tevent' 'acl' 'libldap' 'libcap' 'ldb>=1.1.15' 'krb5' 'pam' 'systemd' 
+             'readline' 'tevent' 'acl' 'libldap' 'libcap' 'ldb>=1.1.15' 'krb5' 'pam'
              'gamin' 'gnutls>=2.4.1' 'talloc' 'tdb' 'dbus')
 source=(http://us1.samba.org/samba/ftp/stable/${pkgbase}-${_realver}.tar.gz
         samba.logrotate
@@ -33,6 +33,7 @@ source=(http://us1.samba.org/samba/ftp/stable/${pkgbase}-${_realver}.tar.gz
         smbd@.service
         winbindd.service
         samba.conf)
+groups=('initsystem')
 ### UNINSTALL dmapi package before building!!!
 
 build() {
@@ -205,11 +206,7 @@ sys.path.insert(0, '/usr/lib/python${_pyver}/site-packages')" \
                ${pkgdir}/usr/${script}
     done
 
-  # install systemd files
-  install -d -m755 ${pkgdir}/usr/lib/systemd/system
   #for i in smbd nmbd winbindd; do
-  install -m644 ${srcdir}/*.service ${pkgdir}/usr/lib/systemd/system/
-  install -m644 ${srcdir}/*.socket ${pkgdir}/usr/lib/systemd/system/
   install -d -m755  ${pkgdir}/etc/conf.d
   install -m644 ${srcdir}/samba.conf.d ${pkgdir}/etc/conf.d/samba
   #done
