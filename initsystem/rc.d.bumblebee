@@ -31,6 +31,7 @@ umask 022
 RC_NAME="bumblebee"
 RC_COMMAND="/usr/bin/bumblebeed"
 RC_COMMAND_OPTIONS="-D"
+RC_COMMAND_ENVIRONMENT="PATH=/usr/bin"
 
 ################################################################################
 # processing ###################################################################
