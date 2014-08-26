@@ -41,7 +41,7 @@ md5sums=('8063252b587fc69fa70d1a8f467abbac'
          'bc1bc45109cc83378b9650fdd8035d05'
          '71f1f64dc86f79cf7d74c988a85de66f'
          'faf41c841242d8d499fbaba52397d2dd'
-         'c63b808a7f66a5161144be9d434b9df0'
+         '9356ac807b524b52d4e608ca6a8e97c8'
          '2bf1df28d03dc23569e72c0da10f9075'
          '919f07ce1b3171be595a4c7ebed2dbdc'
          '858c013e5f771795371e174b9edc1821'
@@ -54,6 +54,7 @@ md5sums=('8063252b587fc69fa70d1a8f467abbac'
          'deaeff7066b380149eac9c096a2e2161'
          'c1925af278eb63edfceb4bc2a72b8092'
          '4641e94ec96f98fabc56ff9cc48be14b')
+
 
 build() {
   cd "${srcdir}"
