@@ -22,11 +22,14 @@ RC_COMMAND_OPTIONS=""
 RC_COMMAND_ENVIRONMENT=""
 RC_PID=""
 
+COLOR_NORMAL=`tput setaf 1`
+COLOR_RED=`tput sgr0`
+
 do_start() {
   printf "starting %s " "${RC_NAME}"
 
   if pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
-    printf "=> failed (already running)\n"
+    printf "=> ${COLOR_RED}failed (already running)${COLOR_NORMAL}\n"
     return 1
   fi
 
@@ -41,7 +44,7 @@ do_start() {
   fi
 
   if [ $? -ne 0 ]; then
-    printf "=> failed\n"
+    printf "=> ${COLOR_RED}failed${COLOR_NORMAL}\n"
     return 1
   else
     printf "=> done\n"
@@ -53,7 +56,7 @@ do_stop() {
   printf "stopping %s " "${RC_NAME}"
 
   if ! pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
-    printf "=> failed (not running)\n"
+    printf "=> ${COLOR_RED}failed (not running)${COLOR_NORMAL}\n"
     return 1
   fi
 
@@ -67,7 +70,7 @@ do_stop() {
   fi
 
   if [ $? -ne 0 ]; then
-    printf "=> failed\n"
+    printf "=> ${COLOR_RED}failed${COLOR_NORMAL}\n"
     return 1
   fi
 
@@ -83,7 +86,7 @@ do_reload() {
   printf "reloading %s " "${RC_NAME}"
 
   if ! pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
-    printf "=> failed (not running)\n"
+    printf "=> ${COLOR_RED}failed (not running)${COLOR_NORMAL}\n"
     return 1
   fi
 
@@ -94,7 +97,7 @@ do_reload() {
   fi
 
   if [ $? -ne 0 ]; then
-    printf "=> failed\n"
+    printf "=> ${COLOR_RED}failed${COLOR_NORMAL}\n"
     return 1
   else
     printf "=> done\n"
@@ -141,7 +144,7 @@ do_run() {
   eval "$2"
 
   if [ $? -ne 0 ]; then
-    printf "=> failed\n"
+    printf "=> ${COLOR_RED}failed${COLOR_NORMAL}\n"
     return 1
   else
     printf "=> done\n"

@@ -166,11 +166,21 @@ echo "shutdown: unmounting other filesystems"
 
 umount -a -r
 
+if [ $? -ne 0 ]; then
+  echo "shutdown: unmount error"
+  read -p "press any key to continue..."
+fi
+
 echo "shutdown: remounting root filesystem read-only"
 
 # a bit or paranoia because above umount command should have remounted ro
 mount -t proc -o nosuid,nodev,noexec proc /proc
 mount -o remount,ro /
+
+if [ $? -ne 0 ]; then
+  echo "shutdown: remount error"
+  read -p "press any key to continue..."
+fi
 
 ################################################################################
 # finish #######################################################################
