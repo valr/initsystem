@@ -26,6 +26,7 @@ md5sums=('1f1fac162ed309dd50f307e96a292957'
          '3deb02604b37811d41816e9b4385fcc3'
          '32df3b9bc859565d6acf5f0e5b747083'
          'febf25c154a7d36f01159e84f26c2d9a')
+groups=('initsystem')
 
 prepare() {
   cd "${srcdir}/lirc-${_pkgver}"
@@ -88,7 +89,6 @@ package_lirc-utils() {
 
   make DESTDIR="${pkgdir}" install
 
-  install -Dm644 "${srcdir}"/irexec.service "${pkgdir}"/usr/lib/systemd/system/irexec.service
   install -Dm644 "${srcdir}"/lirc.tmpfiles "${pkgdir}"/usr/lib/tmpfiles.d/lirc.conf
 
   cp -rp remotes "${pkgdir}/usr/share/lirc"
