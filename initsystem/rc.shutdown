@@ -57,8 +57,6 @@ echo "shutdown: starting local shutdown script"
 
 echo "shutdown: stopping services"
 
-sync
-
 REVERSE_SERVICES=""
 for SERVICE in `echo "${SERVICES}"`; do
   REVERSE_SERVICES="${SERVICE} ${REVERSE_SERVICES}"
@@ -147,16 +145,18 @@ echo "shutdown: writing wtmp record"
 
 echo "shutdown: unmounting swap-backed filesystems"
 
-# FIXME: not a fully correct way to get a list of filesystems to unmount
-for MOUNT in `grep ' tmpfs ' /proc/self/mountinfo | sort -r -t ' ' -n -k1,1 | cut -d ' ' -f 5`; do
+MOUNTS=`tac /proc/self/mounts | grep ' tmpfs ' | cut -d ' ' -f 2`
+for MOUNT in `echo "${MOUNTS}"`; do
   case "${MOUNT}" in
     /proc|/sys|/run|/dev|/dev/pts|/dev/shm|/sys/firmware/efi/efivars)
       ;;
     *)
-      umount -r "${MOUNT}"
+      umount "${MOUNT}"
       ;;
   esac
 done
+
+sync
 
 echo "shutdown: desactivating swap"
 
@@ -164,21 +164,47 @@ swapoff -a
 
 echo "shutdown: unmounting other filesystems"
 
-umount -a -r
-
-if [ $? -ne 0 ]; then
-  echo "shutdown: unmount error"
-  read -p "press any key to continue..."
-fi
+MOUNTS=`tac /proc/self/mounts | cut -d ' ' -f 2`
+for MOUNT in `echo "${MOUNTS}"`; do
+  case "${MOUNT}" in
+    /proc|/sys)
+      ;;
+    *)
+      umount -r "${MOUNT}"
+      ;;
+  esac
+done
 
 echo "shutdown: remounting root filesystem read-only"
 
-# a bit or paranoia because above umount command should have remounted ro
-mount -t proc -o nosuid,nodev,noexec proc /proc
-mount -o remount,ro /
+wait_remount() {
+  for i in `seq $1`; do
+    mount -v -o remount,ro /
+
+    if [ $? -eq 0 ]; then
+      return 0
+    fi
+
+    sleep 1
+  done
+
+  return 1
+}
+
+wait_remount 7
 
 if [ $? -ne 0 ]; then
   echo "shutdown: remount error"
+
+  printf "processes:\n"
+  ps `fuser -m /`
+
+  printf "\nfiles:\n"
+  lsof
+
+  printf "\nmount:\n"
+  mount
+
   read -p "press any key to continue..."
 fi
 

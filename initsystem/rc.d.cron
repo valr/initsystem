@@ -31,6 +31,7 @@ umask 022
 RC_NAME="cron"
 RC_COMMAND="/usr/bin/crond"
 RC_COMMAND_OPTIONS="-m off -s"
+RC_PID_FILE="/run/crond.pid"
 
 ################################################################################
 # processing ###################################################################

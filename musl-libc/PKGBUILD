@@ -3,7 +3,7 @@
 _pkgname=musl
 
 pkgname=musl-libc
-pkgver=1.1.3
+pkgver=1.1.4
 pkgrel=1
 pkgdesc='An implementation of the C/POSIX standard library'
 url='http://www.musl-libc.org/'
@@ -12,7 +12,7 @@ arch=('x86_64')
 depends=('musl-cross-x86_64')
 options=('!strip' 'libtool' 'staticlibs' 'emptydirs')
 source=("http://www.musl-libc.org/releases/${_pkgname}-${pkgver}.tar.gz")
-md5sums=('1628bd4c86b14b90447e1dcf8421aed7')
+md5sums=('f18f3bdbe088438cd64a5313c19a7312')
 
 build() {
   cd "${srcdir}/${_pkgname}-${pkgver}"

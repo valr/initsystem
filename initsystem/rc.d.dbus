@@ -31,22 +31,20 @@ umask 022
 RC_NAME="dbus"
 RC_COMMAND="/usr/bin/dbus-daemon"
 RC_COMMAND_OPTIONS="--system --fork"
-RC_PID="/run/dbus/pid"
+RC_PID_FILE="/run/dbus/pid"
 
 ################################################################################
 # functions ####################################################################
 ################################################################################
 
-x_start() {
-  STATUS=0
-
+dbus_start() {
   if [ ! -d /run/dbus ]; then
-    install -m755 -g 81 -o 81 -d /run/dbus || STATUS=1
+    install -m 755 -g 81 -o 81 -d /run/dbus
   fi
 
-  eval "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}" || STATUS=1
+  eval "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}" || return 1
 
-  return $STATUS
+  return 0
 }
 
 ################################################################################
@@ -55,23 +53,23 @@ x_start() {
 
 case "$1" in
   start)
-    do_start x_start
+    do_start --no-check-command dbus_start
     STATUS=$?
     ;;
 
   stop)
-    do_stop
+    do_stop --no-check-command
     STATUS=$?
     ;;
 
   restart)
-    do_stop
-    do_start x_start
+    do_stop --no-check-command
+    do_start --no-check-command dbus_start
     STATUS=$?
     ;;
 
   reload)
-    do_reload "/usr/bin/dbus-send --print-reply --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig"
+    do_reload --no-check-command "/usr/bin/dbus-send --print-reply --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig"
     STATUS=$?
     ;;
 

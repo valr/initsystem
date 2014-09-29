@@ -31,7 +31,7 @@ umask 022
 RC_NAME="syslog"
 RC_COMMAND="/opt/busybox/syslogd"
 RC_COMMAND_OPTIONS="-K"
-RC_PID="/run/syslogd.pid"
+RC_PID_FILE="/run/syslogd.pid"
 
 ################################################################################
 # processing ###################################################################

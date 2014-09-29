@@ -31,7 +31,7 @@ umask 022
 RC_NAME="acpi"
 RC_COMMAND="/usr/bin/acpid"
 RC_COMMAND_OPTIONS="-p /run/acpid.pid"
-RC_PID="/run/acpid.pid"
+RC_PID_FILE="/run/acpid.pid"
 
 ################################################################################
 # processing ###################################################################

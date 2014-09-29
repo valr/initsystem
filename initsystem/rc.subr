@@ -16,113 +16,257 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-RC_NAME=""
-RC_COMMAND=""
-RC_COMMAND_OPTIONS=""
-RC_COMMAND_ENVIRONMENT=""
-RC_PID=""
+RC_NAME=""                # mandatory
+RC_COMMAND=""             # mandatory
+RC_COMMAND_OPTIONS=""     # optional
+RC_COMMAND_ENVIRONMENT="" # optional
+RC_PID_FILE=""            # optional
 
 do_start() {
   printf "starting %s " "${RC_NAME}"
 
-  if pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
-    printf "=> \e[31mfailed (already running)\e[0m\n"
-    return 1
+  # process parameters
+  CHECK_PID_FILE=1; CHECK_COMMAND=1
+  for CHECK in "$@"; do
+    case "${CHECK}" in
+      --no-check-pid-file)
+        CHECK_PID_FILE=0
+        shift
+        ;;
+      --no-check-command)
+        CHECK_COMMAND=0
+        shift
+        ;;
+    esac
+  done
+
+  # process checks
+  if [ ! -z "${RC_PID_FILE}" ]; then
+    if [ "${CHECK_PID_FILE}" -eq 1 ] && [ -e "${RC_PID_FILE}" ]; then
+      printf "=> \e[31mfailed (pid file found)\e[0m\n"
+      return 1
+    fi
   fi
 
-  if [ ! -z "${RC_PID}" ]; then
-    rm -f "${RC_PID}"
+  if [ "${CHECK_COMMAND}" -eq 1 ]; then
+    if pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
+      printf "=> \e[31mfailed (already running)\e[0m\n"
+      return 1
+    fi
   fi
 
+  # run commands
   if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
-    eval "$1"
+    _run "$1"
   else
-    eval "${RC_COMMAND_ENVIRONMENT}" "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}"
+    _run "${RC_COMMAND_ENVIRONMENT}" "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}"
   fi
 
-  if [ $? -ne 0 ]; then
-    printf "=> \e[31mfailed\e[0m\n"
-    return 1
-  else
-    printf "=> done\n"
-    return 0
-  fi
+  # return status
+  _status $?
+  return $?
 }
 
 do_stop() {
   printf "stopping %s " "${RC_NAME}"
 
-  if ! pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
-    printf "=> \e[31mfailed (not running)\e[0m\n"
-    return 1
+  # process parameters
+  CHECK_PID_FILE=1; CHECK_COMMAND=1
+  for CHECK in "$@"; do
+    case "${CHECK}" in
+      --no-check-pid-file)
+        CHECK_PID_FILE=0
+        shift
+        ;;
+      --no-check-command)
+        CHECK_COMMAND=0
+        shift
+        ;;
+    esac
+  done
+
+  # process checks
+  if [ ! -z "${RC_PID_FILE}" ]; then
+    if [ "${CHECK_PID_FILE}" -eq 1 ] && [ ! -e "${RC_PID_FILE}" ]; then
+      printf "=> \e[31mfailed (pid file not found)\e[0m\n"
+      return 1
+    fi
+
+    read -r RC_PID 2>/dev/null <"${RC_PID_FILE}"
+    RC_CMD=`strings /proc/"${RC_PID}"/cmdline 2>/dev/null | head -n 1`
+
+    if [ "${CHECK_PID_FILE}" -eq 1 ] &&  [ "${RC_CMD}" != "${RC_COMMAND}" ]; then
+      printf "=> \e[31mfailed (invalid pid file)\e[0m\n"
+      return 1
+    fi
   fi
 
+  if [ "${CHECK_COMMAND}" -eq 1 ]; then
+    if ! pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
+      printf "=> \e[31mfailed (not running)\e[0m\n"
+      return 1
+    fi
+  fi
+
+  # run commands
   if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
-    eval "$1"
+    _run "$1"
   else
-    pkill -TERM -x "${RC_COMMAND}"
-    pkill -CONT -x "${RC_COMMAND}"
+    if [ ! -z "${RC_PID}" ]; then
+      kill -TERM "${RC_PID}"
+      kill -CONT "${RC_PID}"
 
-    do_wait "${RC_COMMAND}" 20
+      _wait_pid "${RC_PID}" 20
+    else
+      pkill -TERM -x "${RC_COMMAND}"
+      pkill -CONT -x "${RC_COMMAND}"
+
+      _wait_command "${RC_COMMAND}" 20
+    fi
   fi
 
+  # return status
   if [ $? -ne 0 ]; then
     printf "=> \e[31mfailed\e[0m\n"
     return 1
   fi
 
-  if [ ! -z "${RC_PID}" ]; then
-    rm -f "${RC_PID}"
+  if [ ! -z "${RC_PID_FILE}" ]; then
+    rm -f "${RC_PID_FILE}"
   fi
 
-  printf "=> done\n"
+  printf "=> \e[32mdone\e[0m\n"
   return 0
 }
 
 do_reload() {
   printf "reloading %s " "${RC_NAME}"
 
-  if ! pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
-    printf "=> \e[31mfailed (not running)\e[0m\n"
-    return 1
+  # process parameters
+  CHECK_PID_FILE=1; CHECK_COMMAND=1
+  for CHECK in "$@"; do
+    case "${CHECK}" in
+      --no-check-pid-file)
+        CHECK_PID_FILE=0
+        shift
+        ;;
+      --no-check-command)
+        CHECK_COMMAND=0
+        shift
+        ;;
+    esac
+  done
+
+  # process checks
+  if [ ! -z "${RC_PID_FILE}" ]; then
+    if [ "${CHECK_PID_FILE}" -eq 1 ] && [ ! -e "${RC_PID_FILE}" ]; then
+      printf "=> \e[31mfailed (pid file not found)\e[0m\n"
+      return 1
+    fi
+
+    read -r RC_PID 2>/dev/null <"${RC_PID_FILE}"
+    RC_CMD=`strings /proc/"${RC_PID}"/cmdline 2>/dev/null | head -n 1`
+
+    if [ "${CHECK_PID_FILE}" -eq 1 ] &&  [ "${RC_CMD}" != "${RC_COMMAND}" ]; then
+      printf "=> \e[31mfailed (invalid pid file)\e[0m\n"
+      return 1
+    fi
   fi
 
+  if [ "${CHECK_COMMAND}" -eq 1 ]; then
+    if ! pgrep -n -x "${RC_COMMAND}" 1>/dev/null 2>/dev/null; then
+      printf "=> \e[31mfailed (not running)\e[0m\n"
+      return 1
+    fi
+  fi
+
+  # run commands
   if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
-    eval "$1"
+    _run "$1"
   else
-    pkill -HUP -x "${RC_COMMAND}"
+    if [ ! -z "${RC_PID}" ]; then
+      kill -HUP "${RC_PID}"
+    else
+      pkill -HUP -x "${RC_COMMAND}"
+    fi
   fi
 
-  if [ $? -ne 0 ]; then
-    printf "=> \e[31mfailed\e[0m\n"
-    return 1
-  else
-    printf "=> done\n"
-    return 0
-  fi
+  # return status
+  _status $?
+  return $?
+}
+
+do_run() {
+  printf "$1 %s " "${RC_NAME}"
+
+  # run commands
+  _run "$2"
+
+  # return status
+  _status $?
+  return $?
 }
 
 do_status() {
-  PID=""
+  if [ $# -eq 1 ] && type "$1" 1>/dev/null 2>/dev/null; then
+    _run "$1"
+  else
+    if [ ! -z "${RC_PID_FILE}" ]; then
+      if [ ! -e "${RC_PID_FILE}" ]; then
+        printf "%s is not running (pid file not found)\n" "${RC_NAME}"
+        return 0
+      fi
 
-  for PID in `pgrep -x "${RC_COMMAND}"`; do
-    printf "%s is running as pid %d\n" "${RC_COMMAND}" "${PID}"
-  done
+      read -r RC_PID 2>/dev/null <"${RC_PID_FILE}"
+      RC_CMD=`strings /proc/"${RC_PID}"/cmdline 2>/dev/null | head -n 1`
 
-  if [ -z "${PID}" ]; then
-    printf "%s is not running\n" "${RC_COMMAND}"
+      if [ "${RC_CMD}" != "${RC_COMMAND}" ]; then
+        printf "%s is not running (invalid pid file)\n" "${RC_NAME}"
+        return 0
+      fi
+
+      printf "%s is running as pid %d\n" "${RC_NAME}" "${RC_PID}"
+    else
+      RC_PID=""
+      for RC_PID in `pgrep -x "${RC_COMMAND}"`; do
+        printf "%s is running as pid %d\n" "${RC_NAME}" "${RC_PID}"
+      done
+
+      if [ -z "${RC_PID}" ]; then
+        printf "%s is not running\n" "${RC_NAME}"
+      fi
+    fi
   fi
 
   return 0
 }
 
-do_wait() {
-  if [ $# -ne 2 ]; then
-    return 2
-  fi
+_run() {
+  { { { ( eval "$@" 2>&1; echo $? >&3; ) | \
+  logger -t "${RC_NAME}"; } 3>&1; } | __run_status; }
+  return $?
+}
 
+__run_status() {
+  read STATUS
+  return "${STATUS}"
+}
+
+_status() {
+  if [ $1 -ne 0 ]; then
+    printf "=> \e[31mfailed\e[0m\n"
+    return 1
+  else
+    printf "=> \e[32mdone\e[0m\n"
+    return 0
+  fi
+}
+
+_wait_pid() {
   for i in `seq $2`; do
-    if ! pgrep -n -x "$1" 1>/dev/null 2>/dev/null; then
+    kill -CONT "$1" 1>/dev/null 2>/dev/null
+
+    if [ $? -ne 0 ]; then
       return 0
     fi
 
@@ -132,19 +276,14 @@ do_wait() {
   return 1
 }
 
-do_run() {
-  if [ $# -ne 2 ]; then
-    return 2
-  fi
+_wait_command() {
+  for i in `seq $2`; do
+    if ! pgrep -n -x "$1" 1>/dev/null 2>/dev/null; then
+      return 0
+    fi
 
-  printf "$1"
-  eval "$2"
+    sleep .25
+  done
 
-  if [ $? -ne 0 ]; then
-    printf "=> \e[31mfailed\e[0m\n"
-    return 1
-  else
-    printf "=> done\n"
-    return 0
-  fi
+  return 1
 }

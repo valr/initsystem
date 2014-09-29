@@ -36,18 +36,18 @@ RC_NAME="alsa"
 
 case "$1" in
   start)
-    do_run "starting ${RC_NAME} " "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock restore"
+    do_run "starting" "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock restore"
     STATUS=$?
     ;;
 
   stop)
-    do_run "stopping ${RC_NAME} " "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock store"
+    do_run "stopping" "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock store"
     STATUS=$?
     ;;
 
   restart)
-    do_run "stopping ${RC_NAME} " "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock store"
-    do_run "starting ${RC_NAME} " "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock restore"
+    do_run "stopping" "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock store"
+    do_run "starting" "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock restore"
     STATUS=$?
     ;;
 

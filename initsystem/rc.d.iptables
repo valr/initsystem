@@ -34,7 +34,7 @@ RC_NAME="iptables"
 # functions ####################################################################
 ################################################################################
 
-x_stop() {
+iptables_stop() {
   STATUS=0
 
   /usr/sbin/iptables -t filter -F      || STATUS=1
@@ -65,18 +65,18 @@ x_stop() {
 
 case "$1" in
   start)
-    do_run "starting ${RC_NAME} " "/usr/bin/iptables-restore /etc/iptables/iptables.rules"
+    do_run "starting" "/usr/bin/iptables-restore /etc/iptables/iptables.rules"
     STATUS=$?
     ;;
 
   stop)
-    do_run "stopping ${RC_NAME} " x_stop
+    do_run "stopping" iptables_stop
     STATUS=$?
     ;;
 
   restart)
-    do_run "stopping ${RC_NAME} " x_stop
-    do_run "starting ${RC_NAME} " "/usr/bin/iptables-restore /etc/iptables/iptables.rules"
+    do_run "stopping" iptables_stop
+    do_run "starting" "/usr/bin/iptables-restore /etc/iptables/iptables.rules"
     STATUS=$?
     ;;
 

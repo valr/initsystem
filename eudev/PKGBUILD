@@ -1,9 +1,9 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_udevver=215
+_udevver=216
 
 pkgname='eudev'
-pkgver=1.9
+pkgver=1.10
 pkgrel=1
 pkgdesc='userspace device manager'
 url="http://dev.gentoo.org/~blueness/eudev"
@@ -12,8 +12,8 @@ groups=('initsystem')
 arch=('i686' 'x86_64')
 backup=('etc/udev/udev.conf')
 depends=('glib2' 'kbd' 'kmod' 'hwids' 'pam' 'util-linux')
-makedepends=('glib2' 'kbd' 'kmod' 'hwids' 'pam' 'util-linux'
-             'glibc' 'acl' 'dbus' 'gobject-introspection'
+makedepends=('kbd' 'kmod' 'hwids' 'pam' 'util-linux'
+             'acl' 'dbus' 'gobject-introspection'
              'gperf' 'gtk-doc' 'intltool')
 provides=("udev=${_udevver}"
           "libudev=${_udevver}"
@@ -23,10 +23,11 @@ provides=("udev=${_udevver}"
 conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
 options=(!makeflags !libtool)
+install='eudev.install'
 source=("${url}/${pkgname}-${pkgver}.tar.gz"
         'initcpio_hooks'
         'initcpio_install')
-md5sums=('da8083b30b44177445b21e8299af23a1'
+md5sums=('60d96aa6e111c4cf06a8a2186c60a281'
          'e7bbe35b79cddd7c82bf201f6297722d'
          '1e5610279d24e77e1bf1547edd2f6d10')
 

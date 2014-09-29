@@ -36,10 +36,9 @@ RC_COMMAND_OPTIONS="--daemon"
 # functions ####################################################################
 ################################################################################
 
-x_start() {
+udev_start() {
   STATUS=0
 
-  /usr/bin/udevadm hwdb --update                          || STATUS=1
   eval "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}"            || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=subsystems || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=devices    || STATUS=1
@@ -48,16 +47,11 @@ x_start() {
   return $STATUS
 }
 
-x_stop() {
+udev_stop() {
   /usr/bin/udevadm control --exit
+  _wait_command "${RC_COMMAND}" 20 || return 1
 
-  do_wait "${RC_COMMAND}" 20
-
-  if [ $? -ne 0 ]; then
-    return 1
-  else
-    return 0
-  fi
+  return 0
 }
 
 ################################################################################
@@ -66,18 +60,18 @@ x_stop() {
 
 case "$1" in
   start)
-    do_start x_start
+    do_start udev_start
     STATUS=$?
     ;;
 
   stop)
-    do_stop x_stop
+    do_stop udev_stop
     STATUS=$?
     ;;
 
   restart)
-    do_stop x_stop
-    do_start
+    do_stop udev_stop
+    do_start # not udev_start
     STATUS=$?
     ;;
 

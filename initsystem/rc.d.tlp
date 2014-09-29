@@ -36,18 +36,18 @@ RC_NAME="tlp"
 
 case "$1" in
   start)
-    do_run "starting ${RC_NAME} " "/usr/bin/tlp init start"
+    do_run "starting" "/usr/bin/tlp init start"
     STATUS=$?
     ;;
 
   stop)
-    do_run "stopping ${RC_NAME} " "/usr/bin/tlp init stop"
+    do_run "stopping" "/usr/bin/tlp init stop"
     STATUS=$?
     ;;
 
   restart)
-    do_run "stopping ${RC_NAME} " "/usr/bin/tlp init stop"
-    do_run "starting ${RC_NAME} " "/usr/bin/tlp init start"
+    do_run "stopping" "/usr/bin/tlp init stop"
+    do_run "starting" "/usr/bin/tlp init start"
     STATUS=$?
     ;;
 
