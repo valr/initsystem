@@ -1,32 +1,25 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 _pkgname=e2fsprogs
-
 pkgname=fsck-ext
-pkgver=1.42.10
+pkgver=1.42.12
 pkgrel=1
 pkgdesc='fsck utility for ext filesystems'
 url='https://github.com/valr/initsystem'
 license=('GPL' 'LGPL' 'MIT')
 groups=('initsystem')
 arch=('x86_64')
-makedepends=('musl-cross-x86_64' 'musl-libc')
+makedepends=('musl-cross-compiler-x86_64' 'musl')
 source=("http://downloads.sourceforge.net/sourceforge/${_pkgname}/${_pkgname}-${pkgver}.tar.gz"
         'MIT-LICENSE')
-sha1sums=('06eba8a78ce1d5032fdcaf34f09025f01ceaca79'
+sha1sums=('083c1bb0d1e85672e8038a2fadf70b24e7409db7'
           'f4a0d5b0cdb980e3fedd6f5e7dde0b0ffb7bbdfb')
-
-prepare() {
-  cd "${srcdir}/${_pkgname}-${pkgver}"
-
-  sed -i 's|#include <linux/fd.h>|/*#include <linux/fd.h>*/|' misc/filefrag.c
-}
 
 build() {
   cd "${srcdir}/${_pkgname}-${pkgver}"
 
-  CC=/opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
-  CFLAGS='-D_GNU_SOURCE -D__uint64_t=u_int64_t' \
+  CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+  CFLAGS='-D_GNU_SOURCE' \
   LDFLAGS='-static' \
   ./configure \
     --prefix=/usr \

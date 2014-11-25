@@ -2,13 +2,13 @@
 
 pkgname=busybox
 pkgver=1.22.1
-pkgrel=2
-pkgdesc='Utilities for rescue and embedded systems'
+pkgrel=3
+pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
 groups=('initsystem')
 arch=('x86_64')
-makedepends=('musl-cross-x86_64' 'musl-libc')
+makedepends=('musl-cross-compiler-x86_64' 'musl')
 source=("http://www.busybox.net/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
         'config_suid')
@@ -37,11 +37,11 @@ prepare() {
 
 build() {
   cd "${srcdir}"/nosuid
-  make CC=/opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+  make CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
     CFLAGS='-static -D_GNU_SOURCE -Wl,-z,muldefs'
 
   cd "${srcdir}"/suid
-  make CC=/opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+  make CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
     CFLAGS='-static -D_GNU_SOURCE -Wl,-z,muldefs'
 }
 
@@ -82,7 +82,6 @@ package() {
     ln -s /usr/bin/busybox-suid "${APPLET}"
   done
 
-  # license
-
+  install -Dm644 "${srcdir}"/nosuid/README "${pkgdir}"/usr/share/doc/"${pkgname}"/README
   install -Dm644 "${srcdir}"/nosuid/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }

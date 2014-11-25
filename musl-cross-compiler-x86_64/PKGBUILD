@@ -1,27 +1,30 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-pkgname=musl-cross-x86_64
-pkgver=1.1.2
+_pkgname=musl
+pkgname=musl-cross-compiler-x86_64
+pkgver=1.1.5
 pkgrel=1
-pkgdesc='A musl libc cross-compiler for x86_64'
+pkgdesc='a musl libc cross compiler for x86_64'
 url='http://musl.codu.org/'
 license=('MIT')
+groups=('initsystem')
 arch=('x86_64')
-options=('!strip' 'libtool' 'staticlibs' 'emptydirs')
-source=('https://e82b27f594c813a5a4ea5b07b06f16c3777c3b8c.googledrive.com/host/0BwnS5DMB0YQ6bDhPZkpOYVFhbk0/musl-1.1.2/crossx86-x86_64-linux-musl-1.1.2.tar.xz')
-md5sums=('78c3b364b142356a0a1b49e105c31027')
+options=('staticlibs')
+source=("https://e82b27f594c813a5a4ea5b07b06f16c3777c3b8c.googledrive.com/host/0BwnS5DMB0YQ6bDhPZkpOYVFhbk0/${_pkgname}-${pkgver}/crossx86-x86_64-linux-${_pkgname}-${pkgver}.tar.xz")
+md5sums=('d605dbcf82215f31de519a8f93beeb4d')
 
 PKGEXT='.pkg.tar'
 
 build() {
   # the cross-compiler is pre-built
+
   return 0
 }
 
 package() {
   cd "${srcdir}"/x86_64-linux-musl
 
-  PREFIX="/opt/cross/musl/x86_64-linux-musl"
+  PREFIX="/opt/x86_64-linux-musl"
 
   # install the cross-compiler
 

@@ -1,9 +1,8 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_udevver=216
-
+_udevver=217
 pkgname='eudev'
-pkgver=1.10
+pkgver=2.1.1
 pkgrel=1
 pkgdesc='userspace device manager'
 url="http://dev.gentoo.org/~blueness/eudev"
@@ -11,10 +10,8 @@ license=('GPL')
 groups=('initsystem')
 arch=('i686' 'x86_64')
 backup=('etc/udev/udev.conf')
-depends=('glib2' 'kbd' 'kmod' 'hwids' 'pam' 'util-linux')
-makedepends=('kbd' 'kmod' 'hwids' 'pam' 'util-linux'
-             'acl' 'dbus' 'gobject-introspection'
-             'gperf' 'gtk-doc' 'intltool')
+depends=('glib2' 'kbd' 'kmod' 'hwids' 'util-linux')
+makedepends=('gobject-introspection' 'gperf' 'gtk-doc' 'intltool')
 provides=("udev=${_udevver}"
           "libudev=${_udevver}"
           'libgudev-1.0.so'
@@ -27,7 +24,7 @@ install='eudev.install'
 source=("${url}/${pkgname}-${pkgver}.tar.gz"
         'initcpio_hooks'
         'initcpio_install')
-md5sums=('60d96aa6e111c4cf06a8a2186c60a281'
+md5sums=('dd945ce34314b4544e9036153d3a97e9'
          'e7bbe35b79cddd7c82bf201f6297722d'
          '1e5610279d24e77e1bf1547edd2f6d10')
 
@@ -44,7 +41,6 @@ build() {
     --enable-gudev \
     --enable-rule-generator \
     --with-rootprefix=/usr \
-    --with-firmware-path=/usr/lib/firmware/updates:/usr/lib/firmware \
     --with-html-dir=/usr/share/doc/"${pkgname}-${pkgver}"/html \
     --with-modprobe=/usr/bin/modprobe
 
@@ -65,5 +61,6 @@ package() {
   install -Dm644 "${srcdir}"/initcpio_hooks "${pkgdir}"/usr/lib/initcpio/hooks/udev
   install -Dm644 "${srcdir}"/initcpio_install "${pkgdir}"/usr/lib/initcpio/install/udev
 
+  install -Dm644 README "${pkgdir}"/usr/share/doc/"${pkgname}"/README
   install -Dm644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
