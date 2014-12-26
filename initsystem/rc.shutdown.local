@@ -18,11 +18,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
 ################################################################################
 # local shutdown script ########################################################
 ################################################################################
-

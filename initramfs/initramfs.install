@@ -6,7 +6,8 @@ post_install() {
   printf '    for i in `lsinitcpio /boot/initramfs-linux.img | grep .ko`; do basename "$i" .ko; done\n\n'
   printf '    After defining or changing the list, re-generate the initramfs like this:\n'
   printf '    mkinitramfs linux\n'
-  printf '    mkinitramfs linux-lts\n'
+  printf '    mkinitramfs linux-lts\n\n'
+  printf '    Finally, add the "initramfs" hook in /etc/mkinitcpio.conf\n'
 }
 
 post_upgrade() {

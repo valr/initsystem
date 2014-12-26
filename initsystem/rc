@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
@@ -47,8 +47,6 @@ mkdir -p /dev/pts
 mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts
 mkdir -p /dev/shm
 mount -t tmpfs -o nosuid,nodev shm /dev/shm
-mount -t efivarfs -o nosuid,nodev,noexec efi /sys/firmware/efi/efivars
-mount -t cgroup cgroup /sys/fs/cgroup
 
 ################################################################################
 # system logger ################################################################
@@ -98,7 +96,13 @@ echo "initscript: setting volatile and temporary files"
 
 echo "initscript: starting devices handler"
 
-/etc/rc.d/udev start
+if [ -x /usr/bin/udevd ]; then
+  /etc/rc.d/eudev start
+fi
+
+if [ -x /usr/lib/systemd/systemd-udevd ]; then
+  /etc/rc.d/udev start
+fi
 
 ################################################################################
 # modules ######################################################################
@@ -154,14 +158,6 @@ fi
 echo "initscript: mounting other filesystems"
 
 mount -a
-
-################################################################################
-# swap #########################################################################
-################################################################################
-
-echo "initscript: activating swap"
-
-swapon -a
 
 ################################################################################
 # random number generator ######################################################
@@ -233,7 +229,7 @@ umask 022
 
 echo "initscript: starting services"
 
-for SERVICE in `echo "${SERVICES}"`; do
+for SERVICE in ${SERVICES}; do
   /etc/rc.d/"${SERVICE}" start
 done
 

@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,51 +18,38 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
 . /etc/rc.subr
 
-################################################################################
-# parameters ###################################################################
-################################################################################
+start() {
+  pgrep -n -x /usr/bin/acpid 1>/dev/null 2>/dev/null && \
+    { echo "acpid is already running"; return 1; }
 
-RC_NAME="acpi"
-RC_COMMAND="/usr/bin/acpid"
-RC_COMMAND_OPTIONS="-p /run/acpid.pid"
-RC_PID_FILE="/run/acpid.pid"
+  rm -f /run/acpid.pid
+  /usr/bin/acpid -p /run/acpid.pid
+}
 
-################################################################################
-# processing ###################################################################
-################################################################################
+stop() {
+  pkill -TERM -x /usr/bin/acpid
+  pkill -CONT -x /usr/bin/acpid
 
-case "$1" in
-  start)
-    do_start
-    STATUS=$?
-    ;;
+  pwait /usr/bin/acpid 20 || \
+    { echo "acpid is still running"; return 1; }
 
-  stop)
-    do_stop
-    STATUS=$?
-    ;;
+  rm -f /run/acpid.pid
+}
 
-  restart)
-    do_stop
-    do_start
-    STATUS=$?
-    ;;
+restart() {
+  stop
+  start
+}
 
-  status)
-    do_status
-    STATUS=$?
-    ;;
+status() {
+  echo "acpid is running as pid:"
+  pgrep -x /usr/bin/acpid
+}
 
-  *)
-    echo "usage: `basename $0` {start|stop|restart|status}"
-    STATUS=1
-    ;;
-esac
-
-exit $STATUS
+rc_run "start stop restart status" $@

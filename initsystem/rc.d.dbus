@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,70 +18,65 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
 . /etc/rc.subr
 
-################################################################################
-# parameters ###################################################################
-################################################################################
+start() {
+  [ ! -d /run/dbus ] && \
+    install -m 755 -g dbus -o dbus -d /run/dbus
 
-RC_NAME="dbus"
-RC_COMMAND="/usr/bin/dbus-daemon"
-RC_COMMAND_OPTIONS="--system --fork"
-RC_PID_FILE="/run/dbus/pid"
+  pidfile /run/dbus/pid /usr/bin/dbus-daemon && \
+    { echo "dbus-daemon is already running"; return 1; }
 
-################################################################################
-# functions ####################################################################
-################################################################################
-
-dbus_start() {
-  if [ ! -d /run/dbus ]; then
-    install -m 755 -g 81 -o 81 -d /run/dbus
-  fi
-
-  eval "${RC_COMMAND}" "${RC_COMMAND_OPTIONS}" || return 1
-
-  return 0
+  rm -f /run/dbus/pid
+  /usr/bin/dbus-daemon --system --fork
 }
 
-################################################################################
-# processing ###################################################################
-################################################################################
+stop() {
+  pidfile /run/dbus/pid /usr/bin/dbus-daemon || return 0
 
-case "$1" in
-  start)
-    do_start --no-check-command dbus_start
-    STATUS=$?
-    ;;
+  kill -TERM $PID
+  kill -CONT $PID
 
-  stop)
-    do_stop --no-check-command
-    STATUS=$?
-    ;;
+  pidwait $PID 20 || \
+    { echo "dbus-daemon is still running"; return 1; }
 
-  restart)
-    do_stop --no-check-command
-    do_start --no-check-command dbus_start
-    STATUS=$?
-    ;;
+  rm -f /run/dbus/pid
+}
 
-  reload)
-    do_reload --no-check-command "/usr/bin/dbus-send --print-reply --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig"
-    STATUS=$?
-    ;;
+restart() {
+  stop
+  start
+}
 
-  status)
-    do_status
-    STATUS=$?
-    ;;
+reload() {
+  pidfile /run/dbus/pid /usr/bin/dbus-daemon || \
+    { echo "dbus-daemon is not running"; return 1; }
 
-  *)
-    echo "usage: `basename $0` {start|stop|restart|reload|status}"
-    STATUS=1
-    ;;
-esac
+  /usr/bin/dbus-send \
+    --print-reply --system --type=method_call \
+    --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig \
+    1>/dev/null 2>/dev/null
+}
 
-exit $STATUS
+status() {
+  pidfile /run/dbus/pid /usr/bin/dbus-daemon
+
+  case $? in
+    0)
+      echo "dbus-daemon is running as pid:"
+      echo $PID
+      ;;
+    1)
+      echo "/run/dbus/pid does not exist or is not readable"
+      ;;
+    2)
+      echo "/run/dbus/pid is invalid"
+      ;;
+  esac
+}
+
+rc_run "start stop restart reload status" $@

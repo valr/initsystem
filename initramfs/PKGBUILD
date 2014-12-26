@@ -3,7 +3,7 @@
 pkgname=initramfs
 pkgver=1.0.0
 pkgrel=1
-pkgdesc='Initramfs image creation utility'
+pkgdesc='initramfs image creation utility'
 url='https://github.com/valr/initsystem'
 license=('GPL')
 groups=('initsystem')
@@ -16,9 +16,9 @@ source=('mkinitramfs'
         'initramfs'
         'initramfs.mkinitcpio'
         'LICENSE')
-md5sums=('87c7720768b0bd51dc9b6f55844fc4cf'
-         '7a4145e85a888e0303b0709596ac8b5e'
-         '2ab64ec9d54730b79f8b5a39b96df61f'
+md5sums=('0aad527f0153113b6ae2391bba2c2e7a'
+         '39a8f4790c4e44358df5429b4757cbc8'
+         '02bcab921e224726c18c07bbc74742e8'
          '9f1c6ff05b3f32f8ea72e919fac41d40'
          '4641e94ec96f98fabc56ff9cc48be14b')
 

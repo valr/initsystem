@@ -13,6 +13,6 @@ Build and install the following packages:
 3. busybox
 4. fsck-fat (for fat & vfat filesystems)
 5. fsck-ext (for ext3 & ext4 filesystems)
-6. eudev (!!! warning: installation of eudev replaces systemd & libsystemd)
+6. eudev (optional: replaces udev from systemd)
 7. initramfs
 8. initsystem

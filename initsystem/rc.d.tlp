@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,43 +18,30 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
 . /etc/rc.subr
 
-################################################################################
-# parameters ###################################################################
-################################################################################
+start() {
+  pgrep -n -x /usr/bin/tlp 1>/dev/null 2>/dev/null && \
+    { echo "tlp is already running"; return 1; }
 
-RC_NAME="tlp"
+  /usr/bin/tlp init start
+}
 
-################################################################################
-# processing ###################################################################
-################################################################################
+stop() {
+  pkill -TERM -x /usr/bin/tlp
+  pkill -CONT -x /usr/bin/tlp
 
-case "$1" in
-  start)
-    do_run "starting" "/usr/bin/tlp init start"
-    STATUS=$?
-    ;;
+  pwait /usr/bin/tlp 20 || \
+    { echo "tlp is still running"; return 1; }
+}
 
-  stop)
-    do_run "stopping" "/usr/bin/tlp init stop"
-    STATUS=$?
-    ;;
+restart() {
+  stop
+  start
+}
 
-  restart)
-    do_run "stopping" "/usr/bin/tlp init stop"
-    do_run "starting" "/usr/bin/tlp init start"
-    STATUS=$?
-    ;;
-
-  *)
-    echo "usage: `basename $0` {start|stop|restart}"
-    STATUS=1
-    ;;
-esac
-
-exit $STATUS
+rc_run "start stop restart" $@

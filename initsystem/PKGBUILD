@@ -3,13 +3,15 @@
 pkgname=initsystem
 pkgver=1.0.0
 pkgrel=1
-pkgdesc='An init system'
+pkgdesc='an init system'
 url='https://github.com/valr/initsystem'
 license=('GPL')
 groups=('initsystem')
 arch=('x86_64')
+depends=('busybox' 'kbd')
+makedepends=('musl-cross-compiler-x86_64' 'musl')
+optdepends=('eudev: replaces udev from systemd')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local')
-depends=('musl-cross-x86_64' 'musl-libc' 'busybox' 'eudev' 'kbd')
 source=('init.c'
         'rc'
         'rc.conf'
@@ -26,6 +28,7 @@ source=('init.c'
         'rc.d.cron'
         'rc.d.cups'
         'rc.d.dbus'
+        'rc.d.eudev'
         'rc.d.iptables'
         'rc.d.ip6tables'
         'rc.d.syslog'
@@ -33,32 +36,33 @@ source=('init.c'
         'rc.d.udev'
         'LICENSE')
 md5sums=('8063252b587fc69fa70d1a8f467abbac'
-         'c0f0ebaa3dd2d4da3fc8387da40fc094'
-         'cd6cec15484be20a115fef515ede7b36'
-         'ff50ab2abfbc5896c135b98ea9aedffa'
-         '2e9ebe16c96033b2f6e942608af008e1'
-         '58e9c8c2c3c6a081c5ebbb3195c1c1ce'
-         'bc1bc45109cc83378b9650fdd8035d05'
-         '71f1f64dc86f79cf7d74c988a85de66f'
-         'faf41c841242d8d499fbaba52397d2dd'
-         '844bfb30356bb2a96ec021411bc0c5a0'
-         'f27521286bcd6c9f29570438033ba5c1'
-         '64a6e42a1e472f5d33bb6f6a60792d0e'
-         '858c013e5f771795371e174b9edc1821'
-         '0ab6ab1b2b74959166d5796bfe95e9ce'
-         '733e8431ffa1b2251c99d6fb199e7d9e'
-         '4194a49432c8d250cc3e461e68f17206'
-         'd565c6651abeffd4ad7d6b820608e5c6'
-         '0d7abaf0fba4c697529771b7d3f54816'
-         'dc49a9cfb2d7cb90b83518dbea36e298'
-         '056fba5e3ebf0acd63d3f4696f15e7ca'
-         'f934c9bf8fc8f41f8438e55dfc10681c'
+         '9feba9e68fdfd9402fa35872fa93ccec'
+         '3e50cf7eb99f778d09f95d81b0314999'
+         'e5b9861aa212352be75ee06d456bddf1'
+         '255d60c70913c2eb1c9811cbe363190d'
+         'dd2a13865e2ace073887411f0ae33056'
+         '27168efadfa0262b0feed0ffd9adbf02'
+         '8e8b1d9e6f23e59dcc5bfba39f4f34a5'
+         'fb41eb11251ae765b3873786d18f9b1b'
+         'ebb2b2bb22c08fa6a0411b6fec1d9eae'
+         'e00510599f62458bb1e8b8610924c9e9'
+         '6fd3ad2827b1e7ac09bfe8bfc0d6fa40'
+         '11f0416ff45208439fb638a433c90a10'
+         '1cf903928218fe507f9a93f7208145fb'
+         'fba02ce5db7274182bbef5ce16aa79f2'
+         '46f5fa79ea5ade6416af9ebd3ee1b08e'
+         'c2f4e490b32daf4f1bd182761abf08a9'
+         '60e9633394864060f8d6c67732815634'
+         '520e3a2bcc746152dde6204fdbfa7d38'
+         '6782c4665a48d581e47ec2cb46ac0f28'
+         '952a122df44ad62d7a31c2f50363c0d0'
+         '633b4d0e9868e13daa822daaaf7e6250'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
   cd "${srcdir}"
 
-  /opt/cross/musl/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -Wall -static -o init init.c
+  /opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -Wall -static -o init init.c
 }
 
 package() {
@@ -87,6 +91,7 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.cron      "${pkgdir}"/etc/rc.d/cron
   install -Dm755 "${srcdir}"/rc.d.cups      "${pkgdir}"/etc/rc.d/cups
   install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
+  install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
   install -Dm755 "${srcdir}"/rc.d.iptables  "${pkgdir}"/etc/rc.d/iptables
   install -Dm755 "${srcdir}"/rc.d.ip6tables "${pkgdir}"/etc/rc.d/ip6tables
   install -Dm755 "${srcdir}"/rc.d.tlp       "${pkgdir}"/etc/rc.d/tlp

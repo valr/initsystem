@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,25 +18,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
 . /etc/rc.subr
 
-################################################################################
-# parameters ###################################################################
-################################################################################
+start() {
+  /usr/bin/iptables-restore /etc/iptables/iptables.rules
+}
 
-RC_NAME="iptables"
-
-################################################################################
-# functions ####################################################################
-################################################################################
-
-iptables_stop() {
+stop() {
   STATUS=0
-
   /usr/sbin/iptables -t filter -F      || STATUS=1
   /usr/sbin/iptables -t filter -X      || STATUS=1
   /usr/sbin/iptables -t filter -Z      || STATUS=1
@@ -55,35 +48,12 @@ iptables_stop() {
   /usr/sbin/iptables -P INPUT ACCEPT   || STATUS=1
   /usr/sbin/iptables -P OUTPUT ACCEPT  || STATUS=1
   /usr/sbin/iptables -P FORWARD ACCEPT || STATUS=1
-
   return $STATUS
 }
 
-################################################################################
-# processing ###################################################################
-################################################################################
+restart() {
+  stop
+  start
+}
 
-case "$1" in
-  start)
-    do_run "starting" "/usr/bin/iptables-restore /etc/iptables/iptables.rules"
-    STATUS=$?
-    ;;
-
-  stop)
-    do_run "stopping" iptables_stop
-    STATUS=$?
-    ;;
-
-  restart)
-    do_run "stopping" iptables_stop
-    do_run "starting" "/usr/bin/iptables-restore /etc/iptables/iptables.rules"
-    STATUS=$?
-    ;;
-
-  *)
-    echo "usage: `basename $0` {start|stop|restart}"
-    STATUS=1
-    ;;
-esac
-
-exit $STATUS
+rc_run "start stop restart" $@

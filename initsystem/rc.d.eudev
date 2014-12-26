@@ -25,11 +25,11 @@ umask 022
 . /etc/rc.subr
 
 start() {
-  pgrep -n -x /usr/lib/systemd/systemd-udevd 1>/dev/null 2>/dev/null && \
-    { echo "systemd-udevd is already running"; return 1; }
+  pgrep -n -x /usr/bin/udevd 1>/dev/null 2>/dev/null && \
+    { echo "udevd is already running"; return 1; }
 
   STATUS=0
-  /usr/lib/systemd/systemd-udevd --daemon                 || STATUS=1
+  /usr/bin/udevd --daemon                                 || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=subsystems || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=devices    || STATUS=1
   /usr/bin/udevadm settle --timeout=60                    || STATUS=1
@@ -37,17 +37,17 @@ start() {
 }
 
 _start() {
-  pgrep -n -x /usr/lib/systemd/systemd-udevd 1>/dev/null 2>/dev/null && \
-    { echo "systemd-udevd is already running"; return 1; }
+  pgrep -n -x /usr/bin/udevd 1>/dev/null 2>/dev/null && \
+    { echo "udevd is already running"; return 1; }
 
-  /usr/lib/systemd/systemd-udevd --daemon
+  /usr/bin/udevd --daemon
 }
 
 stop() {
   /usr/bin/udevadm control --exit
 
-  pwait /usr/lib/systemd/systemd-udevd 20 || \
-    { echo "systemd-udevd is still running"; return 1; }
+  pwait /usr/bin/udevd 20 || \
+    { echo "udevd is still running"; return 1; }
 }
 
 restart() {
@@ -56,15 +56,15 @@ restart() {
 }
 
 reload() {
-  pgrep -n -x /usr/lib/systemd/systemd-udevd 1>/dev/null 2>/dev/null || \
-    { echo "systemd-udevd is not running"; return 1; }
+  pgrep -n -x /usr/bin/udevd 1>/dev/null 2>/dev/null || \
+    { echo "udevd is not running"; return 1; }
 
   /usr/bin/udevadm control --reload
 }
 
 status() {
-  echo "systemd-udevd is running as pid:"
-  pgrep -x /usr/lib/systemd/systemd-udevd
+  echo "udevd is running as pid:"
+  pgrep -x /usr/bin/udevd
 }
 
 rc_run "start stop restart reload status" $@

@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,43 +18,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
 . /etc/rc.subr
 
-################################################################################
-# parameters ###################################################################
-################################################################################
+start() {
+  /usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock restore
+}
 
-RC_NAME="alsa"
+stop() {
+  /usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock store
+}
 
-################################################################################
-# processing ###################################################################
-################################################################################
-
-case "$1" in
-  start)
-    do_run "starting" "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock restore"
-    STATUS=$?
-    ;;
-
-  stop)
-    do_run "stopping" "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock store"
-    STATUS=$?
-    ;;
-
-  restart)
-    do_run "stopping" "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock store"
-    do_run "starting" "/usr/bin/alsactl -s -O /var/lib/alsa/asound.state.lock restore"
-    STATUS=$?
-    ;;
-
-  *)
-    echo "usage: `basename $0` {start|stop|restart}"
-    STATUS=1
-    ;;
-esac
-
-exit $STATUS
+rc_run "start stop" $@

@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,51 +18,38 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
 . /etc/rc.subr
 
-################################################################################
-# parameters ###################################################################
-################################################################################
+start() {
+  pgrep -n -x /opt/busybox/syslogd 1>/dev/null 2>/dev/null && \
+    { echo "syslogd is already running"; return 1; }
 
-RC_NAME="syslog"
-RC_COMMAND="/opt/busybox/syslogd"
-RC_COMMAND_OPTIONS="-K"
-RC_PID_FILE="/run/syslogd.pid"
+  rm -f /run/syslogd.pid
+  /opt/busybox/syslogd -K
+}
 
-################################################################################
-# processing ###################################################################
-################################################################################
+stop() {
+  pkill -TERM -x /opt/busybox/syslogd
+  pkill -CONT -x /opt/busybox/syslogd
 
-case "$1" in
-  start)
-    do_start
-    STATUS=$?
-    ;;
+  pwait /opt/busybox/syslogd 20 || \
+    { echo "syslogd is still running"; return 1; }
 
-  stop)
-    do_stop
-    STATUS=$?
-    ;;
+  rm -f /run/syslogd.pid
+}
 
-  restart)
-    do_stop
-    do_start
-    STATUS=$?
-    ;;
+restart() {
+  stop
+  start
+}
 
-  status)
-    do_status
-    STATUS=$?
-    ;;
+status() {
+  echo "syslogd is running as pid:"
+  pgrep -x /opt/busybox/syslogd
+}
 
-  *)
-    echo "usage: `basename $0` {start|stop|restart|status}"
-    STATUS=1
-    ;;
-esac
-
-exit $STATUS
+rc_run "start stop restart status" $@

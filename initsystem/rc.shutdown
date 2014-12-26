@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/opt/busybox"
+PATH=/opt/busybox
 cd /
 umask 022
 
@@ -58,18 +58,23 @@ echo "shutdown: starting local shutdown script"
 echo "shutdown: stopping services"
 
 REVERSE_SERVICES=""
-for SERVICE in `echo "${SERVICES}"`; do
+for SERVICE in ${SERVICES}; do
   REVERSE_SERVICES="${SERVICE} ${REVERSE_SERVICES}"
 done
 
-for SERVICE in `echo "${REVERSE_SERVICES}"`; do
+for SERVICE in ${REVERSE_SERVICES}; do
   /etc/rc.d/"${SERVICE}" stop
 done
 
-/etc/rc.d/udev stop
-/etc/rc.d/syslog stop
+if [ -x /usr/bin/udevd ]; then
+  /etc/rc.d/eudev stop
+fi
 
-sync
+if [ -x /usr/lib/systemd/systemd-udevd ]; then
+  /etc/rc.d/udev stop
+fi
+
+/etc/rc.d/syslog stop
 
 ################################################################################
 # kill remaining processes #####################################################
@@ -92,17 +97,14 @@ wait_pids() {
 echo "shutdown: sending SIGTERM to processes"
 
 killall5 -TERM
-wait_pids 360
+wait_pids 240
 
 if [ $? -ne 0 ]; then
-
   echo "shutdown: sending SIGKILL to processes"
 
   killall5 -KILL
-  wait_pids 360
+  wait_pids 240
 fi
-
-sync
 
 ################################################################################
 # random seed ##################################################################
@@ -136,33 +138,18 @@ dmesg > /var/log/dmesg.shutdown
 umask 022
 
 ################################################################################
-# filesystems and swap #########################################################
+# filesystems ##################################################################
 ################################################################################
 
 echo "shutdown: writing wtmp record"
 
 /usr/bin/busybox halt -w
 
-echo "shutdown: unmounting swap-backed filesystems"
+echo "shutdown: syncing"
 
-MOUNTS=`tac /proc/self/mounts | grep ' tmpfs ' | cut -d ' ' -f 2`
-for MOUNT in `echo "${MOUNTS}"`; do
-  case "${MOUNT}" in
-    /proc|/sys|/run|/dev|/dev/pts|/dev/shm|/sys/firmware/efi/efivars)
-      ;;
-    *)
-      umount "${MOUNT}"
-      ;;
-  esac
-done
+sync;sync;sync
 
-sync
-
-echo "shutdown: desactivating swap"
-
-swapoff -a
-
-echo "shutdown: unmounting other filesystems"
+echo "shutdown: unmounting filesystems"
 
 MOUNTS=`tac /proc/self/mounts | cut -d ' ' -f 2`
 for MOUNT in `echo "${MOUNTS}"`; do
@@ -177,44 +164,17 @@ done
 
 echo "shutdown: remounting root filesystem read-only"
 
-wait_remount() {
-  for i in `seq $1`; do
-    mount -v -o remount,ro /
-
-    if [ $? -eq 0 ]; then
-      return 0
-    fi
-
-    sleep 1
-  done
-
-  return 1
-}
-
-wait_remount 7
+mount -o remount,ro /
 
 if [ $? -ne 0 ]; then
   echo "shutdown: remount error"
 
-  printf "processes:\n"
-  ps `fuser -m /`
-
-  printf "\nfiles:\n"
-  lsof
-
-  printf "\nmount:\n"
-  mount
-
-  read -p "press any key to continue..."
+  /bin/sh </dev/tty1 >/dev/tty1 2>/dev/tty1 &
 fi
 
 ################################################################################
 # finish #######################################################################
 ################################################################################
-
-sync;sync;sync
-
-sleep 3
 
 case "$1" in
   halt)

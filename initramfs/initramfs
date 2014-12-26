@@ -18,7 +18,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH="/sbin:/bin"
+PATH=/sbin:/bin
+export PATH
+
 cd /
 umask 022
 
@@ -38,15 +40,17 @@ fi
 reboot_system() {
   echo "initramfs: rebooting in 7 seconds"
 
-  sleep 7
+  killall5 -TERM; sleep 4
+  killall5 -KILL; sleep 3
+
   umount -a -r
   reboot -f
 }
 
 rescue_shell() {
-  if [ -f /etc/keymap.kmap ]; then
+  if [ -f /etc/keymap ]; then
     echo "initramfs: loading keymap"
-    loadkmap < /etc/keymap.kmap
+    loadkmap < /etc/keymap
   fi
 
   echo "initramfs: dropping to rescue shell"
@@ -94,21 +98,21 @@ for COMMAND in `cat /proc/cmdline`; do
   esac
 done
 
-if [ "${BREAK-}" = "initramfs-early" ]; then
+if [ "${BREAK}" = "initramfs-early" ]; then
   echo "initramfs: break on initramfs-early"
   rescue_shell
 fi
 
-if [ -z "${INIT-}" ]; then
+if [ -z "${INIT}" ]; then
   INIT="/sbin/init"
 fi
 
-if [ -z "${ROOT-}" ]; then
+if [ -z "${ROOT}" ]; then
   echo "initramfs: missing root=the_device (e.g. /dev/sda1) on kernel command line"
   rescue_shell
 fi
 
-if [ -z "${TYPE-}" ]; then
+if [ -z "${TYPE}" ]; then
   echo "initramfs: missing rootfstype=the_filesystem_type (e.g. ext4) on kernel command line"
   rescue_shell
 fi
@@ -128,8 +132,8 @@ hwclock -t -u
 if [ -f /etc/modules ]; then
   echo "initramfs: loading modules"
 
-  while IFS= read -r MOD; do
-    modprobe "${MOD}"
+  while IFS= read -r MODULE; do
+    modprobe "${MODULE}"
   done < /etc/modules
 fi
 
@@ -151,7 +155,7 @@ wait_filesystem() {
 
 echo "initramfs: waiting for root filesystem"
 
-wait_filesystem "${ROOT}" 40
+wait_filesystem "${ROOT}" 120
 
 if [ $? -ne 0 ]; then
   echo "initramfs: timeout reached for ${ROOT}"
@@ -211,7 +215,7 @@ if [ ! -x /newroot/"${INIT}" ]; then
   rescue_shell
 fi
 
-if [ "${BREAK-}" = "initramfs-late" ]; then
+if [ "${BREAK}" = "initramfs-late" ]; then
   echo "initramfs: break on initramfs-late"
   rescue_shell
 fi
