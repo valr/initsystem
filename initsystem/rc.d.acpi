@@ -29,6 +29,7 @@ start() {
     { echo "acpid is already running"; return 1; }
 
   rm -f /run/acpid.pid
+
   /usr/bin/acpid -p /run/acpid.pid
 }
 

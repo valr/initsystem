@@ -29,6 +29,7 @@ start() {
     { echo "syslogd is already running"; return 1; }
 
   rm -f /run/syslogd.pid
+
   /opt/busybox/syslogd -K
 }
 

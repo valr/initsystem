@@ -28,7 +28,7 @@ start() {
   pgrep -n -x /usr/bin/bumblebeed 1>/dev/null 2>/dev/null && \
     { echo "bumblebeed is already running"; return 1; }
 
-  PATH=/usr/bin bumblebeed -D
+  PATH=/usr/bin /usr/bin/bumblebeed -D
 }
 
 stop() {

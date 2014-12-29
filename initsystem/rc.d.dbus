@@ -32,6 +32,7 @@ start() {
     { echo "dbus-daemon is already running"; return 1; }
 
   rm -f /run/dbus/pid
+
   /usr/bin/dbus-daemon --system --fork
 }
 
@@ -58,8 +59,7 @@ reload() {
 
   /usr/bin/dbus-send \
     --print-reply --system --type=method_call \
-    --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig \
-    1>/dev/null 2>/dev/null
+    --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig
 }
 
 status() {

@@ -2,7 +2,7 @@
 
 _pkgname=dosfstools
 pkgname=fsck-fat
-pkgver=3.0.26
+pkgver=3.0.27
 pkgrel=1
 pkgdesc='fsck utility for fat filesystems'
 url='https://github.com/valr/initsystem'
@@ -10,8 +10,9 @@ license=('GPL2')
 groups=('initsystem')
 arch=('x86_64')
 makedepends=('musl-cross-compiler-x86_64' 'musl')
-source=("http://www.daniel-baumann.ch/files/software/${_pkgname}/${_pkgname}-${pkgver}.tar.xz")
-md5sums=('45012f5f56f2aae3afcd62120b9e5a08')
+source=(https://github.com/$_pkgname/$_pkgname/releases/download/v$pkgver/$_pkgname-$pkgver.tar.xz{,.sig})
+md5sums=('3254566ea66b185920abb7f694df2c2a'
+         'SKIP')
 
 build() {
   cd "${srcdir}/${_pkgname}-${pkgver}"

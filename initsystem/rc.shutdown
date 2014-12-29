@@ -147,30 +147,24 @@ echo "shutdown: writing wtmp record"
 
 echo "shutdown: syncing"
 
-sync;sync;sync
+sync; sleep 3
 
 echo "shutdown: unmounting filesystems"
 
 MOUNTS=`tac /proc/self/mounts | cut -d ' ' -f 2`
-for MOUNT in `echo "${MOUNTS}"`; do
-  case "${MOUNT}" in
-    /proc|/sys)
+for MOUNT in ${MOUNTS}; do
+  case ${MOUNT} in
+    /|/proc|/sys|/run|/dev|/dev/shm)
       ;;
     *)
-      umount -r "${MOUNT}"
+      /usr/bin/umount -v -r ${MOUNT}
       ;;
   esac
 done
 
 echo "shutdown: remounting root filesystem read-only"
 
-mount -o remount,ro /
-
-if [ $? -ne 0 ]; then
-  echo "shutdown: remount error"
-
-  /bin/sh </dev/tty1 >/dev/tty1 2>/dev/tty1 &
-fi
+/usr/bin/mount -v -n -o remount,ro /
 
 ################################################################################
 # finish #######################################################################

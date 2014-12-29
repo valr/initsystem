@@ -56,4 +56,8 @@ restart() {
   start
 }
 
-rc_run "start stop restart" $@
+status() {
+  /usr/bin/ip6tables -L -v -n --line-numbers
+}
+
+rc_run "start stop restart status" $@

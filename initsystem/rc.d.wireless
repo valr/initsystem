@@ -23,20 +23,34 @@ cd /
 umask 022
 
 . /etc/rc.subr
+. /etc/rc.conf
 
 start() {
-  pgrep -n -x /usr/bin/tlp 1>/dev/null 2>/dev/null && \
-    { echo "tlp is already running"; return 1; }
+  pgrep -n -x /usr/bin/wpa_supplicant 1>/dev/null 2>/dev/null && \
+    { echo "wpa_supplicant is already running"; return 1; }
 
-  /usr/bin/tlp init start
+  rm -f /run/wpa_supplicant.pid
+
+  STATUS=0
+  /usr/bin/ip link set "${WIRELESS}" down
+  /usr/bin/ip link set "${WIRELESS}" up
+  /usr/bin/wpa_supplicant -B –D nl80211 \
+    -P /run/wpa_supplicant.pid -i "${WIRELESS}" \
+    -c /etc/wpa_supplicant/wpa_supplicant-"${WIRELESS}".conf || STATUS=1
+  /usr/bin/ip route add default via 192.168.1.1 dev "${WIRELESS}"
+  return $STATUS
 }
 
 stop() {
-  pkill -TERM -x /usr/bin/tlp
-  pkill -CONT -x /usr/bin/tlp
+  pkill -TERM -x /usr/bin/wpa_supplicant
+  pkill -CONT -x /usr/bin/wpa_supplicant
 
-  pwait /usr/bin/tlp 20 || \
-    { echo "tlp is still running"; return 1; }
+  pwait /usr/bin/wpa_supplicant 20 || \
+    { echo "wpa_supplicant is still running"; return 1; }
+
+  rm -f /run/wpa_supplicant.pid
+
+  /usr/bin/ip link set "${WIRELESS}" down
 }
 
 restart() {
@@ -45,7 +59,8 @@ restart() {
 }
 
 status() {
-  PATH=/usr/bin /usr/bin/tlp-stat
+  echo "wpa_supplicant is running as pid:"
+  pgrep -x /usr/bin/wpa_supplicant
 }
 
 rc_run "start stop restart status" $@

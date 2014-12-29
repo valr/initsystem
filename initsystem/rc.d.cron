@@ -29,6 +29,7 @@ start() {
     { echo "crond is already running"; return 1; }
 
   rm -f /run/crond.pid
+
   /usr/bin/crond -m off -s
 }
 

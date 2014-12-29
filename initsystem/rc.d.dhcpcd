@@ -1,3 +1,5 @@
+#!/bin/ash
+
 # This file is part of initsystem
 #
 # Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
@@ -16,23 +18,38 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-HOSTNAME=""
+PATH=/opt/busybox
+cd /
+umask 022
 
-# wireless interface
-# see the interfaces in: /sys/class/net
-WIRELESS=""
+. /etc/rc.subr
 
-# wired interface
-# see the interfaces in: /sys/class/net
-WIRED=""
+start() {
+  pgrep -n -x /usr/bin/dhcpcd 1>/dev/null 2>/dev/null && \
+    { echo "dhcpcd is already running"; return 1; }
 
-# keyboard translation table
-# see the available keymaps in: /usr/share/kbd/keymaps
-CONSOLE_KEYMAP=""
+  rm -f /run/dhcpcd.pid
 
-# console screen font
-# see the available fonts in: /usr/share/kbd/consolefonts
-CONSOLE_FONT=""
+  /usr/bin/dhcpcd -q -b
+}
 
-# see the available services in: /etc/rc.d
-SERVICES=""
+stop() {
+  /usr/bin/dhcpcd -q -x
+
+  pwait /usr/bin/dhcpcd 20 || \
+    { echo "dhcpcd is still running"; return 1; }
+
+  rm -f /run/dhcpcd.pid
+}
+
+restart() {
+  stop
+  start
+}
+
+status() {
+  echo "dhcpcd is running as pid:"
+  pgrep -x /usr/bin/dhcpcd
+}
+
+rc_run "start stop restart status" $@

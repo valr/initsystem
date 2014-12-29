@@ -28,35 +28,39 @@ source=('init.c'
         'rc.d.cron'
         'rc.d.cups'
         'rc.d.dbus'
+        'rc.d.dhcpcd'
         'rc.d.eudev'
         'rc.d.iptables'
         'rc.d.ip6tables'
         'rc.d.syslog'
         'rc.d.tlp'
         'rc.d.udev'
+        'rc.d.wireless'
         'LICENSE')
-md5sums=('8063252b587fc69fa70d1a8f467abbac'
+md5sums=('cd80a45098e703926cfd5c431f6f86e6'
          '9feba9e68fdfd9402fa35872fa93ccec'
-         '3e50cf7eb99f778d09f95d81b0314999'
+         '4cc53aae78991505fb5723092baf8e90'
          'e5b9861aa212352be75ee06d456bddf1'
          '255d60c70913c2eb1c9811cbe363190d'
-         'dd2a13865e2ace073887411f0ae33056'
+         '2db1753ce833998a2d4f1f93d6694b51'
          '27168efadfa0262b0feed0ffd9adbf02'
          '8e8b1d9e6f23e59dcc5bfba39f4f34a5'
          'fb41eb11251ae765b3873786d18f9b1b'
          'ebb2b2bb22c08fa6a0411b6fec1d9eae'
-         'e00510599f62458bb1e8b8610924c9e9'
+         'b3158a98409ad0234d874f257aef7d30'
          '6fd3ad2827b1e7ac09bfe8bfc0d6fa40'
-         '11f0416ff45208439fb638a433c90a10'
-         '1cf903928218fe507f9a93f7208145fb'
+         '35d1e017de6158617f2b1a2bbf291044'
+         'c81ad8cc66bd819b75c354234959384a'
          'fba02ce5db7274182bbef5ce16aa79f2'
-         '46f5fa79ea5ade6416af9ebd3ee1b08e'
+         '9bc2327de5108e2654f568b5e1eacd63'
+         'ed5afbda540156cc7d279133716248fe'
          'c2f4e490b32daf4f1bd182761abf08a9'
-         '60e9633394864060f8d6c67732815634'
-         '520e3a2bcc746152dde6204fdbfa7d38'
-         '6782c4665a48d581e47ec2cb46ac0f28'
-         '952a122df44ad62d7a31c2f50363c0d0'
-         '633b4d0e9868e13daa822daaaf7e6250'
+         'eb26a94b6798b9cf59003dd055b3e259'
+         'f855f47cbb78ddba6fdb779e596a64ea'
+         'e1e0e1d9ac88b02698c117833164e1b8'
+         'a5dbd75bafd5a575e7fbe72e1220b608'
+         '638efa85c102f58d4056443c65f9ede7'
+         '1a6eee4c7bba9ee52607547dc1532b68'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
@@ -91,12 +95,14 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.cron      "${pkgdir}"/etc/rc.d/cron
   install -Dm755 "${srcdir}"/rc.d.cups      "${pkgdir}"/etc/rc.d/cups
   install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
+  install -Dm755 "${srcdir}"/rc.d.dhcpcd    "${pkgdir}"/etc/rc.d/dhcpcd
   install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
   install -Dm755 "${srcdir}"/rc.d.iptables  "${pkgdir}"/etc/rc.d/iptables
   install -Dm755 "${srcdir}"/rc.d.ip6tables "${pkgdir}"/etc/rc.d/ip6tables
   install -Dm755 "${srcdir}"/rc.d.tlp       "${pkgdir}"/etc/rc.d/tlp
   install -Dm755 "${srcdir}"/rc.d.syslog    "${pkgdir}"/etc/rc.d/syslog
   install -Dm755 "${srcdir}"/rc.d.udev      "${pkgdir}"/etc/rc.d/udev
+  install -Dm755 "${srcdir}"/rc.d.wireless  "${pkgdir}"/etc/rc.d/wireless
 
   # symlinks
 
