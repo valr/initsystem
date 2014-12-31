@@ -154,17 +154,17 @@ echo "shutdown: unmounting filesystems"
 MOUNTS=`tac /proc/self/mounts | cut -d ' ' -f 2`
 for MOUNT in ${MOUNTS}; do
   case ${MOUNT} in
-    /|/proc|/sys|/run|/dev|/dev/shm)
+    /|/proc|/sys|/run|/dev|/dev/pts)
       ;;
     *)
-      /usr/bin/umount -v -r ${MOUNT}
+      umount -r -l ${MOUNT}
       ;;
   esac
 done
 
 echo "shutdown: remounting root filesystem read-only"
 
-/usr/bin/mount -v -n -o remount,ro /
+mount -o remount,ro /
 
 ################################################################################
 # finish #######################################################################

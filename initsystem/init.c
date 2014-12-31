@@ -1,7 +1,7 @@
 /*
  * This file is part of initsystem
  *
- * Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+ * Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
  */
 
 #include <signal.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <syslog.h>
@@ -43,15 +44,15 @@
 #include <sys/wait.h>
 
 #ifndef RESPAWN_CNT
-#define RESPAWN_CNT 6 /* max 9 */
+#define RESPAWN_CNT 6
 #endif
 
 #ifndef MAX_ARG_NUM
-#define MAX_ARG_NUM 16
+#define MAX_ARG_NUM 16 /* strictly > RESPAWN_CNT */
 #endif
 
-#ifndef MAX_ARG_LEN
-#define MAX_ARG_LEN 256
+#ifndef MAX_STR_LEN
+#define MAX_STR_LEN 256
 #endif
 
 volatile sig_atomic_t signal_number = 0;
@@ -64,7 +65,7 @@ void signal_handler (int signum)
 char** parse_command (char *command)
 {
     static char* argv[MAX_ARG_NUM];
-    static char arg[MAX_ARG_LEN];
+    static char arg[MAX_STR_LEN];
     int i = 0, j = 0;
 
     while (i < MAX_ARG_NUM-1 && *command != '\0')
@@ -76,7 +77,7 @@ char** parse_command (char *command)
 
         argv[i++] = &arg[j];
 
-        while (j < MAX_ARG_LEN-1 &&
+        while (j < MAX_STR_LEN-1 &&
                *command != '\0' && *command != ' ' &&
                *command != '\t' && *command != '\n')
         {
@@ -113,6 +114,11 @@ pid_t spawn_command (char **argv)
     return pid;
 }
 
+void exec_command (char **argv)
+{
+    execvp (*argv, argv);
+}
+
 time_t get_time ()
 {
     struct timespec time;
@@ -129,9 +135,12 @@ int main (int argc, char **argv)
     time_t init_timeout = 0, shutdown_timeout = 0;
 
     int respawn_index;
-    char respawn_command[] = "/etc/rc.respawn x";
+    char respawn_command[MAX_STR_LEN];
     pid_t respawn_pid[RESPAWN_CNT] = {};
     time_t respawn_time[RESPAWN_CNT] = {};
+
+    char reexec_command[MAX_STR_LEN];
+    char reexec_arg[MAX_STR_LEN];
 
     if (getpid () != 1)
     {
@@ -144,6 +153,37 @@ int main (int argc, char **argv)
     setsid ();
     chdir ("/");
 
+    if (argc == 1)
+    {
+        init_pid = spawn_command (parse_command ("/etc/rc"));
+        init_timeout = get_time () + 300;
+
+        while (init_pid)
+        {
+            dead_pid = waitpid (-1, 0, WNOHANG);
+
+            if (dead_pid == init_pid)
+                break;
+
+            if (dead_pid <= 0)
+                sleep (1);
+
+            if (init_timeout <= get_time ())
+                break;
+        }
+    }
+    else
+    {
+        for (respawn_index = 0; respawn_index < RESPAWN_CNT; respawn_index++)
+        {
+            if (respawn_index + 1 < argc)
+            {
+                sscanf (argv[respawn_index + 1], "%d", &respawn_pid[respawn_index]);
+                memset (argv[respawn_index + 1], '\0', strlen (argv[respawn_index + 1]));
+            }
+        }
+    }
+
     signal_action.sa_handler = &signal_handler;
     signal_action.sa_flags = SA_RESTART;
     sigfillset (&signal_action.sa_mask);
@@ -151,23 +191,7 @@ int main (int argc, char **argv)
     sigaction (SIGTERM, &signal_action, 0);
     sigaction (SIGUSR1, &signal_action, 0);
     sigaction (SIGUSR2, &signal_action, 0);
-
-    init_pid = spawn_command (parse_command ("/etc/rc"));
-    init_timeout = get_time () + 300;
-
-    while (init_pid)
-    {
-        dead_pid = waitpid (-1, 0, WNOHANG);
-
-        if (dead_pid == init_pid)
-            break;
-
-        if (dead_pid <= 0)
-            sleep (1);
-
-        if (init_timeout <= get_time ())
-            break;
-    }
+    sigaction (SIGQUIT, &signal_action, 0);
 
     while (1)
     {
@@ -185,7 +209,7 @@ int main (int argc, char **argv)
             {
                 if (signal_number == 0 && respawn_time[respawn_index] <= get_time ())
                 {
-                    respawn_command[16] = '1' + respawn_index;
+                    sprintf (respawn_command, "/etc/rc.respawn %d", respawn_index + 1);
                     respawn_pid[respawn_index] = spawn_command (parse_command (respawn_command));
                     respawn_time[respawn_index] = get_time () + 7;
                 }
@@ -196,6 +220,20 @@ int main (int argc, char **argv)
 
         if (signal_number != 0)
         {
+            if (signal_number == SIGQUIT)
+            {
+                strcpy (reexec_command, argv[0]);
+
+                for (respawn_index = 0; respawn_index < RESPAWN_CNT; respawn_index++)
+                {
+                    sprintf (reexec_arg, " %d", respawn_pid[respawn_index]);
+                    strcat (reexec_command, reexec_arg);
+                }
+
+                exec_command (parse_command (reexec_command));
+                signal_number = 0;
+            }
+
             if (shutdown_pid == 0)
             {
                 switch (signal_number)

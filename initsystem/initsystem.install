@@ -1,0 +1,5 @@
+
+post_upgrade() {
+  # re-exec init
+  kill -QUIT 1
+}

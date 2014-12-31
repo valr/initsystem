@@ -12,6 +12,7 @@ depends=('busybox' 'kbd')
 makedepends=('musl-cross-compiler-x86_64' 'musl')
 optdepends=('eudev: replaces udev from systemd')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local')
+install='initsystem.install'
 source=('init.c'
         'rc'
         'rc.conf'
@@ -37,12 +38,12 @@ source=('init.c'
         'rc.d.udev'
         'rc.d.wireless'
         'LICENSE')
-md5sums=('cd80a45098e703926cfd5c431f6f86e6'
+md5sums=('d20ccb0b26510b77f0ebf9c48f6fab0f'
          '9feba9e68fdfd9402fa35872fa93ccec'
          '4cc53aae78991505fb5723092baf8e90'
          'e5b9861aa212352be75ee06d456bddf1'
          '255d60c70913c2eb1c9811cbe363190d'
-         '2db1753ce833998a2d4f1f93d6694b51'
+         'bedcab3e2e64117da7d172dae59d71e6'
          '27168efadfa0262b0feed0ffd9adbf02'
          '8e8b1d9e6f23e59dcc5bfba39f4f34a5'
          'fb41eb11251ae765b3873786d18f9b1b'
