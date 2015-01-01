@@ -1,5 +1,5 @@
 
 post_upgrade() {
-  # re-exec init
+  # ask init (pid 1) to re-exec itself
   kill -QUIT 1
 }
