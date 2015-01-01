@@ -29,7 +29,7 @@ umask 022
 ################################################################################
 
 if [ $PPID != 1 ]; then
-  echo "error: this script should have ppid 1"
+  echo "shutdown: this script should have ppid 1"
   exit 1
 fi
 
@@ -66,6 +66,12 @@ for SERVICE in ${REVERSE_SERVICES}; do
   /etc/rc.d/"${SERVICE}" stop
 done
 
+################################################################################
+# devices ######################################################################
+################################################################################
+
+echo "shutdown: stopping devices handler"
+
 if [ -x /usr/bin/udevd ]; then
   /etc/rc.d/eudev stop
 fi
@@ -73,6 +79,12 @@ fi
 if [ -x /usr/lib/systemd/systemd-udevd ]; then
   /etc/rc.d/udev stop
 fi
+
+################################################################################
+# system logger ################################################################
+################################################################################
+
+echo "shutdown: stopping system logger"
 
 /etc/rc.d/syslog stop
 
@@ -145,7 +157,7 @@ echo "shutdown: writing wtmp record"
 
 /usr/bin/busybox halt -w
 
-echo "shutdown: syncing"
+echo "shutdown: syncing filesystems"
 
 sync; sleep 3
 

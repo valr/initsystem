@@ -29,7 +29,7 @@ umask 022
 ################################################################################
 
 if [ $PPID != 1 ]; then
-  echo "error: this script should have ppid 1"
+  echo "initscript: this script should have ppid 1"
   exit 1
 fi
 
@@ -57,20 +57,12 @@ echo "initscript: starting system logger"
 /etc/rc.d/syslog start
 
 ################################################################################
-# filesystems ##################################################################
-################################################################################
-
-echo "initscript: remounting root filesystem read-write"
-
-mount -o remount,rw /
-
-################################################################################
 # hostname #####################################################################
 ################################################################################
 
 echo "initscript: setting hostname"
 
-if [ ! -z "${HOSTNAME}" ]; then
+if [ "${HOSTNAME}" ]; then
   hostname "${HOSTNAME}"
 fi
 
@@ -131,11 +123,11 @@ done
 
 echo "initscript: setting console keymap and font"
 
-if [ ! -z "${CONSOLE_KEYMAP}" ]; then
+if [ "${CONSOLE_KEYMAP}" ]; then
   /usr/bin/loadkeys "${CONSOLE_KEYMAP}"
 fi
 
-if [ ! -z "${CONSOLE_FONT}" ]; then
+if [ "${CONSOLE_FONT}" ]; then
   for TTY in /dev/tty[0-9]*; do
     /usr/bin/setfont "${CONSOLE_FONT}" -C "${TTY}" &> /dev/null
   done
@@ -155,8 +147,9 @@ fi
 # filesystems ##################################################################
 ################################################################################
 
-echo "initscript: mounting other filesystems"
+echo "initscript: mounting filesystems"
 
+mount -o remount,rw /
 mount -a
 
 ################################################################################

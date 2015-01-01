@@ -18,7 +18,7 @@ source=('mkinitramfs'
         'LICENSE')
 md5sums=('0aad527f0153113b6ae2391bba2c2e7a'
          '39a8f4790c4e44358df5429b4757cbc8'
-         '02bcab921e224726c18c07bbc74742e8'
+         'bb210ac669d63d186a813d44e0a3125d'
          '9f1c6ff05b3f32f8ea72e919fac41d40'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
