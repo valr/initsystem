@@ -29,10 +29,12 @@ source=('init.c'
         'rc.d.cron'
         'rc.d.cups'
         'rc.d.dbus'
-        'rc.d.dhcpcd'
+        'rc.d.dhcpc'
         'rc.d.eudev'
         'rc.d.iptables'
         'rc.d.ip6tables'
+        'rc.d.lm_sensors'
+        'rc.d.ntp'
         'rc.d.syslog'
         'rc.d.tlp'
         'rc.d.udev'
@@ -58,6 +60,8 @@ md5sums=('d20ccb0b26510b77f0ebf9c48f6fab0f'
          'c2f4e490b32daf4f1bd182761abf08a9'
          'eb26a94b6798b9cf59003dd055b3e259'
          'f855f47cbb78ddba6fdb779e596a64ea'
+         '676725ea0305cbe15772a349e9d39b14'
+         'cdb9717fc4aa827dad9d4e7b73c2ea82'
          'e1e0e1d9ac88b02698c117833164e1b8'
          'a5dbd75bafd5a575e7fbe72e1220b608'
          '638efa85c102f58d4056443c65f9ede7'
@@ -89,21 +93,23 @@ package() {
 
   # services
 
-  install -Dm755 "${srcdir}"/rc.subr        "${pkgdir}"/etc/rc.subr
-  install -Dm755 "${srcdir}"/rc.d.acpi      "${pkgdir}"/etc/rc.d/acpi
-  install -Dm755 "${srcdir}"/rc.d.alsa      "${pkgdir}"/etc/rc.d/alsa
-  install -Dm755 "${srcdir}"/rc.d.bumblebee "${pkgdir}"/etc/rc.d/bumblebee
-  install -Dm755 "${srcdir}"/rc.d.cron      "${pkgdir}"/etc/rc.d/cron
-  install -Dm755 "${srcdir}"/rc.d.cups      "${pkgdir}"/etc/rc.d/cups
-  install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
-  install -Dm755 "${srcdir}"/rc.d.dhcpcd    "${pkgdir}"/etc/rc.d/dhcpcd
-  install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
-  install -Dm755 "${srcdir}"/rc.d.iptables  "${pkgdir}"/etc/rc.d/iptables
-  install -Dm755 "${srcdir}"/rc.d.ip6tables "${pkgdir}"/etc/rc.d/ip6tables
-  install -Dm755 "${srcdir}"/rc.d.tlp       "${pkgdir}"/etc/rc.d/tlp
-  install -Dm755 "${srcdir}"/rc.d.syslog    "${pkgdir}"/etc/rc.d/syslog
-  install -Dm755 "${srcdir}"/rc.d.udev      "${pkgdir}"/etc/rc.d/udev
-  install -Dm755 "${srcdir}"/rc.d.wireless  "${pkgdir}"/etc/rc.d/wireless
+  install -Dm755 "${srcdir}"/rc.subr         "${pkgdir}"/etc/rc.subr
+  install -Dm755 "${srcdir}"/rc.d.acpi       "${pkgdir}"/etc/rc.d/acpi
+  install -Dm755 "${srcdir}"/rc.d.alsa       "${pkgdir}"/etc/rc.d/alsa
+  install -Dm755 "${srcdir}"/rc.d.bumblebee  "${pkgdir}"/etc/rc.d/bumblebee
+  install -Dm755 "${srcdir}"/rc.d.cron       "${pkgdir}"/etc/rc.d/cron
+  install -Dm755 "${srcdir}"/rc.d.cups       "${pkgdir}"/etc/rc.d/cups
+  install -Dm755 "${srcdir}"/rc.d.dbus       "${pkgdir}"/etc/rc.d/dbus
+  install -Dm755 "${srcdir}"/rc.d.dhcpc      "${pkgdir}"/etc/rc.d/dhcpc
+  install -Dm755 "${srcdir}"/rc.d.eudev      "${pkgdir}"/etc/rc.d/eudev
+  install -Dm755 "${srcdir}"/rc.d.iptables   "${pkgdir}"/etc/rc.d/iptables
+  install -Dm755 "${srcdir}"/rc.d.ip6tables  "${pkgdir}"/etc/rc.d/ip6tables
+  install -Dm755 "${srcdir}"/rc.d.lm_sensors "${pkgdir}"/etc/rc.d/lm_sensors
+  install -Dm755 "${srcdir}"/rc.d.ntp        "${pkgdir}"/etc/rc.d/ntp
+  install -Dm755 "${srcdir}"/rc.d.tlp        "${pkgdir}"/etc/rc.d/tlp
+  install -Dm755 "${srcdir}"/rc.d.syslog     "${pkgdir}"/etc/rc.d/syslog
+  install -Dm755 "${srcdir}"/rc.d.udev       "${pkgdir}"/etc/rc.d/udev
+  install -Dm755 "${srcdir}"/rc.d.wireless   "${pkgdir}"/etc/rc.d/wireless
 
   # symlinks
 
