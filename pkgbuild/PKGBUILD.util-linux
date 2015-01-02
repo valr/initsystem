@@ -1,36 +1,26 @@
-# $Id: PKGBUILD 219294 2014-08-04 20:42:25Z dreisner $
+# $Id: PKGBUILD 228092 2014-12-27 16:41:31Z dreisner $
 # Maintainer: Tom Gundersen <teg@jklm.no>
 # Maintainer: Dave Reisner <dreisner@archlinux.org>
 # Contributor: judd <jvinet@zeroflux.org>
 
 pkgbase=util-linux
 pkgname=(util-linux libutil-linux)
-pkgver=2.25
-pkgrel=3
+pkgver=2.25.2
+pkgrel=1
 pkgdesc="Miscellaneous system utilities for Linux"
 url="http://www.kernel.org/pub/linux/utils/util-linux/"
 arch=('i686' 'x86_64')
 makedepends=('python')
 license=('GPL2')
 options=('strip' 'debug')
-source=("ftp://ftp.kernel.org/pub/linux/utils/$pkgname/v2.25/$pkgname-$pkgver.tar.xz"
+source=("https://www.kernel.org/pub/linux/utils/util-linux/v2.25/$pkgname-$pkgver.tar.xz"
         uuidd.tmpfiles
-        pam-login
-        pam-common
-        pam-su
-        0001-fdisk-fix-l-device.patch)
-md5sums=('4c78fdef4cb882caafad61e33cafbc14'
+        pam-{login,common,su})
+md5sums=('cab3d7be354000f629bc601238b629b3'
          'a39554bfd65cccfd8254bb46922f4a67'
          '4368b3f98abd8a32662e094c54e7f9b1'
          'a31374fef2cba0ca34dfc7078e2969e4'
-         'fa85e5cce5d723275b14365ba71a8aad'
-         '93cf977a7abc6f30152295e2aef453fa')
-
-prepare() {
-  cd "$pkgname-$pkgver"
-
-  patch -Np1 <"$srcdir"/0001-fdisk-fix-l-device.patch
-}
+         'fa85e5cce5d723275b14365ba71a8aad')
 
 build() {
   cd "$pkgname-$pkgver"
@@ -59,7 +49,7 @@ package_util-linux() {
   depends=('pam' 'shadow' 'coreutils' 'libutil-linux')
   optdepends=('python: python bindings to libmount')
   install=util-linux.install
-  groups=('base' 'base-devel' 'initsystem')
+  groups=('base' 'base-devel' 'noupgrade')
   backup=(etc/pam.d/chfn
           etc/pam.d/chsh
           etc/pam.d/login
@@ -99,7 +89,7 @@ package_util-linux() {
 package_libutil-linux() {
   pkgdesc="util-linux runtime libraries"
   provides=('libblkid.so' 'libmount.so' 'libsmartcols.so' 'libuuid.so')
-  groups=('initsystem')
+  groups=('noupgrade')
 
   mv "$srcdir/_libutil-linux"/* "$pkgdir"
 }

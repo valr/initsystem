@@ -1,29 +1,33 @@
-# $Id: PKGBUILD 217804 2014-07-24 03:38:09Z fyan $
+# $Id: PKGBUILD 227918 2014-12-22 03:29:32Z heftig $
 # Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=colord
-pkgver=1.2.1
-pkgrel=1
+pkgver=1.2.7
+pkgrel=2
 pkgdesc="System daemon for managing color devices"
 arch=(i686 x86_64)
 url="http://www.freedesktop.org/software/colord"
 license=(GPL2)
 depends=(lcms2 libgusb polkit sqlite dconf dbus)
-makedepends=(intltool gobject-introspection vala docbook2x sane bash-completion)
-optdepends=('sane: scanner support')
+makedepends=(intltool gobject-introspection vala docbook2x sane bash-completion
+             argyllcms)
+optdepends=('sane: scanner support'
+            'argyllcms: color profiling')
 replaces=('shared-color-profiles')
 install=colord.install
 source=($url/releases/$pkgname-$pkgver.tar.xz{,.asc})
-sha1sums=('4547f3a4d65fea36053f303f7313f60eae14b7d9'
+sha1sums=('fee7271a9acfd6c7e78c0820407d574d5172c40c'
           'SKIP')
-groups=('initsystem')
+validpgpkeys=('163EB50119225DB3DF8F49EA17ACBA8DFA970E17')
+groups=('noupgrade')
 
 build() {
   cd $pkgname-$pkgver
   ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
     --libexecdir=/usr/lib/$pkgname --disable-static \
-    --disable-systemd-login \
+    --with-systemdsystemunitdir=no \
+    --enable-systemd-login=no \
     --enable-vala --enable-sane --with-daemon-user=colord
   make
 }
@@ -31,6 +35,9 @@ build() {
 package() {
   cd $pkgname-$pkgver
   make DESTDIR="$pkgdir" install
+
+  # the build system has no colord user, so the chown fails
+  chown -R 124:124 "$pkgdir/var/lib/colord"
 }
 
 # vim:set ts=2 sw=2 et:

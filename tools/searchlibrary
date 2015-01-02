@@ -1,0 +1,45 @@
+#!/bin/bash
+
+export LC_ALL=C
+
+searchfile() {
+  readelf -d "$2" | grep library | grep "$1" | cut -d ':' -f 2 | tr -d '[]'
+}
+
+searchdirectory() {
+  for FILE in `find "$1"`; do
+    LIBRARY=`readelf -d "${FILE}" 2>/dev/null | grep library | grep "$2" | cut -d ':' -f 2 | tr -d '[]'`
+
+    if [ "${LIBRARY}" -a "${LIBRARY}" != " " ]; then
+      PACKAGE=`pacman -Qqo "${FILE}"`
+      echo "${FILE} ${PACKAGE} ${LIBRARY}"
+    fi
+  done
+}
+
+case $# in
+  1)
+    echo ""
+    echo "scanning for $1 in /usr/bin"
+    echo ""
+    searchdirectory "/usr/bin" "$1" | sort -k2 | column -t
+
+    echo ""
+    echo "scanning for $1 in /usr/lib"
+    echo ""
+    searchdirectory "/usr/lib" "$1" | sort -k2 | column -t
+
+    echo ""
+    echo "scanning for $1 in /usr/lib32"
+    echo ""
+    searchdirectory "/usr/lib32" "$1" | sort -k2 | column -t
+    ;;
+  2)
+    searchfile "$1" "$2"
+    ;;
+  *)
+    echo "usage: `basename $0` identifier <file>"
+    exit 1
+    ;;
+esac
+exit 0

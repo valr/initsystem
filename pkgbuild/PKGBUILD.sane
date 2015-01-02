@@ -1,4 +1,4 @@
-# $Id: PKGBUILD 198401 2013-10-30 14:38:47Z allan $
+# $Id: PKGBUILD 228018 2014-12-24 14:44:26Z jgc $
 # Maintainer: Tobias Powalowski <tpowa@archlinux.org>
 # Contributor: Sarah Hay <sarahhay@mb.sympatico.ca>
 # Contributor: Simo L. <neotuli@yahoo.com>
@@ -6,7 +6,7 @@
 
 pkgname=sane
 pkgver=1.0.24
-pkgrel=3
+pkgrel=4
 pkgdesc="Scanner Access Now Easy"
 url="http://www.sane-project.org/"
 arch=('i686' 'x86_64')
@@ -20,7 +20,7 @@ source=(ftp://ftp.archlinux.org/other/sane/$pkgname-backends-$pkgver.tar.gz
         'saned.service'
         'network.patch'
         'segfault-avahi-fix-kodakio.patch')
-groups=('initsystem')
+groups=('noupgrade')
 
 prepare() {
   cd "${srcdir}/${pkgname}-backends-${pkgver}"
@@ -30,6 +30,9 @@ prepare() {
    # #37525
    # https://alioth.debian.org/tracker/?group_id=30186&atid=410366&func=detail&aid=314301
    patch -Np1 -i ${srcdir}/segfault-avahi-fix-kodakio.patch
+
+   # can you provide a way to disable systemd, please!
+   sed -i 's:/usr/include/systemd/sd-daemon.h:/usr/include/no-systemd/sd-daemon.h:g' configure
 }
 
 build() {

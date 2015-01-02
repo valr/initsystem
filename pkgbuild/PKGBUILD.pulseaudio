@@ -19,7 +19,7 @@ makedepends=(libasyncns libcap attr libxtst libsm libsamplerate libtool rtkit
 options=(!emptydirs)
 source=(http://freedesktop.org/software/$pkgbase/releases/$pkgbase-$pkgver.tar.xz)
 sha256sums=('99c13a8b1249ddbd724f195579df79484e9af6418cecf6a15f003a7f36caf939')
-groups=('initsystem')
+groups=('noupgrade')
 
 prepare() {
   cd $pkgbase-$pkgver

@@ -1,18 +1,18 @@
-# $Id: PKGBUILD 220266 2014-08-20 09:21:14Z lfleischer $
+# $Id: PKGBUILD 227490 2014-12-11 16:03:02Z foutrelis $
 # Maintainer: Paul Mattal <paul@archlinux.org>
 
 pkgbase=lirc
 pkgname=('lirc' 'lirc-utils')
 _pkgver=0.9.1a
 [[ $_pkgver =~ [a-z]$ ]] && pkgver="${_pkgver:0:-1}.${_pkgver: -1}" || pkgver="$_pkgver"
-pkgrel=3
+pkgrel=9
 epoch=1
-_extramodules=extramodules-3.16-ARCH
+_extramodules=extramodules-3.17-ARCH
 arch=('i686' 'x86_64')
 url="http://www.lirc.org/"
 license=('GPL')
 # NOTICE: Don't forget to bump version in depends in package_lirc()!
-makedepends=('help2man' 'linux>=3.16' 'linux<3.17' 'linux-headers>=3.16' 'linux-headers<3.17' 'alsa-lib' 'libx11' 'libftdi-compat' 'libirman' 'python2')
+makedepends=('help2man' 'linux>=3.17' 'linux<3.18' 'linux-headers>=3.17' 'linux-headers<3.18' 'alsa-lib' 'libx11' 'libftdi-compat' 'libirman' 'python2')
 options=('!makeflags' '!strip')
 source=("http://prdownloads.sourceforge.net/${pkgbase}/${pkgbase}-${_pkgver}.tar.bz2"
         wpc8769l-build-fix.patch
@@ -26,7 +26,7 @@ md5sums=('1f1fac162ed309dd50f307e96a292957'
          '3deb02604b37811d41816e9b4385fcc3'
          '32df3b9bc859565d6acf5f0e5b747083'
          'febf25c154a7d36f01159e84f26c2d9a')
-groups=('initsystem')
+groups=('noupgrade')
 
 prepare() {
   cd "${srcdir}/lirc-${_pkgver}"
@@ -39,6 +39,10 @@ prepare() {
       -e 's/@X_LIBS@//g' \
       -e 's/@X_PRE_LIBS@//g' \
       -e 's/@X_EXTRA_LIBS@//g' -i Makefile.am tools/Makefile.am
+
+  # can you provide a way to disable systemd, please!
+  sed -i 's:libsystemd-daemon:lib-no-systemd-daemon:g' configure.ac
+  sed -i 's:/usr/lib/systemd/system:/usr/lib/no-systemd/system:g' configure.ac
 
   libtoolize
   autoreconf
@@ -64,7 +68,7 @@ build() {
 
 package_lirc() {
   pkgdesc="Linux Infrared Remote Control kernel modules for stock arch kernel"
-  depends=('lirc-utils' 'linux>=3.16' 'linux<3.17')
+  depends=('lirc-utils' 'linux>=3.17' 'linux<3.18')
   replaces=('lirc+pctv')
   install=lirc.install
 
@@ -89,6 +93,7 @@ package_lirc-utils() {
 
   make DESTDIR="${pkgdir}" install
 
+  install -Dm644 "${srcdir}"/irexec.service "${pkgdir}"/usr/lib/systemd/system/irexec.service
   install -Dm644 "${srcdir}"/lirc.tmpfiles "${pkgdir}"/usr/lib/tmpfiles.d/lirc.conf
 
   cp -rp remotes "${pkgdir}/usr/share/lirc"

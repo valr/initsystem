@@ -1,11 +1,11 @@
-# $Id: PKGBUILD 216821 2014-07-11 19:28:08Z dreisner $
+# $Id: PKGBUILD 227344 2014-12-07 10:32:31Z fyan $
 # Maintainer: Tom Gundersen <teg@jklm.no>
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: Link Dupont <link@subpop.net>
 
 pkgbase=dbus
 pkgname=('dbus' 'libdbus')
-pkgver=1.8.6
+pkgver=1.8.12
 pkgrel=1
 pkgdesc="Freedesktop.org message bus system"
 url="http://www.freedesktop.org/Software/dbus"
@@ -14,10 +14,11 @@ license=('GPL' 'custom')
 makedepends=('libx11' 'xmlto' 'docbook-xsl')
 source=(http://dbus.freedesktop.org/releases/dbus/dbus-$pkgver.tar.gz{,.asc}
         30-dbus)
-md5sums=('6a08ba555d340e9dfe2d623b83c0eea8'
+md5sums=('0ca23fc84c09cb3d29b9c27811ff4475'
          'SKIP'
          '3314d727fa57fc443fce25b5cbeebbcc')
-groups=('initsystem')
+validpgpkeys=('DA98F25C0871C49A59EAFF2C4DE8FF2A63C7CC90')
+groups=('noupgrade')
 
 build() {
   cd dbus-$pkgver
@@ -30,8 +31,7 @@ build() {
       --disable-verbose-mode --disable-static \
       --disable-tests --disable-asserts \
       --with-systemdsystemunitdir=/usr/lib/systemd/system \
-      --disable-systemd
-
+      --enable-systemd=no
   make
 }
 

@@ -13,7 +13,7 @@ makedepends=(intltool gtk-doc gobject-introspection)
 install=polkit.install
 source=(http://www.freedesktop.org/software/polkit/releases/$pkgname-$pkgver.tar.gz
         polkit.pam)
-groups=('initsystem')
+groups=('noupgrade')
 
 build() {
   cd $pkgname-$pkgver

@@ -10,12 +10,12 @@
 
 pkgbase=samba
 pkgname=('libwbclient' 'smbclient' 'samba')
-pkgver=4.1.11
+pkgver=4.1.14
 # We use the 'A' to fake out pacman's version comparators.  Samba chooses
 # to append 'a','b',etc to their subsequent releases, which pamcan
 # misconstrues as alpha, beta, etc.  Bad samba!
-_realver=4.1.11
-pkgrel=1
+_realver=4.1.14
+pkgrel=2
 arch=(i686 x86_64)
 url="http://www.samba.org"
 license=('GPL3')
@@ -33,7 +33,7 @@ source=(http://us1.samba.org/samba/ftp/stable/${pkgbase}-${_realver}.tar.gz
         smbd@.service
         winbindd.service
         samba.conf)
-groups=('initsystem')
+groups=('noupgrade')
 ### UNINSTALL dmapi package before building!!!
 
 build() {
@@ -79,8 +79,10 @@ _samba4_auth_modules=auth_unix,auth_wbc,auth_server,auth_netlogond,auth_script,a
               --enable-gnutls \
               --with-pam \
               --with-pammodulesdir=/usr/lib/security \
+              --bundled-libraries=!tdb,!talloc,!pytalloc-util,!tevent,!popt,!ldb,!pyldb-util \
               --with-shared-modules=${_samba4_idmap_modules},${_samba4_pdb_modules},${_samba4_auth_modules} \
-              --disable-rpath-install
+              --disable-rpath-install \
+              --without-systemd
 
               # Add this to the options once it's working...
                #--with-system-mitkrb5 /opt/heimdal
@@ -237,7 +239,7 @@ sys.path.insert(0, '/usr/lib/python${_pyver}/site-packages')" \
   # copy ldap example
   install -D -m644 ${srcdir}/samba-${_realver}/examples/LDAP/samba.schema ${pkgdir}/usr/share/doc/samba/examples/LDAP/samba.schema
 }
-md5sums=('d7377e7247ad16f6b15363727b91b761'
+md5sums=('9f7bae123ed39d2aa9ba842d3a138d54'
          '5697da77590ec092cc8a883bae06093c'
          '96f82c38f3f540b53f3e5144900acf17'
          'ee4763a656cf00d92bfda31b6bb2c5cb'
