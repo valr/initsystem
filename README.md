@@ -16,4 +16,5 @@ Build and install the following packages:
 6. eudev (optional: replaces udev components from systemd)
 7. initramfs
 8. initsystem
-9. all packages in pkgbuild directory (remove dependencies on systemd components)
+9. services
+10. all packages in pkgbuild directory (remove dependencies on systemd components)
