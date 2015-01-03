@@ -23,26 +23,10 @@ source=('init.c'
         'shutdown'
         'tmpfiles'
         'rc.subr'
-        'rc.d.acpi'
-        'rc.d.alsa'
-        'rc.d.bumblebee'
-        'rc.d.cron'
-        'rc.d.cups'
-        'rc.d.dbus'
-        'rc.d.dhcpc'
-        'rc.d.eudev'
-        'rc.d.iptables'
-        'rc.d.ip6tables'
-        'rc.d.lm_sensors'
-        'rc.d.ntp'
-        'rc.d.syslog'
-        'rc.d.tlp'
-        'rc.d.udev'
-        'rc.d.wireless'
         'LICENSE')
 md5sums=('d20ccb0b26510b77f0ebf9c48f6fab0f'
          '54be417577fd46edb4fcfeee206c6edc'
-         '3f62202d7becacc7022e50bbaff83388'
+         'dc9a14dcf7637913e7d4390a9139a2b2'
          'f9d345202573c58dfea5f7d39530b36d'
          '0016d7bd9a0a85316796387789c03ba4'
          'e1df3be4eed6263e3d046cd5f52106a2'
@@ -50,22 +34,6 @@ md5sums=('d20ccb0b26510b77f0ebf9c48f6fab0f'
          '07c56d75dd64e0a04a3cccf28f5d7e97'
          '9d0cce73f5c7e7dd3f1cc8bf33de9f88'
          'ebb2b2bb22c08fa6a0411b6fec1d9eae'
-         'b3158a98409ad0234d874f257aef7d30'
-         '6fd3ad2827b1e7ac09bfe8bfc0d6fa40'
-         '35d1e017de6158617f2b1a2bbf291044'
-         'c81ad8cc66bd819b75c354234959384a'
-         'fba02ce5db7274182bbef5ce16aa79f2'
-         '9bc2327de5108e2654f568b5e1eacd63'
-         'ed5afbda540156cc7d279133716248fe'
-         'c2f4e490b32daf4f1bd182761abf08a9'
-         'eb26a94b6798b9cf59003dd055b3e259'
-         'f855f47cbb78ddba6fdb779e596a64ea'
-         '676725ea0305cbe15772a349e9d39b14'
-         'cdb9717fc4aa827dad9d4e7b73c2ea82'
-         'e1e0e1d9ac88b02698c117833164e1b8'
-         'a5dbd75bafd5a575e7fbe72e1220b608'
-         '638efa85c102f58d4056443c65f9ede7'
-         '1a6eee4c7bba9ee52607547dc1532b68'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
@@ -93,23 +61,7 @@ package() {
 
   # services
 
-  install -Dm755 "${srcdir}"/rc.subr         "${pkgdir}"/etc/rc.subr
-  install -Dm755 "${srcdir}"/rc.d.acpi       "${pkgdir}"/etc/rc.d/acpi
-  install -Dm755 "${srcdir}"/rc.d.alsa       "${pkgdir}"/etc/rc.d/alsa
-  install -Dm755 "${srcdir}"/rc.d.bumblebee  "${pkgdir}"/etc/rc.d/bumblebee
-  install -Dm755 "${srcdir}"/rc.d.cron       "${pkgdir}"/etc/rc.d/cron
-  install -Dm755 "${srcdir}"/rc.d.cups       "${pkgdir}"/etc/rc.d/cups
-  install -Dm755 "${srcdir}"/rc.d.dbus       "${pkgdir}"/etc/rc.d/dbus
-  install -Dm755 "${srcdir}"/rc.d.dhcpc      "${pkgdir}"/etc/rc.d/dhcpc
-  install -Dm755 "${srcdir}"/rc.d.eudev      "${pkgdir}"/etc/rc.d/eudev
-  install -Dm755 "${srcdir}"/rc.d.iptables   "${pkgdir}"/etc/rc.d/iptables
-  install -Dm755 "${srcdir}"/rc.d.ip6tables  "${pkgdir}"/etc/rc.d/ip6tables
-  install -Dm755 "${srcdir}"/rc.d.lm_sensors "${pkgdir}"/etc/rc.d/lm_sensors
-  install -Dm755 "${srcdir}"/rc.d.ntp        "${pkgdir}"/etc/rc.d/ntp
-  install -Dm755 "${srcdir}"/rc.d.tlp        "${pkgdir}"/etc/rc.d/tlp
-  install -Dm755 "${srcdir}"/rc.d.syslog     "${pkgdir}"/etc/rc.d/syslog
-  install -Dm755 "${srcdir}"/rc.d.udev       "${pkgdir}"/etc/rc.d/udev
-  install -Dm755 "${srcdir}"/rc.d.wireless   "${pkgdir}"/etc/rc.d/wireless
+  install -dm755 "${pkgdir}"/etc/rc.d
 
   # symlinks
 
