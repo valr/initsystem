@@ -1,3 +1,8 @@
+post_install() {
+  printf '==> You have to configure the init system in /etc/rc.conf\n'
+  printf '    You can define extra startup commands in /etc/rc.local\n'
+  printf '    You can define extra shutdown commands in /etc/rc.shutdown.local\n'
+}
 
 post_upgrade() {
   # ask init (pid 1) to re-exec itself

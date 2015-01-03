@@ -8,13 +8,19 @@ Installation
 
 Build and install the following packages:
 
-1. musl-cross-compiler-x86_64
-2. musl
-3. busybox
-4. fsck-fat (for fat & vfat filesystems)
-5. fsck-ext (for ext3 & ext4 filesystems)
-6. eudev (optional: replaces udev components from systemd)
-7. initramfs
-8. initsystem
-9. services
-10. all packages in pkgbuild directory (remove dependencies on systemd components)
+- musl-cross-compiler-x86_64
+- musl
+- busybox
+- fsck-fat (for fat & vfat filesystems)
+- fsck-ext (for ext3 & ext4 filesystems)
+- initramfs
+- initsystem
+- services
+- cronjobs
+- eudev (optional: removes systemd and replaces udev components from systemd)
+- all packages in pkgbuild directory (removes dependencies on systemd libraries)
+
+Configure the following components:
+
+- initramfs: /etc/mkinitramfs.conf
+- initsystem: /etc/rc.conf
