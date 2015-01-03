@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/bin/logrotate /etc/logrotate.conf 2>&1 | /usr/bin/logger -i -t `basename $0`

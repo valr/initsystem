@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/usr/bin/mkdir -m 0755 -p /var/cache/man
+/usr/bin/mandb -q 2>&1 | /usr/bin/logger -i -t `basename $0`

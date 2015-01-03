@@ -1,0 +1,36 @@
+# Maintainer: valr <valere dot monseur at ymail dot com>
+
+pkgname=cronjobs
+pkgver=1.0.0
+pkgrel=1
+pkgdesc='cron jobs for the init system'
+url='https://github.com/valr/initsystem'
+license=('GPL')
+groups=('initsystem')
+arch=('any')
+depends=('cron')
+source=('fstrim'
+        'logrotate'
+        'mandb'
+        'pkgfile'
+        'pkgstats'
+        'shadow'
+        'updatedb')
+md5sums=('9c0251e5c155d3be6817055f356f1496'
+         'd8f9a48e01e612a511c4953607e7674e'
+         'e8b0e5afdea70098e5aefd06ce677340'
+         'c687f979fab3d0814f06511fe9cda956'
+         'caf030943bc1152f54e46f29def17b9c'
+         'c2446b25dbb8252fcd5b5461d19b89d7'
+         '91b757a126c63fd0b17a9fda8f4ff2d3')
+
+package() {
+  install -Dm755 "${srcdir}"/fstrim    "${pkgdir}"/etc/cron.daily/fstrim
+  install -Dm755 "${srcdir}"/logrotate "${pkgdir}"/etc/cron.daily/logrotate
+  install -Dm755 "${srcdir}"/mandb     "${pkgdir}"/etc/cron.daily/mandb
+  install -Dm755 "${srcdir}"/pkgfile   "${pkgdir}"/etc/cron.daily/pkgfile
+  install -Dm755 "${srcdir}"/shadow    "${pkgdir}"/etc/cron.daily/shadow
+  install -Dm755 "${srcdir}"/updatedb  "${pkgdir}"/etc/cron.daily/updatedb
+
+  install -Dm755 "${srcdir}"/pkgstats  "${pkgdir}"/etc/cron.weekly/pkgstats
+}
