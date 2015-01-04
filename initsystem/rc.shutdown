@@ -101,13 +101,13 @@ wait_pids() {
 echo "shutdown: sending SIGTERM to processes"
 
 killall5 -TERM
-wait_pids 240
+wait_pids 120
 
 if [ $? -ne 0 ]; then
   echo "shutdown: sending SIGKILL to processes"
 
   killall5 -KILL
-  wait_pids 240
+  wait_pids 120
 fi
 
 ################################################################################
