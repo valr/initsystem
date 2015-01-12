@@ -132,6 +132,9 @@ int main (int argc, char **argv)
     time_t respawn_tim[RESPAWN_CNT] = {};
     char respawn_cmd[MAX_STR_LEN];
 
+    char reexec_cmd[MAX_STR_LEN];
+    char reexec_arg[MAX_STR_LEN];
+
     if (getpid () != 1)
         return EXIT_FAILURE;
 
@@ -232,9 +235,6 @@ int main (int argc, char **argv)
             case SIGQUIT:
                 if (spawn_pid == 0)
                 {
-                    char reexec_cmd[MAX_STR_LEN];
-                    char reexec_arg[MAX_STR_LEN];
-
                     strcpy (reexec_cmd, argv[0]);
 
                     for (respawn_idx = 0; respawn_idx < RESPAWN_CNT; respawn_idx++)
