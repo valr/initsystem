@@ -19,7 +19,7 @@ source=('rc.d.acpi'
         'rc.d.eudev'
         'rc.d.iptables'
         'rc.d.ip6tables'
-        'rc.d.lm_sensors'
+        'rc.d.sensors'
         'rc.d.ntp'
         'rc.d.syslog'
         'rc.d.tlp'
@@ -45,22 +45,22 @@ md5sums=('b3158a98409ad0234d874f257aef7d30'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
-  install -Dm755 "${srcdir}"/rc.d.acpi       "${pkgdir}"/etc/rc.d/acpi
-  install -Dm755 "${srcdir}"/rc.d.alsa       "${pkgdir}"/etc/rc.d/alsa
-  install -Dm755 "${srcdir}"/rc.d.bumblebee  "${pkgdir}"/etc/rc.d/bumblebee
-  install -Dm755 "${srcdir}"/rc.d.cron       "${pkgdir}"/etc/rc.d/cron
-  install -Dm755 "${srcdir}"/rc.d.cups       "${pkgdir}"/etc/rc.d/cups
-  install -Dm755 "${srcdir}"/rc.d.dbus       "${pkgdir}"/etc/rc.d/dbus
-  install -Dm755 "${srcdir}"/rc.d.dhcpc      "${pkgdir}"/etc/rc.d/dhcpc
-  install -Dm755 "${srcdir}"/rc.d.eudev      "${pkgdir}"/etc/rc.d/eudev
-  install -Dm755 "${srcdir}"/rc.d.iptables   "${pkgdir}"/etc/rc.d/iptables
-  install -Dm755 "${srcdir}"/rc.d.ip6tables  "${pkgdir}"/etc/rc.d/ip6tables
-  install -Dm755 "${srcdir}"/rc.d.lm_sensors "${pkgdir}"/etc/rc.d/lm_sensors
-  install -Dm755 "${srcdir}"/rc.d.ntp        "${pkgdir}"/etc/rc.d/ntp
-  install -Dm755 "${srcdir}"/rc.d.tlp        "${pkgdir}"/etc/rc.d/tlp
-  install -Dm755 "${srcdir}"/rc.d.syslog     "${pkgdir}"/etc/rc.d/syslog
-  install -Dm755 "${srcdir}"/rc.d.udev       "${pkgdir}"/etc/rc.d/udev
-  install -Dm755 "${srcdir}"/rc.d.wireless   "${pkgdir}"/etc/rc.d/wireless
+  install -Dm755 "${srcdir}"/rc.d.acpi      "${pkgdir}"/etc/rc.d/acpi
+  install -Dm755 "${srcdir}"/rc.d.alsa      "${pkgdir}"/etc/rc.d/alsa
+  install -Dm755 "${srcdir}"/rc.d.bumblebee "${pkgdir}"/etc/rc.d/bumblebee
+  install -Dm755 "${srcdir}"/rc.d.cron      "${pkgdir}"/etc/rc.d/cron
+  install -Dm755 "${srcdir}"/rc.d.cups      "${pkgdir}"/etc/rc.d/cups
+  install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
+  install -Dm755 "${srcdir}"/rc.d.dhcpc     "${pkgdir}"/etc/rc.d/dhcpc
+  install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
+  install -Dm755 "${srcdir}"/rc.d.iptables  "${pkgdir}"/etc/rc.d/iptables
+  install -Dm755 "${srcdir}"/rc.d.ip6tables "${pkgdir}"/etc/rc.d/ip6tables
+  install -Dm755 "${srcdir}"/rc.d.sensors   "${pkgdir}"/etc/rc.d/sensors
+  install -Dm755 "${srcdir}"/rc.d.ntp       "${pkgdir}"/etc/rc.d/ntp
+  install -Dm755 "${srcdir}"/rc.d.tlp       "${pkgdir}"/etc/rc.d/tlp
+  install -Dm755 "${srcdir}"/rc.d.syslog    "${pkgdir}"/etc/rc.d/syslog
+  install -Dm755 "${srcdir}"/rc.d.udev      "${pkgdir}"/etc/rc.d/udev
+  install -Dm755 "${srcdir}"/rc.d.wireless  "${pkgdir}"/etc/rc.d/wireless
 
   install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
