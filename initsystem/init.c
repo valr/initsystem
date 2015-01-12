@@ -23,21 +23,20 @@
  * 5 minutes.
  *
  * When the initscript reaches the timeout period, the rest of the process will
- * simply continue.
+ * simply continue i.e. respawn processes are started.
  *
  * When the shutdown script reaches the timeout period, the status of the
- * shutdown process is reset as if it was not executed.
+ * shutdown process is reset as if it was not executed i.e. respawn processes
+ * are (re)started.
  */
 
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <syslog.h>
 #include <time.h>
 #include <unistd.h>
 
-#include <sys/prctl.h>
 #include <sys/reboot.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -55,14 +54,9 @@
 #define MAX_STR_LEN 256
 #endif
 
-volatile sig_atomic_t signal_number = 0;
+static sigset_t signal_set;
 
-void signal_handler (int signum)
-{
-    signal_number = signum;
-}
-
-char** parse_command (char *command)
+static char** split_command (char *command)
 {
     static char* argv[MAX_ARG_NUM];
     static char arg[MAX_STR_LEN];
@@ -92,17 +86,18 @@ char** parse_command (char *command)
     return argv;
 }
 
-pid_t spawn_command (char **argv)
+static pid_t spawn_command (char **argv)
 {
     pid_t pid = fork ();
 
     switch (pid)
     {
         case 0:
+            sigprocmask (SIG_UNBLOCK, &signal_set, NULL);
             setsid ();
             execvp (*argv, argv);
             sleep (3);
-            _exit (1);
+            _exit (EXIT_FAILURE);
             break;
 
         case -1:
@@ -114,12 +109,12 @@ pid_t spawn_command (char **argv)
     return pid;
 }
 
-void exec_command (char **argv)
+static void exec_command (char **argv)
 {
     execvp (*argv, argv);
 }
 
-time_t get_time ()
+static time_t get_time ()
 {
     struct timespec time;
 
@@ -130,137 +125,129 @@ time_t get_time ()
 
 int main (int argc, char **argv)
 {
-    struct sigaction signal_action;
-    pid_t init_pid = 0, shutdown_pid = 0, dead_pid = 0;
-    time_t init_timeout = 0, shutdown_timeout = 0;
+    pid_t spawn_pid = 0, dead_pid = 0;
 
-    int respawn_index;
-    char respawn_command[MAX_STR_LEN];
+    int respawn_idx;
     pid_t respawn_pid[RESPAWN_CNT] = {};
-    time_t respawn_time[RESPAWN_CNT] = {};
-
-    char reexec_command[MAX_STR_LEN];
-    char reexec_arg[MAX_STR_LEN];
+    time_t respawn_tim[RESPAWN_CNT] = {};
+    char respawn_cmd[MAX_STR_LEN];
 
     if (getpid () != 1)
-    {
-        return 1;
-    }
+        return EXIT_FAILURE;
 
     reboot (RB_DISABLE_CAD);
     putenv ("PATH=/sbin:/bin:/usr/sbin:/usr/bin");
-    umask (0);
     setsid ();
+    umask (0);
     chdir ("/");
+
+	sigfillset (&signal_set);
+	sigprocmask (SIG_BLOCK, &signal_set, NULL);
 
     if (argc == 1)
     {
-        init_pid = spawn_command (parse_command ("/etc/rc"));
-        init_timeout = get_time () + 300;
-
-        while (init_pid)
-        {
-            dead_pid = waitpid (-1, 0, WNOHANG);
-
-            if (dead_pid == init_pid)
-                break;
-
-            if (dead_pid <= 0)
-                sleep (1);
-
-            if (init_timeout <= get_time ())
-                break;
-        }
+        spawn_pid = spawn_command (split_command ("/etc/rc"));
+        alarm (300);
     }
     else
     {
-        for (respawn_index = 0; respawn_index < RESPAWN_CNT; respawn_index++)
+        for (respawn_idx = 0; respawn_idx < RESPAWN_CNT; respawn_idx++)
         {
-            if (respawn_index + 1 < argc)
+            if (respawn_idx + 1 < argc)
             {
-                sscanf (argv[respawn_index + 1], "%d", &respawn_pid[respawn_index]);
-                memset (argv[respawn_index + 1], '\0', strlen (argv[respawn_index + 1]));
+                sscanf (argv[respawn_idx + 1], "%d", &respawn_pid[respawn_idx]);
+                memset (argv[respawn_idx + 1], '\0', strlen (argv[respawn_idx + 1]));
             }
         }
     }
-
-    signal_action.sa_handler = &signal_handler;
-    signal_action.sa_flags = SA_RESTART;
-    sigfillset (&signal_action.sa_mask);
-
-    sigaction (SIGTERM, &signal_action, 0);
-    sigaction (SIGUSR1, &signal_action, 0);
-    sigaction (SIGUSR2, &signal_action, 0);
-    sigaction (SIGQUIT, &signal_action, 0);
 
     while (1)
     {
-        dead_pid = waitpid (-1, 0, WNOHANG);
-
-        if (dead_pid <= 0)
+        switch (sigwaitinfo (&signal_set, NULL))
         {
-            dead_pid = -1;
-            sleep (1);
-        }
-
-        for (respawn_index = 0; respawn_index < RESPAWN_CNT; respawn_index++)
-        {
-            if (respawn_pid[respawn_index] == 0 || respawn_pid[respawn_index] == dead_pid)
-            {
-                if (signal_number == 0 && respawn_time[respawn_index] <= get_time ())
+            case SIGCHLD:
+                while ((dead_pid = waitpid (-1, NULL, WNOHANG)) > 0)
                 {
-                    sprintf (respawn_command, "/etc/rc.respawn %d", respawn_index + 1);
-                    respawn_pid[respawn_index] = spawn_command (parse_command (respawn_command));
-                    respawn_time[respawn_index] = get_time () + 7;
+                    if (spawn_pid == dead_pid)
+                    {
+                        spawn_pid = 0;
+                        alarm (0);
+                    }
+
+                    for (respawn_idx = 0; respawn_idx < RESPAWN_CNT; respawn_idx++)
+                    {
+                        if (respawn_pid[respawn_idx] == 0 || respawn_pid[respawn_idx] == dead_pid)
+                        {
+                            if (respawn_tim[respawn_idx] <= get_time () && spawn_pid == 0)
+                            {
+                                sprintf (respawn_cmd, "/etc/rc.respawn %d", respawn_idx + 1);
+                                respawn_pid[respawn_idx] = spawn_command (split_command (respawn_cmd));
+                                respawn_tim[respawn_idx] = get_time () + 7;
+                            }
+                            else
+                                respawn_pid[respawn_idx] = 0;
+                        }
+                    }
                 }
-                else
-                    respawn_pid[respawn_index] = 0;
-            }
-        }
+                break;
 
-        if (signal_number != 0)
-        {
-            if (signal_number == SIGQUIT)
-            {
-                strcpy (reexec_command, argv[0]);
+            case SIGALRM:
+                spawn_pid = 0;
 
-                for (respawn_index = 0; respawn_index < RESPAWN_CNT; respawn_index++)
+                for (respawn_idx = 0; respawn_idx < RESPAWN_CNT; respawn_idx++)
                 {
-                    sprintf (reexec_arg, " %d", respawn_pid[respawn_index]);
-                    strcat (reexec_command, reexec_arg);
+                    if (respawn_pid[respawn_idx] == 0)
+                    {
+                        sprintf (respawn_cmd, "/etc/rc.respawn %d", respawn_idx + 1);
+                        respawn_pid[respawn_idx] = spawn_command (split_command (respawn_cmd));
+                        respawn_tim[respawn_idx] = get_time () + 7;
+                    }
                 }
+                break;
 
-                exec_command (parse_command (reexec_command));
-                signal_number = 0;
-            }
-
-            if (shutdown_pid == 0)
-            {
-                switch (signal_number)
+            case SIGTERM:
+                if (spawn_pid == 0)
                 {
-                    case SIGTERM:
-                        shutdown_pid = spawn_command (parse_command ("/etc/rc.shutdown poweroff"));
-                        break;
-
-                    case SIGUSR1:
-                        shutdown_pid = spawn_command (parse_command ("/etc/rc.shutdown reboot"));
-                        break;
-
-                    case SIGUSR2:
-                        shutdown_pid = spawn_command (parse_command ("/etc/rc.shutdown halt"));
-                        break;
+                    spawn_pid = spawn_command (split_command ("/etc/rc.shutdown poweroff"));
+                    alarm (300);
                 }
+                break;
 
-                shutdown_timeout = get_time () + 300;
-            }
+            case SIGUSR1:
+                if (spawn_pid == 0)
+                {
+                    spawn_pid = spawn_command (split_command ("/etc/rc.shutdown reboot"));
+                    alarm (300);
+                }
+                break;
 
-            if (shutdown_pid == 0 || shutdown_pid == dead_pid || shutdown_timeout <= get_time ())
-            {
-                signal_number = 0;
-                shutdown_pid = 0;
-            }
+            case SIGUSR2:
+                if (spawn_pid == 0)
+                {
+                    spawn_pid = spawn_command (split_command ("/etc/rc.shutdown halt"));
+                    alarm (300);
+                }
+                break;
+
+            case SIGQUIT:
+                if (spawn_pid == 0)
+                {
+                    char reexec_cmd[MAX_STR_LEN];
+                    char reexec_arg[MAX_STR_LEN];
+
+                    strcpy (reexec_cmd, argv[0]);
+
+                    for (respawn_idx = 0; respawn_idx < RESPAWN_CNT; respawn_idx++)
+                    {
+                        sprintf (reexec_arg, " %d", respawn_pid[respawn_idx]);
+                        strcat (reexec_cmd, reexec_arg);
+                    }
+
+                    exec_command (split_command (reexec_cmd));
+                }
+                break;
         }
     }
 
-    return 1;
+    return EXIT_FAILURE;
 }
