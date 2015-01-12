@@ -141,8 +141,8 @@ int main (int argc, char **argv)
     umask (0);
     chdir ("/");
 
-	sigfillset (&signal_set);
-	sigprocmask (SIG_BLOCK, &signal_set, NULL);
+    sigfillset (&signal_set);
+    sigprocmask (SIG_BLOCK, &signal_set, NULL);
 
     if (argc == 1)
     {
