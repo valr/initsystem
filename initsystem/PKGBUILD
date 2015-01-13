@@ -25,7 +25,7 @@ source=('init.c'
         'tmpfiles'
         'rc.subr'
         'LICENSE')
-md5sums=('44c939c16fcb18ce189ed39a5af52e78'
+md5sums=('e9a774c66616bec3ef97c56bd7f58160'
          '54be417577fd46edb4fcfeee206c6edc'
          'dc9a14dcf7637913e7d4390a9139a2b2'
          'f9d345202573c58dfea5f7d39530b36d'

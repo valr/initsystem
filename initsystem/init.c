@@ -47,7 +47,7 @@
 #endif
 
 #ifndef MAX_ARG_NUM
-#define MAX_ARG_NUM 16 /* strictly > RESPAWN_CNT */
+#define MAX_ARG_NUM 8 /* strictly > RESPAWN_CNT */
 #endif
 
 #ifndef MAX_STR_LEN
