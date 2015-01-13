@@ -32,10 +32,10 @@ md5sums=('e9a774c66616bec3ef97c56bd7f58160'
          '0016d7bd9a0a85316796387789c03ba4'
          'bdfcee0074b852198166681b665dd435'
          '8c53ae0e2e5584999f47f905bc226e5f'
-         'ebb2b2bb22c08fa6a0411b6fec1d9eae'
+         '43821e4310cedaa91aaff9667bf0383a'
          '07c56d75dd64e0a04a3cccf28f5d7e97'
          '9d0cce73f5c7e7dd3f1cc8bf33de9f88'
-         'ebb2b2bb22c08fa6a0411b6fec1d9eae'
+         '43821e4310cedaa91aaff9667bf0383a'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {

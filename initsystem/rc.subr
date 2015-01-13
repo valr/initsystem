@@ -64,14 +64,9 @@ pidfile() {
 rc_run() {
   for SRV in $1; do
     if [ "$SRV" = "$2" ]; then
-      case "$2" in
-        status)
-          $2; STATUS=0;;
-        *)
-          $2; STATUS=$?;;
-      esac
+      $2; STATUS=$?
 
-      if [ $STATUS -ne 0 ]; then
+      if [ "$2" != "status" -a $STATUS -ne 0 ]; then
         echo "`basename $0` failed"
       fi
 

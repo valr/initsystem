@@ -63,9 +63,9 @@ reload() {
 }
 
 status() {
-  pidfile /run/dbus/pid /usr/bin/dbus-daemon
+  pidfile /run/dbus/pid /usr/bin/dbus-daemon; STATUS=$?
 
-  case $? in
+  case $STATUS in
     0)
       echo "dbus-daemon is running as pid:"
       echo $PID
@@ -77,6 +77,8 @@ status() {
       echo "/run/dbus/pid is invalid"
       ;;
   esac
+
+  return $STATUS
 }
 
 rc_run "start stop restart reload status" $@
