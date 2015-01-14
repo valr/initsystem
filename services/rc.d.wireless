@@ -37,7 +37,6 @@ start() {
   /usr/bin/wpa_supplicant -B –D nl80211 \
     -P /run/wpa_supplicant.pid -i "${WIRELESS}" \
     -c /etc/wpa_supplicant/wpa_supplicant-"${WIRELESS}".conf || STATUS=1
-  /usr/bin/ip route add default via 192.168.1.1 dev "${WIRELESS}"
   return $STATUS
 }
 
