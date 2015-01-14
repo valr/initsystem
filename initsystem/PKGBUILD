@@ -11,7 +11,7 @@ arch=('x86_64')
 depends=('busybox' 'kbd')
 makedepends=('musl-cross-compiler-x86_64' 'musl')
 optdepends=('eudev: replaces udev from systemd')
-backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local')
+backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 install='initsystem.install'
 source=('init.c'
         'rc'
@@ -29,7 +29,7 @@ md5sums=('e9a774c66616bec3ef97c56bd7f58160'
          '54be417577fd46edb4fcfeee206c6edc'
          'dc9a14dcf7637913e7d4390a9139a2b2'
          'f9d345202573c58dfea5f7d39530b36d'
-         '0016d7bd9a0a85316796387789c03ba4'
+         'a6781031e16aab769c200c7f69d3735c'
          'bdfcee0074b852198166681b665dd435'
          '8c53ae0e2e5584999f47f905bc226e5f'
          '43821e4310cedaa91aaff9667bf0383a'
