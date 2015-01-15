@@ -36,7 +36,7 @@ start() {
     FLAGS="-${IP_VERSION}"
   fi
 
-  /usr/bin/ntpd -p /run/ntpd.pid -g -u ntp:ntp "${FLAGS}"
+  su -l -s /bin/ash -c "/usr/bin/ntpd -p /run/ntpd.pid -g -u ntp:ntp ${FLAGS}"
 }
 
 stop() {
