@@ -23,6 +23,7 @@ cd /
 umask 022
 
 . /etc/rc.subr
+. /etc/rc.conf
 
 start() {
   pgrep -n -x /usr/bin/ntpd 1>/dev/null 2>/dev/null && \
@@ -30,7 +31,12 @@ start() {
 
   rm -f /run/ntpd.pid
 
-  /usr/bin/ntpd -p /run/ntpd.pid -g -u ntp:ntp
+  FLAGS=""
+  if [ "${IP_VERSION}" ]; then
+    FLAGS="-${IP_VERSION}"
+  fi
+
+  /usr/bin/ntpd -p /run/ntpd.pid -g -u ntp:ntp "${FLAGS}"
 }
 
 stop() {

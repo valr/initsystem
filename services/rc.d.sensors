@@ -27,13 +27,13 @@ umask 022
 
 start() {
   STATUS=0
-  /usr/bin/modprobe -a -b -s ${BUS_MODULES} ${HWMON_MODULES} || STATUS=1
-  /usr/bin/sensors -s                                        || STATUS=1
+  /usr/bin/modprobe -a -b -s "${BUS_MODULES}" "${HWMON_MODULES}" || STATUS=1
+  /usr/bin/sensors -s                                            || STATUS=1
   return $STATUS
 }
 
 stop() {
-  /usr/bin/modprobe -a -b -s -r ${BUS_MODULES} ${HWMON_MODULES}
+  /usr/bin/modprobe -a -b -s -r "${BUS_MODULES}" "${HWMON_MODULES}"
 }
 
 rc_run "start stop" $@
