@@ -22,6 +22,8 @@ PATH=/opt/busybox
 cd /
 umask 022
 
+dhcpcd_FLAGS=""
+
 . /etc/rc.subr
 . /etc/rc.conf
 
@@ -31,12 +33,7 @@ start() {
 
   rm -f /run/dhcpcd.pid
 
-  FLAGS=""
-  if [ "${IP_VERSION}" ]; then
-    FLAGS="-${IP_VERSION}"
-  fi
-
-  su -l -s /bin/ash -c "/usr/bin/dhcpcd -q -b ${FLAGS}"
+  eval /usr/bin/dhcpcd -q -b "${dhcpcd_FLAGS}"
 }
 
 stop() {

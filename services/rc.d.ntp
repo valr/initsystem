@@ -22,6 +22,8 @@ PATH=/opt/busybox
 cd /
 umask 022
 
+ntpd_FLAGS=""
+
 . /etc/rc.subr
 . /etc/rc.conf
 
@@ -31,12 +33,7 @@ start() {
 
   rm -f /run/ntpd.pid
 
-  FLAGS=""
-  if [ "${IP_VERSION}" ]; then
-    FLAGS="-${IP_VERSION}"
-  fi
-
-  su -l -s /bin/ash -c "/usr/bin/ntpd -p /run/ntpd.pid -g -u ntp:ntp ${FLAGS}"
+  eval /usr/bin/ntpd -p /run/ntpd.pid -g -u ntp:ntp "${ntpd_FLAGS}"
 }
 
 stop() {
