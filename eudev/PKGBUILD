@@ -1,19 +1,19 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_udevver=217
-pkgname='eudev'
+_udev_ver=217
+pkgname=eudev
 pkgver=2.1.1
 pkgrel=1
 pkgdesc='userspace device manager'
-url="http://dev.gentoo.org/~blueness/eudev"
+url='http://dev.gentoo.org/~blueness/eudev'
 license=('GPL')
 groups=('initsystem')
 arch=('i686' 'x86_64')
 backup=('etc/udev/udev.conf')
 depends=('glib2' 'kbd' 'kmod' 'hwids' 'util-linux')
 makedepends=('gobject-introspection' 'gperf' 'gtk-doc' 'intltool')
-provides=("udev=${_udevver}"
-          "libudev=${_udevver}"
+provides=("udev=${_udev_ver}"
+          "libudev=${_udev_ver}"
           'libgudev-1.0.so'
           'libudev.so'
           'systemd' 'libsystemd') # fake because of archlinux packaging
