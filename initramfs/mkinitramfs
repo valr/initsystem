@@ -144,21 +144,21 @@ add_module() {
   done
 }
 
-if [ -r /etc/mkinitramfs.conf ]; then
+if [ -r /etc/mkinitramfs.d/"${LINUX}".modules ]; then
   # FIXME: ugly way to identify installed linux kernel
   MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
 
   MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d '/' -f 1,2,3,4`
   MOD_DEP="${MOD_DEP#usr}"
 
-  grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.conf | while read MODULE; do
+  grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.d/"${LINUX}".modules | while read MODULE; do
     add_module "${MODULE}"
   done
 
   depmod -b "${BASE}" `basename ${MOD_DEP}`
   sort -u -o "${BASE}"/etc/modules "${BASE}"/etc/modules
 else
-  echo "error: file /etc/mkinitramfs.conf doesn't exist or is not readable"
+  echo "error: file /etc/mkinitramfs.d/${LINUX}.modules doesn't exist or is not readable"
 fi
 
 ################################################################################
