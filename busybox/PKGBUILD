@@ -42,11 +42,11 @@ prepare() {
 build() {
   cd "${srcdir}"/nosuid
   make V=1 CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
-    CFLAGS='-static -D_GNU_SOURCE -D__USE_KERNEL_IPV6_DEFS -Wl,-z,muldefs'
+    CFLAGS='-static -D_GNU_SOURCE -Wl,-z,muldefs'
 
   cd "${srcdir}"/suid
   make V=1 CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
-    CFLAGS='-static -D_GNU_SOURCE -D__USE_KERNEL_IPV6_DEFS -Wl,-z,muldefs'
+    CFLAGS='-static -D_GNU_SOURCE -Wl,-z,muldefs'
 }
 
 package() {
