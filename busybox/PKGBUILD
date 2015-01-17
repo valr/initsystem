@@ -26,8 +26,12 @@ prepare() {
   cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/nosuid
   cp "${srcdir}"/config_nosuid "${srcdir}"/nosuid/.config
 
-  sed -i 's|LDLIBS += m crypt|LDLIBS += m|' "${srcdir}"/nosuid/Makefile.flags
+  # patch to avoid redefinition of structure with musl
   sed -i 's|# include <net/ethernet.h>||' "${srcdir}"/nosuid/networking/ifplugd.c
+
+  # with linux-api-headers 3.18, there is a redefinition of structure with musl
+  # that can be solved by commenting out: #include <linux/in6.h> in the header
+  # file /usr/include/linux/if_bridge.h
 
   # suid
 
@@ -37,12 +41,12 @@ prepare() {
 
 build() {
   cd "${srcdir}"/nosuid
-  make CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
-    CFLAGS='-static -D_GNU_SOURCE -Wl,-z,muldefs'
+  make V=1 CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+    CFLAGS='-static -D_GNU_SOURCE -D__USE_KERNEL_IPV6_DEFS -Wl,-z,muldefs'
 
   cd "${srcdir}"/suid
-  make CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
-    CFLAGS='-static -D_GNU_SOURCE -Wl,-z,muldefs'
+  make V=1 CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+    CFLAGS='-static -D_GNU_SOURCE -D__USE_KERNEL_IPV6_DEFS -Wl,-z,muldefs'
 }
 
 package() {
