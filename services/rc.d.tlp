@@ -44,8 +44,8 @@ restart() {
   start
 }
 
-status() {
+display() {
   PATH=/usr/bin /usr/bin/tlp-stat
 }
 
-rc_run "start stop restart status" $@
+rc_run "start stop restart display" $@

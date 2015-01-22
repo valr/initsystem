@@ -36,4 +36,8 @@ stop() {
   /usr/bin/modprobe -a -b -s -r "${BUS_MODULES}" "${HWMON_MODULES}"
 }
 
-rc_run "start stop" $@
+display() {
+  /usr/bin/sensors
+}
+
+rc_run "start stop display" $@

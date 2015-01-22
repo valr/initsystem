@@ -56,8 +56,8 @@ restart() {
   start
 }
 
-status() {
+display() {
   /usr/bin/iptables -L -v -n --line-numbers
 }
 
-rc_run "start stop restart status" $@
+rc_run "start stop restart display" $@
