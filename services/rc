@@ -75,11 +75,12 @@ rc_status() {
       if [ "$1" = "${FILE}" ]; then
         printf "%b%s %b%s %b%s %b\n" "${GREY}" "${FILE}" "${COLOR1}" "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
 
-        if [ "${STATUS2}" = "started" ]; then
+        if [ "${STATUS2}" != "n/a" ]; then
           /etc/rc.d/"${FILE}" status
+          return $?
+        else
+          return 0
         fi
-
-        return 0
       fi
     fi
   done
