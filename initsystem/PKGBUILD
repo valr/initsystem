@@ -14,28 +14,24 @@ optdepends=('eudev: replaces udev from systemd')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 install='initsystem.install'
 source=('init.c'
-        'rc'
         'rc.conf'
+        'rc'
         'rc.local'
         'rc.respawn'
         'rc.shutdown'
         'rc.shutdown.local'
-        'rc.subr'
         'shutdown'
         'tmpfiles'
-        'rc.subr'
         'LICENSE')
 md5sums=('e9a774c66616bec3ef97c56bd7f58160'
-         '54be417577fd46edb4fcfeee206c6edc'
          '887ac1eedd45b0f6715375e15c32f469'
+         '54be417577fd46edb4fcfeee206c6edc'
          'f9d345202573c58dfea5f7d39530b36d'
          'a6781031e16aab769c200c7f69d3735c'
          'bdfcee0074b852198166681b665dd435'
          '8c53ae0e2e5584999f47f905bc226e5f'
-         '43821e4310cedaa91aaff9667bf0383a'
          '07c56d75dd64e0a04a3cccf28f5d7e97'
          '9d0cce73f5c7e7dd3f1cc8bf33de9f88'
-         '43821e4310cedaa91aaff9667bf0383a'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
@@ -58,7 +54,6 @@ package() {
   install -Dm755 "${srcdir}"/rc.respawn        "${pkgdir}"/etc/rc.respawn
   install -Dm755 "${srcdir}"/rc.shutdown       "${pkgdir}"/etc/rc.shutdown
   install -Dm755 "${srcdir}"/rc.shutdown.local "${pkgdir}"/etc/rc.shutdown.local
-  install -Dm755 "${srcdir}"/rc.subr           "${pkgdir}"/etc/rc.subr
   install -Dm755 "${srcdir}"/shutdown          "${pkgdir}"/usr/bin/shutdown
   install -Dm755 "${srcdir}"/tmpfiles          "${pkgdir}"/usr/bin/tmpfiles
 

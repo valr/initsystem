@@ -1,0 +1,127 @@
+#!/bin/ash
+
+# This file is part of initsystem
+#
+# Copyright (C) 2015 Valère Monseur (valere dot monseur at ymail dot com)
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+PATH=/opt/busybox
+
+. /etc/rc.conf
+
+GREY="\e[1;0m"
+RED="\e[1;31m"
+GREEN="\e[1;32m"
+BLUE="\e[1;34m"
+MAGENTA="\e[1;35m"
+
+rc_status() {
+  if [ $# -gt 1 ]; then
+    rc_usage
+    return 1
+  fi
+
+  if [ -x /usr/bin/udevd ]; then
+    SERVICES="${SERVICES} eudev"
+  fi
+
+  if [ -x /usr/lib/systemd/systemd-udevd ]; then
+    SERVICES="${SERVICES} udev"
+  fi
+
+  for FILE in `ls /etc/rc.d/* | sort`; do
+    FILE=`basename "${FILE}"`
+
+    STATUS1="disabled"; COLOR1="${MAGENTA}"
+    STATUS2="n/a"; COLOR2="${MAGENTA}"
+
+    for SERVICE in ${SERVICES}; do
+      if [ "${SERVICE}" = "${FILE}" ]; then
+        STATUS1="enabled"; COLOR1="${BLUE}"
+
+        if grep rc_run /etc/rc.d/"${FILE}" | grep status 1>/dev/null 2>/dev/null; then
+          /etc/rc.d/"${FILE}" status 1>/dev/null 2>/dev/null
+          if [ $? -eq 0 ]; then
+            STATUS2="started"; COLOR2="${GREEN}"
+          else
+            STATUS2="stopped"; COLOR2="${RED}"
+          fi
+        fi
+      fi
+    done
+
+    if [ $# -eq 0 ]; then
+      if [ "${STATUS2}" != "n/a" ]; then
+        printf "%b%-*.*s%b%s%b\n" "${GREY}" 10 10 "${FILE}" "${COLOR2}" "${STATUS2}" "${GREY}"
+      fi
+    else
+      if [ "$1" = "all" ]; then
+        printf "%b%-*.*s%b%-*.*s%b%s%b\n" "${GREY}" 10 10 "${FILE}" "${COLOR1}" 9 9 "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
+      fi
+
+      if [ "$1" = "${FILE}" ]; then
+        printf "%b%s %b%s %b%s %b\n" "${GREY}" "${FILE}" "${COLOR1}" "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
+        return 0
+      fi
+    fi
+  done
+
+  if [ $# -eq 1 -a "$1" != "all" ]; then
+    echo "error: /etc/rc.d/$1 doesn't exist"
+    return 1
+  fi
+
+  return 0
+}
+
+rc_run() {
+  if [ $# -ne 2 ]; then
+    rc_usage
+    return 1
+  fi
+
+  if [ ! -e /etc/rc.d/"$2" ]; then
+    echo "error: /etc/rc.d/$2 doesn't exist"
+    return 1
+  fi
+
+  /etc/rc.d/"$2" "$1"
+  return $?
+}
+
+rc_usage() {
+  echo "usage: `basename $0` status [all]"
+  echo "       `basename $0` status service"
+  echo "       `basename $0` {start|stop|restart|reload|display} service"
+
+  return 1
+}
+
+case "$1" in
+  status)
+    shift
+    rc_status $@
+    exit $?
+    ;;
+  start|stop|restart|reload|display)
+    rc_run $@
+    exit $?
+    ;;
+  *)
+    rc_usage
+    exit $?
+    ;;
+esac

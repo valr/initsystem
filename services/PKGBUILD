@@ -9,7 +9,9 @@ license=('GPL')
 groups=('initsystem')
 arch=('any')
 depends=('initsystem')
-source=('rc.d.acpi'
+source=('rc'
+        'rc.subr'
+        'rc.d.acpi'
         'rc.d.alsa'
         'rc.d.bumblebee'
         'rc.d.cron'
@@ -26,7 +28,9 @@ source=('rc.d.acpi'
         'rc.d.udev'
         'rc.d.wireless'
         'LICENSE')
-md5sums=('b3158a98409ad0234d874f257aef7d30'
+md5sums=('bf0f32cc6d0d7bd9a32e96d496058f18'
+         '43821e4310cedaa91aaff9667bf0383a'
+         'b3158a98409ad0234d874f257aef7d30'
          '6fd3ad2827b1e7ac09bfe8bfc0d6fa40'
          '35d1e017de6158617f2b1a2bbf291044'
          'c81ad8cc66bd819b75c354234959384a'
@@ -45,6 +49,15 @@ md5sums=('b3158a98409ad0234d874f257aef7d30'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
+
+  # binaries
+
+  install -Dm755 "${srcdir}"/rc "${pkgdir}"/usr/bin/rc
+
+  # services
+
+  install -Dm755 "${srcdir}"/rc.subr "${pkgdir}"/etc/rc.subr
+
   install -Dm755 "${srcdir}"/rc.d.acpi      "${pkgdir}"/etc/rc.d/acpi
   install -Dm755 "${srcdir}"/rc.d.alsa      "${pkgdir}"/etc/rc.d/alsa
   install -Dm755 "${srcdir}"/rc.d.bumblebee "${pkgdir}"/etc/rc.d/bumblebee
@@ -61,6 +74,8 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.syslog    "${pkgdir}"/etc/rc.d/syslog
   install -Dm755 "${srcdir}"/rc.d.udev      "${pkgdir}"/etc/rc.d/udev
   install -Dm755 "${srcdir}"/rc.d.wireless  "${pkgdir}"/etc/rc.d/wireless
+
+  # license
 
   install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
