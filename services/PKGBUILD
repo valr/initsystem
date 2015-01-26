@@ -28,7 +28,7 @@ source=('rc'
         'rc.d.udev'
         'rc.d.wireless'
         'LICENSE')
-md5sums=('7834804fb216b62abaddcf2490f70b41'
+md5sums=('90fb1982646db1859f35da7ab2fe423d'
          '43821e4310cedaa91aaff9667bf0383a'
          'b3158a98409ad0234d874f257aef7d30'
          '6fd3ad2827b1e7ac09bfe8bfc0d6fa40'

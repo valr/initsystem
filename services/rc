@@ -94,6 +94,11 @@ rc_status() {
 }
 
 rc_run() {
+  if [ `id -u` != 0 ]; then
+    echo "error: this script should be run as root"
+    return 1
+  fi
+
   if [ $# -ne 2 ]; then
     rc_usage
     return 1
