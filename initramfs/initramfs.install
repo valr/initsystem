@@ -1,6 +1,6 @@
 
 post_install() {
-  printf '==> For every .preset file in /etc/mkinitcpio.d you have to define a .modules file in the directory\n'
+  printf '==> For every .preset file in /etc/mkinitcpio.d you have to create a .modules file in the directory\n'
   printf '    /etc/mkinitramfs.d that will contain the list of modules to be loaded by the initramfs.\n'
   printf '    Then you have to generate the initramfs before rebooting.\n\n'
   printf '    The list of modules can be defined like this:\n'
