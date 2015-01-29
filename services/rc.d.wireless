@@ -58,8 +58,9 @@ restart() {
 }
 
 status() {
-  echo "wpa_supplicant is running as pid:"
-  pgrep -x /usr/bin/wpa_supplicant
+  echo -n "wpa_supplicant is running as pid: "
+  pgrep -x /usr/bin/wpa_supplicant | tr '\n' ' '
+  echo ""
 }
 
 rc_run "start stop restart status" $@

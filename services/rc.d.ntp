@@ -52,8 +52,9 @@ restart() {
 }
 
 status() {
-  echo "ntpd is running as pid:"
-  pgrep -x /usr/bin/ntpd
+  echo -n "ntpd is running as pid: "
+  pgrep -x /usr/bin/ntpd | tr '\n' ' '
+  echo ""
 }
 
 rc_run "start stop restart status" $@

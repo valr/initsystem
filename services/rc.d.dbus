@@ -67,7 +67,7 @@ status() {
 
   case $STATUS in
     0)
-      echo "dbus-daemon is running as pid:"
+      echo -n "dbus-daemon is running as pid: "
       echo $PID
       ;;
     1)
