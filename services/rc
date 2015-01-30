@@ -69,15 +69,20 @@ rc_status() {
 
       case "$1" in
         all)
-          printf "%b%-*.*s%b%-*.*s%b%s%b\n" "${GREY}" 10 10 "${SERVICE}" "${COLOR1}" 9 9 "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
+          printf "%b%-*.*s%b%-*.*s%b%s%b\n" \
+            "${GREY}" 10 10 "${SERVICE}" \
+            "${COLOR1}" 9 9 "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
           ;;
         "")
           if [ "${STATUS2}" != "n/a" ]; then
-            printf "%b%-*.*s%b%s%b\n" "${GREY}" 10 10 "${SERVICE}" "${COLOR2}" "${STATUS2}" "${GREY}"
+            printf "%b%-*.*s%b%s%b\n" \
+              "${GREY}" 10 10 "${SERVICE}" "${COLOR2}" "${STATUS2}" "${GREY}"
           fi
           ;;
         *)
-          printf "%b%s %b%s %b%s %b\n" "${GREY}" "${SERVICE}" "${COLOR1}" "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
+          printf "%b%s %b%s %b%s %b\n" \
+            "${GREY}" "${SERVICE}" \
+            "${COLOR1}" "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
 
           if [ "${STATUS2}" != "n/a" ]; then
             /etc/rc.d/"${SERVICE}" status
