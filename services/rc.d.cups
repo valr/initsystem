@@ -45,9 +45,8 @@ restart() {
 }
 
 status() {
-  echo -n "cupsd is running as pid: "
-  pgrep -x /usr/bin/cupsd | tr '\n' ' '
-  echo ""
+  echo -e -n "cupsd is running as pid:" \
+    `pgrep -x /usr/bin/cupsd | tr '\n' ' '` "\n"
 }
 
 rc_run "start stop restart status" $@

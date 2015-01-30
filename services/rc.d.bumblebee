@@ -45,9 +45,8 @@ restart() {
 }
 
 status() {
-  echo -n "bumblebeed is running as pid: "
-  pgrep -x /usr/bin/bumblebeed | tr '\n' ' '
-  echo ""
+  echo -e -n "bumblebeed is running as pid:" \
+    `pgrep -x /usr/bin/bumblebeed | tr '\n' ' '` "\n"
 }
 
 rc_run "start stop restart status" $@

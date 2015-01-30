@@ -51,9 +51,8 @@ restart() {
 }
 
 status() {
-  echo -n "dhcpcd is running as pid: "
-  pgrep -x /usr/bin/dhcpcd | tr '\n' ' '
-  echo ""
+  echo -e -n "dhcpcd is running as pid:" \
+    `pgrep -x /usr/bin/dhcpcd | tr '\n' ' '` "\n"
 }
 
 rc_run "start stop restart status" $@
