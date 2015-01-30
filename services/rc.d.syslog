@@ -49,8 +49,8 @@ restart() {
 }
 
 status() {
-  echo -e -n "syslogd is running as pid:" \
-    `pgrep -x /opt/busybox/syslogd | tr '\n' ' '` "\n"
+  echo -n "syslogd is running as pid: "
+  pgrep -x /opt/busybox/syslogd
 }
 
 rc_run "start stop restart status" $@

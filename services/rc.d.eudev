@@ -63,8 +63,8 @@ reload() {
 }
 
 status() {
-  echo -e -n "udevd is running as pid:" \
-    `pgrep -x /usr/bin/udevd | tr '\n' ' '` "\n"
+  echo -n "udevd is running as pid: "
+  pgrep -x /usr/bin/udevd
 }
 
 rc_run "start stop restart reload status" $@

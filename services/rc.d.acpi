@@ -49,8 +49,8 @@ restart() {
 }
 
 status() {
-  echo -e -n "acpid is running as pid:" \
-    `pgrep -x /usr/bin/acpid | tr '\n' ' '` "\n"
+  echo -n "acpid is running as pid: "
+  pgrep -x /usr/bin/acpid
 }
 
 rc_run "start stop restart status" $@

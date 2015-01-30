@@ -49,8 +49,8 @@ restart() {
 }
 
 status() {
-  echo -e -n "crond is running as pid:" \
-    `pgrep -x /usr/bin/crond | tr '\n' ' '` "\n"
+  echo -n "crond is running as pid: "
+  pgrep -x /usr/bin/crond
 }
 
 rc_run "start stop restart status" $@
