@@ -40,7 +40,6 @@ fi
 echo ""
 echo "shutdown: changing terminal settings"
 
-chvt 1
 stty onlcr
 
 ################################################################################
