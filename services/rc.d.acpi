@@ -49,7 +49,7 @@ restart() {
 }
 
 status() {
-  echo -n "acpid is running as pid: "
+  echo "acpid is running as pid: "
   pgrep -x /usr/bin/acpid
 }
 

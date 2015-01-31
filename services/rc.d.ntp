@@ -52,7 +52,7 @@ restart() {
 }
 
 status() {
-  echo -n "ntpd is running as pid: "
+  echo "ntpd is running as pid: "
   pgrep -x /usr/bin/ntpd
 }
 

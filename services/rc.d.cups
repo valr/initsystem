@@ -45,7 +45,7 @@ restart() {
 }
 
 status() {
-  echo -n "cupsd is running as pid: "
+  echo "cupsd is running as pid: "
   pgrep -x /usr/bin/cupsd
 }
 

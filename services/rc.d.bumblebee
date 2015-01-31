@@ -45,7 +45,7 @@ restart() {
 }
 
 status() {
-  echo -n "bumblebeed is running as pid: "
+  echo "bumblebeed is running as pid: "
   pgrep -x /usr/bin/bumblebeed
 }
 

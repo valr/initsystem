@@ -63,7 +63,7 @@ reload() {
 }
 
 status() {
-  echo -n "udevd is running as pid: "
+  echo "udevd is running as pid: "
   pgrep -x /usr/bin/udevd
 }
 

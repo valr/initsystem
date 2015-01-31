@@ -51,7 +51,7 @@ restart() {
 }
 
 status() {
-  echo -n "dhcpcd is running as pid: "
+  echo "dhcpcd is running as pid: "
   pgrep -x /usr/bin/dhcpcd
 }
 

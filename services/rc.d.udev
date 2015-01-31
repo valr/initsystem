@@ -63,7 +63,7 @@ reload() {
 }
 
 status() {
-  echo -n "systemd-udevd is running as pid: "
+  echo "systemd-udevd is running as pid: "
   pgrep -x /usr/lib/systemd/systemd-udevd
 }
 

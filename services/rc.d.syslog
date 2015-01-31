@@ -49,7 +49,7 @@ restart() {
 }
 
 status() {
-  echo -n "syslogd is running as pid: "
+  echo "syslogd is running as pid: "
   pgrep -x /opt/busybox/syslogd
 }
 
