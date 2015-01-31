@@ -3,7 +3,7 @@
 _udev_ver=217
 pkgname=eudev
 pkgver=2.1.1
-pkgrel=1
+pkgrel=3
 pkgdesc='userspace device manager'
 url='http://dev.gentoo.org/~blueness/eudev'
 license=('GPL')
