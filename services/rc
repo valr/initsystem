@@ -84,7 +84,7 @@ rc_status() {
             "${GREY}" "${SERVICE}" \
             "${COLOR1}" "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
 
-          if [ "${STATUS2}" != "n/a" ]; then
+          if [ "${STATUS2}" = "started" ]; then
             /etc/rc.d/"${SERVICE}" status
           fi
           ;;
