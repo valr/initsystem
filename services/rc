@@ -22,12 +22,6 @@ PATH=/opt/busybox
 
 . /etc/rc.conf
 
-GREY="\e[1;0m"
-RED="\e[1;31m"
-GREEN="\e[1;32m"
-BLUE="\e[1;34m"
-MAGENTA="\e[1;35m"
-
 rc_status() {
 
   shift
@@ -48,41 +42,36 @@ rc_status() {
   STATUS=0
   for SERVICE in ${SERVICES}; do
     if [ -e /etc/rc.d/"${SERVICE}" ]; then
-      STATUS1="disabled"; COLOR1="${MAGENTA}"
-      STATUS2="n/a"; COLOR2="${MAGENTA}"
+      STATUS1="disabled"
+      STATUS2="n/a"
 
       if echo "${ENABLED_SERVICES}" | tr ' ' '\n' | grep -Fxq "${SERVICE}"; then
-        STATUS1="enabled"; COLOR1="${BLUE}"
+        STATUS1="enabled"
 
         # FIXME: find a better way to determine if the rc script provides a 'status' function
         if grep rc_run /etc/rc.d/"${SERVICE}" | grep -Fq status; then
           /etc/rc.d/"${SERVICE}" status 1>/dev/null 2>/dev/null
 
           if [ $? -eq 0 ]; then
-            STATUS2="started"; COLOR2="${GREEN}"
+            STATUS2="started"
           else
             STATUS=$?
-            STATUS2="stopped"; COLOR2="${RED}"
+            STATUS2="stopped"
           fi
         fi
       fi
 
       case "$1" in
         all)
-          printf "%b%-*.*s%b%-*.*s%b%s%b\n" \
-            "${GREY}" 10 10 "${SERVICE}" \
-            "${COLOR1}" 9 9 "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
+          echo "${SERVICE} ${STATUS1} ${STATUS2}"
           ;;
         "")
           if [ "${STATUS2}" != "n/a" ]; then
-            printf "%b%-*.*s%b%s%b\n" \
-              "${GREY}" 10 10 "${SERVICE}" "${COLOR2}" "${STATUS2}" "${GREY}"
+            echo "${SERVICE} ${STATUS2}"
           fi
           ;;
         *)
-          printf "%b%s %b%s %b%s %b\n" \
-            "${GREY}" "${SERVICE}" \
-            "${COLOR1}" "${STATUS1}" "${COLOR2}" "${STATUS2}" "${GREY}"
+          echo "${SERVICE} ${STATUS1} ${STATUS2}"
 
           if [ "${STATUS2}" = "started" ]; then
             /etc/rc.d/"${SERVICE}" status
@@ -93,6 +82,7 @@ rc_status() {
       echo "error: /etc/rc.d/${SERVICE} doesn't exist"
     fi
   done
+
   return $STATUS
 }
 
@@ -121,6 +111,7 @@ rc_run() {
 
     shift
   done
+
   return $STATUS
 }
 
@@ -134,14 +125,13 @@ rc_usage() {
 case "$1" in
   status)
     rc_status $@
-    exit $?
     ;;
   start|stop|restart|reload|display)
     rc_run $@
-    exit $?
     ;;
   *)
     rc_usage
-    exit $?
     ;;
 esac
+
+exit $?
