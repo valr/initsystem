@@ -8,7 +8,8 @@ pkgdesc='fsck utility for fat filesystems'
 url='https://github.com/valr/initsystem'
 license=('GPL2')
 groups=('initsystem')
-arch=('i686' 'x86_64')
+arch=('x86_64')
+makedepends=('musl-cross-compiler-x86_64' 'musl')
 source=(https://github.com/$_pkgname/$_pkgname/releases/download/v$pkgver/$_pkgname-$pkgver.tar.xz{,.sig})
 md5sums=('3254566ea66b185920abb7f694df2c2a'
          'SKIP')
@@ -16,7 +17,10 @@ md5sums=('3254566ea66b185920abb7f694df2c2a'
 build() {
   cd "${srcdir}/${_pkgname}-${pkgver}"
 
-  make fsck.fat LDFLAGS='-static'
+  make fsck.fat \
+  CC=/opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc \
+  CFLAGS='-D_GNU_SOURCE' \
+  LDFLAGS='-static'
 }
 
 package () {
