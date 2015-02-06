@@ -57,7 +57,7 @@ echo "shutdown: starting local shutdown script"
 echo "shutdown: sending SIGTERM to user processes"
 
 for USER in `users | grep -v root`; do
-  ps -o pid,user | grep "${USER}" | awk '{ print $1 }' | xargs kill -TERM
+  ps -o pid,user | grep "${USER}" | awk '{ print $1 }' | xargs kill -TERM 1>/dev/null 2>/dev/null
 done
 
 ################################################################################
@@ -138,7 +138,7 @@ else
   POOL_SIZE=512
 fi
 
-dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=$POOL_SIZE &>/dev/null
+dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
 
 ################################################################################
 # dmesg ########################################################################

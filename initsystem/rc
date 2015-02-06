@@ -119,7 +119,7 @@ fi
 
 if [ "${CONSOLE_FONT}" ]; then
   for TTY in /dev/tty[0-9]*; do
-    /usr/bin/setfont "${CONSOLE_FONT}" -C "${TTY}" &> /dev/null
+    /usr/bin/setfont "${CONSOLE_FONT}" -C "${TTY}" 1>/dev/null 2>/dev/null
   done
 fi
 
@@ -166,7 +166,7 @@ else
   POOL_SIZE=512
 fi
 
-dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=$POOL_SIZE &>/dev/null
+dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
 
 ################################################################################
 # volatile and temporary files #################################################
