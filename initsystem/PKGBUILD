@@ -25,13 +25,13 @@ source=('init.c'
         'LICENSE')
 md5sums=('e9a774c66616bec3ef97c56bd7f58160'
          '887ac1eedd45b0f6715375e15c32f469'
-         '54be417577fd46edb4fcfeee206c6edc'
+         'd07373719abda327daa3bec2c2bbe465'
          'f9d345202573c58dfea5f7d39530b36d'
          'a6781031e16aab769c200c7f69d3735c'
          '0b29ab253fe409dcb5545e13c035553a'
          '8c53ae0e2e5584999f47f905bc226e5f'
          '07c56d75dd64e0a04a3cccf28f5d7e97'
-         '9d0cce73f5c7e7dd3f1cc8bf33de9f88'
+         'b9adaa5f5fe5006631ce21fc457bbd00'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
