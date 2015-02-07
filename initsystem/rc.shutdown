@@ -138,7 +138,7 @@ else
   POOL_SIZE=512
 fi
 
-dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
+dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=${POOL_SIZE} 1>/dev/null 2>/dev/null
 
 ################################################################################
 # dmesg ########################################################################
@@ -162,11 +162,11 @@ echo "shutdown: unmounting filesystems"
 
 MOUNTS=`tac /proc/self/mounts | cut -d ' ' -f 2`
 for MOUNT in ${MOUNTS}; do
-  case ${MOUNT} in
+  case "${MOUNT}" in
     /|/proc|/sys|/run|/dev|/dev/pts)
       ;;
     *)
-      umount -r -l ${MOUNT}
+      umount -r -l "${MOUNT}"
       ;;
   esac
 done
