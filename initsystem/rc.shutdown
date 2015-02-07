@@ -154,10 +154,6 @@ umask 022
 # filesystems ##################################################################
 ################################################################################
 
-echo "shutdown: writing wtmp record"
-
-/usr/bin/busybox halt -w
-
 echo "shutdown: syncing filesystems"
 
 sync; sleep 3

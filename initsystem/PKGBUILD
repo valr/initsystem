@@ -7,9 +7,8 @@ pkgdesc='an init system'
 url='https://github.com/valr/initsystem'
 license=('GPL')
 groups=('initsystem')
-arch=('x86_64')
+arch=('i686' 'x86_64')
 depends=('busybox' 'kbd')
-makedepends=('musl-cross-compiler-x86_64' 'musl')
 optdepends=('eudev: replaces udev from systemd')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 install='initsystem.install'
@@ -23,12 +22,12 @@ source=('init.c'
         'shutdown'
         'tmpfiles'
         'LICENSE')
-md5sums=('e9a774c66616bec3ef97c56bd7f58160'
+md5sums=('53fed714f4f8c9822cdd34c375a5379d'
          '887ac1eedd45b0f6715375e15c32f469'
          'c815394b2f854f68eccb85a83a52b988'
          'f9d345202573c58dfea5f7d39530b36d'
          'a6781031e16aab769c200c7f69d3735c'
-         'dbf35e367eaca199ee2b3d1d9a6e79d5'
+         '6ef8a1f5d9d19e1aa81496067583b493'
          '8c53ae0e2e5584999f47f905bc226e5f'
          '07c56d75dd64e0a04a3cccf28f5d7e97'
          'b9adaa5f5fe5006631ce21fc457bbd00'
@@ -37,7 +36,7 @@ md5sums=('e9a774c66616bec3ef97c56bd7f58160'
 build() {
   cd "${srcdir}"
 
-  /opt/x86_64-linux-musl/bin/x86_64-linux-musl-gcc -Wall -static -o init init.c
+  cc -Wall -static -o init init.c
 }
 
 package() {

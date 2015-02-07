@@ -36,10 +36,13 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <utmp.h>
 
 #include <sys/reboot.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/types.h>
+#include <sys/utsname.h>
 #include <sys/wait.h>
 
 #ifndef RESPAWN_CNT
@@ -123,9 +126,33 @@ static time_t get_time ()
     return time.tv_sec;
 }
 
+static void write_wtmp (short type, pid_t pid, char *line, char *id, char *user)
+{
+    struct utmp utmp = {};
+    struct utsname uts = {};
+    struct timeval tv = {};
+
+    utmp.ut_type = type;
+    utmp.ut_pid = pid;
+
+    strncpy (utmp.ut_line, line, sizeof (utmp.ut_line));
+    strncpy (utmp.ut_id, id, sizeof (utmp.ut_id));
+    strncpy (utmp.ut_name, user, sizeof (utmp.ut_name));
+
+    if (uname (&uts) == 0)
+        strncpy (utmp.ut_host, uts.release, sizeof (utmp.ut_host));
+
+	gettimeofday (&tv, NULL);
+	utmp.ut_tv.tv_sec = tv.tv_sec;
+	utmp.ut_tv.tv_usec = tv.tv_usec;
+
+    updwtmp (WTMP_FILE, &utmp);
+}
+
 int main (int argc, char **argv)
 {
     pid_t spawn_pid = 0, dead_pid = 0;
+    pid_t init_pid = -1;
 
     int respawn_idx;
     pid_t respawn_pid[RESPAWN_CNT] = {};
@@ -149,7 +176,7 @@ int main (int argc, char **argv)
 
     if (argc == 1)
     {
-        spawn_pid = spawn_command (split_command ("/etc/rc"));
+        init_pid = spawn_pid = spawn_command (split_command ("/etc/rc"));
         alarm (300);
     }
     else
@@ -173,6 +200,12 @@ int main (int argc, char **argv)
                 {
                     if (spawn_pid == dead_pid)
                     {
+                        if (spawn_pid == init_pid)
+                        {
+                            write_wtmp (BOOT_TIME, 0, "~", "~~", "reboot");
+                            init_pid = -1;
+                        }
+
                         spawn_pid = 0;
                         alarm (0);
                     }
@@ -195,6 +228,12 @@ int main (int argc, char **argv)
                 break;
 
             case SIGALRM:
+                if (spawn_pid == init_pid)
+                {
+                    write_wtmp (BOOT_TIME, 0, "~", "~~", "reboot");
+                    init_pid = -1;
+                }
+
                 spawn_pid = 0;
 
                 for (respawn_idx = 0; respawn_idx < RESPAWN_CNT; respawn_idx++)
@@ -211,6 +250,7 @@ int main (int argc, char **argv)
             case SIGTERM:
                 if (spawn_pid == 0)
                 {
+                    write_wtmp (RUN_LVL, 0, "~~", "~~", "shutdown");
                     spawn_pid = spawn_command (split_command ("/etc/rc.shutdown poweroff"));
                     alarm (300);
                 }
@@ -219,6 +259,7 @@ int main (int argc, char **argv)
             case SIGUSR1:
                 if (spawn_pid == 0)
                 {
+                    write_wtmp (RUN_LVL, 0, "~~", "~~", "shutdown");
                     spawn_pid = spawn_command (split_command ("/etc/rc.shutdown reboot"));
                     alarm (300);
                 }
@@ -227,6 +268,7 @@ int main (int argc, char **argv)
             case SIGUSR2:
                 if (spawn_pid == 0)
                 {
+                    write_wtmp (RUN_LVL, 0, "~~", "~~", "shutdown");
                     spawn_pid = spawn_command (split_command ("/etc/rc.shutdown halt"));
                     alarm (300);
                 }
