@@ -15,7 +15,7 @@ source=('mkinitramfs'
         'initramfs.mkinitcpio'
         'LICENSE')
 md5sums=('79ce133302a2bf2584f64d378d073a14'
-         'bb210ac669d63d186a813d44e0a3125d'
+         '1b807c659b88d69b901beacbef046e4a'
          '9f1c6ff05b3f32f8ea72e919fac41d40'
          '4641e94ec96f98fabc56ff9cc48be14b')
 

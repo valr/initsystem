@@ -48,8 +48,9 @@ reboot_system() {
 }
 
 rescue_shell() {
+  echo "initramfs: loading keymap"
+
   if [ -f /etc/keymap ]; then
-    echo "initramfs: loading keymap"
     loadkmap < /etc/keymap
   fi
 
@@ -129,9 +130,9 @@ hwclock -t -u
 # modules ######################################################################
 ################################################################################
 
-if [ -f /etc/modules ]; then
-  echo "initramfs: loading modules"
+echo "initramfs: loading modules"
 
+if [ -f /etc/modules ]; then
   while IFS= read -r MODULE; do
     modprobe "${MODULE}"
   done < /etc/modules
