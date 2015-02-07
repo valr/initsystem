@@ -24,7 +24,7 @@ source=('init.c'
         'LICENSE')
 md5sums=('a94c62e3627db7ce590ad7ae73fcefe0'
          '887ac1eedd45b0f6715375e15c32f469'
-         'c815394b2f854f68eccb85a83a52b988'
+         '19c591f1d9eb2e26ce126a2c33e7343d'
          'f9d345202573c58dfea5f7d39530b36d'
          'a6781031e16aab769c200c7f69d3735c'
          '20767149c2e66e79f07b7db778456c43'
