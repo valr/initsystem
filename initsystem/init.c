@@ -140,11 +140,13 @@ static void write_wtmp (short type, pid_t pid, char *line, char *id, char *user)
     strncpy (utmp.ut_name, user, sizeof (utmp.ut_name));
 
     if (uname (&uts) == 0)
+    {
         strncpy (utmp.ut_host, uts.release, sizeof (utmp.ut_host));
+    }
 
-	gettimeofday (&tv, NULL);
-	utmp.ut_tv.tv_sec = tv.tv_sec;
-	utmp.ut_tv.tv_usec = tv.tv_usec;
+    gettimeofday (&tv, NULL);
+    utmp.ut_tv.tv_sec = tv.tv_sec;
+    utmp.ut_tv.tv_usec = tv.tv_usec;
 
     updwtmp (WTMP_FILE, &utmp);
 }
