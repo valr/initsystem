@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -56,10 +56,10 @@ INCLUDE=""; EXCLUDE=""
 if [ $# -ge 1 ]; then
   case "$1" in
     --prefix=*)
-      INCLUDE=`echo "$1" | cut -d= -f2`
+      INCLUDE=`echo "$1" | cut -d '=' -f 2`
       ;;
     --exclude-prefix=*)
-      EXCLUDE=`echo "$1" | cut -d= -f2`
+      EXCLUDE=`echo "$1" | cut -d '=' -f 2`
       ;;
   esac
 fi
@@ -95,8 +95,8 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
     done
 
     # skip included/excluded paths
-    [ ! -z "${INCLUDE}" ] && [ "${PTH##${INCLUDE}*}" ] && continue
-    [ ! -z "${EXCLUDE}" ] && [ ! "${PTH##${EXCLUDE}*}" ] && continue
+    [ "${INCLUDE}" ] && [ "${PTH##${INCLUDE}*}" ] && continue
+    [ "${EXCLUDE}" ] && [ ! "${PTH##${EXCLUDE}*}" ] && continue
 
     # remove trailing ! from type
     [ `echo ${TYP} | grep !` ] && TYP="${TYP%?}"
@@ -140,7 +140,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         [ -z "${MOD}" ] && MOD="0644"
         [ -z "${UID}" ] && UID="root"
         [ -z "${GID}" ] && GID="root"
-        install -m"${MOD}" -o"${UID}" -g"${GID}" /dev/null "${PTH}"
+        install -m "${MOD}" -o "${UID}" -g "${GID}" /dev/null "${PTH}"
         [ ! -z "${ARG}" ] && echo "${ARG}" > "${PTH}"
         ;;
 
@@ -152,7 +152,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         # C-style backslash escapes are interpreted.
 
         if [ -e "${PTH}" ]; then
-          [ ! -z "${ARG}" ] && echo -n -e "${ARG}" > "${PTH}"
+          [ "${ARG}" ] && echo -n -e "${ARG}" > "${PTH}"
         fi
         ;;
 
@@ -164,7 +164,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
           [ -z "${MOD}" ] && MOD="0755"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
-          install -d -m"${MOD}" -o"${UID}" -g"${GID}" "${PTH}"
+          install -d -m "${MOD}" -o "${UID}" -g "${GID}" "${PTH}"
         fi
         ;;
 
@@ -179,7 +179,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
           [ -z "${MOD}" ] && MOD="0755"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
-          install -d -m"${MOD}" -o"${UID}" -g"${GID}" "${PTH}"
+          install -d -m "${MOD}" -o "${UID}" -g "${GID}" "${PTH}"
         fi
         ;;
 
@@ -191,7 +191,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
           [ -z "${MOD}" ] && MOD="0644"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
-          mkfifo -m"${MOD}" "${PTH}"
+          mkfifo -m "${MOD}" "${PTH}"
           chown "${UID}:${GID}" "${PTH}"
         fi
         ;;
@@ -208,7 +208,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         [ -z "${MOD}" ] && MOD="0644"
         [ -z "${UID}" ] && UID="root"
         [ -z "${GID}" ] && GID="root"
-        mkfifo -m"${MOD}" "${PTH}"
+        mkfifo -m "${MOD}" "${PTH}"
         chown "${UID}:${GID}" "${PTH}"
         ;;
 
@@ -217,7 +217,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         # Create a symlink if it does not exist yet.
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
-          if [ ! -z "${ARG}" ]; then
+          if [ "${ARG}" ]; then
             ln -s "${ARG}" "${PTH}"
           fi
         fi
@@ -234,7 +234,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         if [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
           rm -f "${PTH}"
         fi
-        if [ ! -z "${ARG}" ]; then
+        if [ "${ARG}" ]; then
           ln -s "${ARG}" "${PTH}"
         fi
         ;;
@@ -244,7 +244,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         # Create a character device node if it does not exist yet.
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
-          if [ ! -z "${ARG}" ]; then
+          if [ "${ARG}" ]; then
             MAJOR=`echo ${ARG} | cut -d ':' -f 1`
             MINOR=`echo ${ARG} | cut -d ':' -f 2`
             [ -z "${MOD}" ] && MOD="0644"
@@ -265,7 +265,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         if [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
           rm -f "${PTH}"
         fi
-        if [ ! -z "${ARG}" ]; then
+        if [ "${ARG}" ]; then
           MAJOR=`echo ${ARG} | cut -d ':' -f 1`
           MINOR=`echo ${ARG} | cut -d ':' -f 2`
           [ -z "${MOD}" ] && MOD="0644"
@@ -281,7 +281,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         # Create a block device node if it does not exist yet.
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
-          if [ ! -z "${ARG}" ]; then
+          if [ "${ARG}" ]; then
             MAJOR=`echo ${ARG} | cut -d ':' -f 1`
             MINOR=`echo ${ARG} | cut -d ':' -f 2`
             [ -z "${MOD}" ] && MOD="0644"
@@ -302,7 +302,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         if [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
           rm -f "${PTH}"
         fi
-        if [ ! -z "${ARG}" ]; then
+        if [ "${ARG}" ]; then
           MAJOR=`echo ${ARG} | cut -d ':' -f 1`
           MINOR=`echo ${ARG} | cut -d ':' -f 2`
           [ -z "${MOD}" ] && MOD="0644"
@@ -323,7 +323,7 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         # with the same name are copied.
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
-          if [ ! -z "${ARG}" ]; then
+          if [ "${ARG}" ]; then
             if [ -e "${ARG}" ] || [ -L "${ARG}" ]; then
               cp -R "${ARG}" "${PTH}"
             fi
@@ -344,9 +344,9 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         # accept shell-style globs in place of normal path names.
 
         if [ -d "${PTH}" ]; then
-            rmdir "${PTH}"
+          rmdir "${PTH}"
         elif [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
-            rm -f "${PTH}"
+          rm -f "${PTH}"
         fi
         ;;
 
@@ -368,13 +368,13 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         # this type accept shell-style globs in place of normal path names.
 
         if [ -e "${PTH}" ]; then
-          if [ ! -z "${MOD}" ]; then
+          if [ "${MOD}" ]; then
             chmod "${MOD}" "${PTH}"
           fi
-          if [ ! -z "${UID}" ]; then
+          if [ "${UID}" ]; then
             chown "${UID}" "${PTH}"
           fi
-          if [ ! -z "${GID}" ]; then
+          if [ "${GID}" ]; then
             chown :"${GID}" "${PTH}"
           fi
         fi
@@ -389,13 +389,13 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         # of normal path names.
 
         if [ -e "${PTH}" ]; then
-          if [ ! -z "${MOD}" ]; then
+          if [ "${MOD}" ]; then
             chmod -R "${MOD}" "${PTH}"
           fi
-          if [ ! -z "${UID}" ]; then
+          if [ "${UID}" ]; then
             chown -R "${UID}" "${PTH}"
           fi
-          if [ ! -z "${GID}" ]; then
+          if [ "${GID}" ]; then
             chown -R :"${GID}" "${PTH}"
           fi
         fi
