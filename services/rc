@@ -30,14 +30,14 @@ rc_status() {
   [ -x /usr/lib/systemd/systemd-udevd ] && DEFAULT_SERVICES="udev"
 
   ENABLED_SERVICES="${DEFAULT_SERVICES} ${SERVICES}"
-
   case "$1" in
-    all) SERVICES=`find /etc/rc.d/* -type f -exec basename {} \; | tr '\n' ' '` ;;
+    all) SERVICES=`find /etc/rc.d/* -type f -exec basename {} \;` ;;
     "") SERVICES="${ENABLED_SERVICES}" ;;
     *) SERVICES="$@" ;;
   esac
 
-  SERVICES=`echo "${SERVICES}" | tr ' ' '\n' | grep -v '^$' | sort | tr '\n' ' '`
+  ENABLED_SERVICES=`echo "${ENABLED_SERVICES}" | tr ' ' '\n' | grep -v '^$' | sort`
+  SERVICES=`echo "${SERVICES}" | tr ' ' '\n' | grep -v '^$' | sort`
 
   STATUS=0
   for SERVICE in ${SERVICES}; do
@@ -45,7 +45,7 @@ rc_status() {
       STATUS1="disabled"
       STATUS2="n/a"
 
-      if echo "${ENABLED_SERVICES}" | tr ' ' '\n' | grep -Fxq "${SERVICE}"; then
+      if echo "${ENABLED_SERVICES}" | grep -Fxq "${SERVICE}"; then
         STATUS1="enabled"
 
         # FIXME: find a better way to determine if the rc script provides a 'status' function
@@ -103,7 +103,7 @@ rc_run() {
   STATUS=0
   while [ $# -ne 0 ]; do
     if [ -e /etc/rc.d/"$1" ]; then
-      /etc/rc.d/"$1" "$ACTION" || STATUS=$?
+      /etc/rc.d/"$1" "${ACTION}" || STATUS=$?
     else
       echo "error: /etc/rc.d/$1 doesn't exist"
       STATUS=1

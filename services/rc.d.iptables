@@ -30,6 +30,7 @@ start() {
 
 stop() {
   STATUS=0
+
   /usr/sbin/iptables -t filter -F      || STATUS=1
   /usr/sbin/iptables -t filter -X      || STATUS=1
   /usr/sbin/iptables -t filter -Z      || STATUS=1
@@ -48,6 +49,7 @@ stop() {
   /usr/sbin/iptables -P INPUT ACCEPT   || STATUS=1
   /usr/sbin/iptables -P OUTPUT ACCEPT  || STATUS=1
   /usr/sbin/iptables -P FORWARD ACCEPT || STATUS=1
+
   return $STATUS
 }
 

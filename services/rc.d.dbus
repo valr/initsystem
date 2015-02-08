@@ -39,10 +39,10 @@ start() {
 stop() {
   pidfile /run/dbus/pid /usr/bin/dbus-daemon || return 0
 
-  kill -TERM $PID
-  kill -CONT $PID
+  kill -TERM "${PID}"
+  kill -CONT "${PID}"
 
-  pidwait $PID 20 || \
+  pidwait "${PID}" 20 || \
     { echo "dbus-daemon is still running"; return 1; }
 
   rm -f /run/dbus/pid
@@ -68,7 +68,7 @@ status() {
   case $STATUS in
     0)
       echo "dbus-daemon is running as pid: "
-      echo $PID
+      echo "${PID}"
       ;;
     1)
       echo "/run/dbus/pid does not exist or is not readable"

@@ -31,13 +31,11 @@ start() {
 
   rm -f /run/wpa_supplicant.pid
 
-  STATUS=0
   /usr/bin/ip link set "${WIRELESS}" down
   /usr/bin/ip link set "${WIRELESS}" up
   /usr/bin/wpa_supplicant -B –D nl80211 \
     -P /run/wpa_supplicant.pid -i "${WIRELESS}" \
-    -c /etc/wpa_supplicant/wpa_supplicant-"${WIRELESS}".conf || STATUS=1
-  return $STATUS
+    -c /etc/wpa_supplicant/wpa_supplicant-"${WIRELESS}".conf
 }
 
 stop() {

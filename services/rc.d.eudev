@@ -29,10 +29,12 @@ start() {
     { echo "udevd is already running"; return 1; }
 
   STATUS=0
+
   /usr/bin/udevd --daemon                                 || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=subsystems || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=devices    || STATUS=1
   /usr/bin/udevadm settle --timeout=60                    || STATUS=1
+
   return $STATUS
 }
 

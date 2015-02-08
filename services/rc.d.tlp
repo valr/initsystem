@@ -25,18 +25,11 @@ umask 022
 . /etc/rc.subr
 
 start() {
-  pgrep -n -x /usr/bin/tlp 1>/dev/null 2>/dev/null && \
-    { echo "tlp is already running"; return 1; }
-
   /usr/bin/tlp init start
 }
 
 stop() {
-  pkill -TERM -x /usr/bin/tlp
-  pkill -CONT -x /usr/bin/tlp
-
-  pwait /usr/bin/tlp 20 || \
-    { echo "tlp is still running"; return 1; }
+  /usr/bin/tlp init stop
 }
 
 restart() {
