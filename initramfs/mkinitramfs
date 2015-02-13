@@ -165,7 +165,14 @@ if [ -r /etc/mkinitramfs.d/"${LINUX}".modules ]; then
   done
 
   depmod -b "${BASE}"/usr "${MOD_VER}"
+
   sort -u -o "${BASE}"/etc/modules "${BASE}"/etc/modules
+
+  for MOD_OPT in /etc/modprobe.d/*; do
+    if [ -e "${MOD_OPT}" ]; then
+      install -D -m644 "${MOD_OPT}" "${BASE}"/"${MOD_OPT}"
+    fi
+  done
 else
   echo "error: file /etc/mkinitramfs.d/${LINUX}.modules doesn't exist or is not readable"
 fi
