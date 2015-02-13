@@ -22,6 +22,8 @@
 # gunzip initramfs-linux.cpio.gz
 # busybox cpio -i -d -H newc -F initramfs-linux.cpio
 
+set -e
+
 PATH=/opt/busybox
 
 ################################################################################
@@ -51,19 +53,26 @@ echo "generating initramfs-${LINUX}.cpio.gz..."
 
 BASE=`mktemp -d /tmp/initramfs.XXXXXX`
 
-trap 'rm -rf "${BASE}"; exit 1' INT TERM EXIT
+trap 'rm -rf "${BASE}"; echo "an error occured, stopping!"; exit 1' INT TERM EXIT
 
 ################################################################################
 # directory structure ##########################################################
 ################################################################################
 
-for DIR in /bin /dev /etc /lib /mnt /newroot /proc /root /run /sbin /sys \
-           /tmp /usr /var; do
-  mkdir "${BASE}"/"${DIR}"
+for DIR in dev etc mnt newroot proc root run sys tmp usr/bin usr/lib var; do
+  install -d -m755 "${BASE}"/"${DIR}"
 done
 
+ln -s usr/bin "${BASE}"/bin
+ln -s usr/bin "${BASE}"/sbin
+ln -s usr/bin "${BASE}"/usr/sbin
+
+ln -s usr/lib "${BASE}"/lib
+ln -s usr/lib "${BASE}"/lib64
+ln -s usr/lib "${BASE}"/usr/lib64
+
 ################################################################################
-# /etc #########################################################################
+# etc ##########################################################################
 ################################################################################
 
 echo "root:x:0:0:root:/root:/bin/sh" > "${BASE}"/etc/passwd
@@ -77,34 +86,39 @@ umask 022
 
 dumpkmap > "${BASE}"/etc/keymap
 
-cp /etc/localtime "${BASE}"/etc/localtime
+install -D -m644 /etc/localtime "${BASE}"/etc/localtime
 
 ################################################################################
-# /bin #########################################################################
+# binaries #####################################################################
 ################################################################################
 
-cp /usr/bin/busybox "${BASE}"/bin
-cp /usr/bin/busybox-suid "${BASE}"/bin
+install -D -m755 /usr/bin/busybox "${BASE}"/usr/bin/busybox
+install -D -m4755 /usr/bin/busybox-suid "${BASE}"/usr/bin/busybox-suid
 
-cd "${BASE}"/bin
+install -D -m755 /usr/bin/fsck.ext-static "${BASE}"/usr/bin/fsck.ext2
+install -D -m755 /usr/bin/fsck.ext-static "${BASE}"/usr/bin/fsck.ext3
+install -D -m755 /usr/bin/fsck.ext-static "${BASE}"/usr/bin/fsck.ext4
 
-for APPLET in `./busybox --list`; do
-  ln -s busybox "${APPLET}"
+install -D -m755 /usr/bin/fsck.fat-static "${BASE}"/usr/bin/fsck.fat
+install -D -m755 /usr/bin/fsck.fat-static "${BASE}"/usr/bin/fsck.vfat
+
+for BINARY in /usr/bin/busybox /usr/bin/busybox-suid; do
+  for APPLET in `"${BASE}"/"${BINARY}" --list`; do
+    ln -s "${BINARY}" "${BASE}"/usr/bin/"${APPLET}"
+  done
 done
 
-for APPLET in `./busybox-suid --list`; do
-  ln -s busybox-suid "${APPLET}"
-done
+add_binary() {
+  install -D "$1" "${BASE}"/"$1"
+  for BINARY in `/usr/bin/ldd "$1" | grep -v linux-vdso.so.1 | sed 's/.*=>//' | sed 's/(0x.*//'`; do
+    install -D "${BINARY}" "${BASE}"/"${BINARY}"
+  done
+}
 
-cp /usr/bin/fsck.ext-static "${BASE}"/bin/fsck.ext2
-cp /usr/bin/fsck.ext-static "${BASE}"/bin/fsck.ext3
-cp /usr/bin/fsck.ext-static "${BASE}"/bin/fsck.ext4
-
-cp /usr/bin/fsck.fat-static "${BASE}"/bin/fsck.fat
-cp /usr/bin/fsck.fat-static "${BASE}"/bin/fsck.vfat
+# add_binary /usr/bin/the_binary_dynamically_linked
 
 ################################################################################
-# /lib/modules #################################################################
+# modules ######################################################################
 ################################################################################
 
 add_module() {
@@ -113,7 +127,7 @@ add_module() {
   MOD_NM2=`echo "$1" | tr '_' '-'`
 
   MOD_PTH=`grep -E "(/${MOD_NM1}.ko.gz|/${MOD_NM2}.ko.gz)" "${MOD_PKG}"/files`
-  MOD_PTH="${MOD_PTH#usr}"
+  MOD_NAM=`basename "${MOD_PTH}" .ko.gz`
 
   # module not found
   if [ -z "${MOD_PTH}" ]; then
@@ -122,15 +136,14 @@ add_module() {
   fi
 
   # install module in initramfs
-  install -D -m644 "${MOD_PTH}" "${BASE}"/"${MOD_PTH}"
+  install -D -m644 /"${MOD_PTH}" "${BASE}"/"${MOD_PTH}"
 
-  MOD_NAM=`basename "${MOD_PTH}" .ko.gz`
   if [ $# -eq 1 ]; then
     echo "${MOD_NAM}" >> "${BASE}"/etc/modules
   fi
 
   # find module dependencies
-  DEP=`grep /"${MOD_NAM}".ko.gz: "${MOD_DEP}"/modules.dep | cut -d ':' -f 2`
+  DEP=`grep /"${MOD_NAM}".ko.gz: /"${MOD_DEP}" | cut -d ':' -f 2`
 
   for MOD in `echo "${DEP}"`; do
     # find dependency name
@@ -144,15 +157,14 @@ add_module() {
 if [ -r /etc/mkinitramfs.d/"${LINUX}".modules ]; then
   # FIXME: ugly way to identify installed linux kernel
   MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
-
-  MOD_DEP=`grep modules.dep "${MOD_PKG}"/files | head -1 | cut -d '/' -f 1,2,3,4`
-  MOD_DEP="${MOD_DEP#usr}"
+  MOD_DEP=`grep 'modules.dep$' "${MOD_PKG}"/files`
+  MOD_VER=`echo "${MOD_DEP}" | awk -F/ '{print $(NF-1)}'`
 
   grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.d/"${LINUX}".modules | while read MODULE; do
     add_module "${MODULE}"
   done
 
-  depmod -b "${BASE}" `basename ${MOD_DEP}`
+  depmod -b "${BASE}"/usr "${MOD_VER}"
   sort -u -o "${BASE}"/etc/modules "${BASE}"/etc/modules
 else
   echo "error: file /etc/mkinitramfs.d/${LINUX}.modules doesn't exist or is not readable"
@@ -162,7 +174,7 @@ fi
 # initscript ###################################################################
 ################################################################################
 
-cp /usr/lib/initramfs/initramfs "${BASE}"/init
+install -D -m755 /usr/lib/initramfs/initramfs "${BASE}"/init
 
 ################################################################################
 # initramfs ####################################################################
