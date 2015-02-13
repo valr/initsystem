@@ -129,8 +129,8 @@ static time_t get_time ()
 static void write_wtmp (short type, pid_t pid, char *line, char *id, char *user)
 {
     struct utmp utmp = {};
-    struct utsname uts = {};
-    struct timeval tv = {};
+    struct utsname uts;
+    struct timeval tv;
 
     utmp.ut_type = type;
     utmp.ut_pid = pid;
@@ -144,9 +144,11 @@ static void write_wtmp (short type, pid_t pid, char *line, char *id, char *user)
         strncpy (utmp.ut_host, uts.release, sizeof (utmp.ut_host));
     }
 
-    gettimeofday (&tv, NULL);
-    utmp.ut_tv.tv_sec = tv.tv_sec;
-    utmp.ut_tv.tv_usec = tv.tv_usec;
+    if (gettimeofday (&tv, NULL) == 0)
+    {
+        utmp.ut_tv.tv_sec = tv.tv_sec;
+        utmp.ut_tv.tv_usec = tv.tv_usec;
+    }
 
     updwtmp (WTMP_FILE, &utmp);
 }

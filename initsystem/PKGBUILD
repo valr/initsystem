@@ -22,7 +22,7 @@ source=('init.c'
         'shutdown'
         'tmpfiles'
         'LICENSE')
-md5sums=('a94c62e3627db7ce590ad7ae73fcefe0'
+md5sums=('82b4e82d46e72e4bbfc02e4b670745ea'
          '887ac1eedd45b0f6715375e15c32f469'
          '19c591f1d9eb2e26ce126a2c33e7343d'
          'f9d345202573c58dfea5f7d39530b36d'
