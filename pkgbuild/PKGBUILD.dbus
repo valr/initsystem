@@ -1,20 +1,20 @@
-# $Id: PKGBUILD 229646 2015-01-22 17:15:09Z andyrtr $
+# $Id: PKGBUILD 231206 2015-02-09 23:06:38Z foutrelis $
 # Maintainer: Tom Gundersen <teg@jklm.no>
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 # Contributor: Link Dupont <link@subpop.net>
 
 pkgbase=dbus
 pkgname=('dbus' 'libdbus')
-pkgver=1.8.14
+pkgver=1.8.16
 pkgrel=1
 pkgdesc="Freedesktop.org message bus system"
 url="http://www.freedesktop.org/Software/dbus"
 arch=(i686 x86_64)
 license=('GPL' 'custom')
-makedepends=('libx11' 'xmlto' 'docbook-xsl')
+makedepends=('libx11' 'systemd' 'xmlto' 'docbook-xsl')
 source=(http://dbus.freedesktop.org/releases/dbus/dbus-$pkgver.tar.gz{,.asc}
         30-dbus)
-md5sums=('dfb810eda8780cf9debf7169b3ca5fe1'
+md5sums=('020824a38850501e7d6ba8307a7c5ac3'
          'SKIP'
          '3314d727fa57fc443fce25b5cbeebbcc')
 validpgpkeys=('DA98F25C0871C49A59EAFF2C4DE8FF2A63C7CC90') # Simon McVittie <simon.mcvittie@collabora.co.uk>
