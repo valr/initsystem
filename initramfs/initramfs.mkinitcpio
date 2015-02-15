@@ -1,8 +1,10 @@
 #!/bin/bash
 
 build() {
-  for PRESET in /etc/mkinitcpio.d/*.preset; do
-    mkinitramfs `basename "${PRESET}" .preset`
+  . /etc/mkinitramfs.conf
+
+  for KERNEL in ${INITRAMFS_KERNEL}; do
+    mkinitramfs "${KERNEL}"
   done
 }
 

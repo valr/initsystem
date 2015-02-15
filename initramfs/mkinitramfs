@@ -26,8 +26,10 @@ set -e
 
 PATH=/opt/busybox
 
+. /etc/mkinitramfs.conf
+
 ################################################################################
-# parameter ####################################################################
+# parameters ###################################################################
 ################################################################################
 
 if [ `id -u` -ne 0 ]; then
@@ -35,15 +37,22 @@ if [ `id -u` -ne 0 ]; then
   exit 1
 fi
 
-case "$1" in
-  linux|linux-lts)
+if [ $# -ne 1 ]; then
+  echo "error: one and only one parameter required"
+  exit 1
+fi
+
+LINUX=""
+for KERNEL in ${INITRAMFS_KERNEL}; do
+  if [ "$1" = "${KERNEL}" ]; then
     LINUX="$1"
-    ;;
-  *)
-    echo "usage: `basename $0` {linux|linux-lts}"
-    exit 1
-    ;;
-esac
+  fi
+done
+
+if [ -z "${LINUX}" ]; then
+  echo "error: parameter $1 is not a kernel defined in /etc/mkinitramfs.conf"
+  exit 1
+fi
 
 ################################################################################
 # base directory ###############################################################
@@ -108,13 +117,13 @@ for BINARY in /usr/bin/busybox /usr/bin/busybox-suid; do
   done
 done
 
-add_binary() {
-  install -D "$1" "${BASE}"/"$1"
-  for BINARY in `/usr/bin/ldd "$1" | grep -v linux-vdso.so.1 | sed 's/.*=>//' | sed 's/(0x.*//'`; do
-    install -D "${BINARY}" "${BASE}"/"${BINARY}"
-  done
-}
-
+#add_binary() {
+#  install -D "$1" "${BASE}"/"$1"
+#  for BINARY in `/usr/bin/ldd "$1" | grep -v linux-vdso.so.1 | sed 's/.*=>//' | sed 's/(0x.*//'`; do
+#    install -D "${BINARY}" "${BASE}"/"${BINARY}"
+#  done
+#}
+#
 # add_binary /usr/bin/the_binary_dynamically_linked
 
 ################################################################################
@@ -154,19 +163,17 @@ add_module() {
   done
 }
 
-if [ -r /etc/mkinitramfs.d/"${LINUX}".modules ]; then
+if [ -r /etc/mkinitramfs.d/"${LINUX}".module ]; then
   # FIXME: ugly way to identify installed linux kernel
   MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
   MOD_DEP=`grep 'modules.dep$' "${MOD_PKG}"/files`
   MOD_VER=`echo "${MOD_DEP}" | awk -F/ '{print $(NF-1)}'`
 
-  grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.d/"${LINUX}".modules | while read MODULE; do
+  grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.d/"${LINUX}".module | while read MODULE; do
     add_module "${MODULE}"
   done
 
   depmod -b "${BASE}"/usr "${MOD_VER}"
-
-  sort -u -o "${BASE}"/etc/modules "${BASE}"/etc/modules
 
   for MOD_OPT in /etc/modprobe.d/*; do
     if [ -e "${MOD_OPT}" ]; then
@@ -174,7 +181,19 @@ if [ -r /etc/mkinitramfs.d/"${LINUX}".modules ]; then
     fi
   done
 else
-  echo "error: file /etc/mkinitramfs.d/${LINUX}.modules doesn't exist or is not readable"
+  echo "error: /etc/mkinitramfs.d/${LINUX}.module doesn't exist or is not readable"
+fi
+
+################################################################################
+# firmwares ####################################################################
+################################################################################
+
+if [ -r /etc/mkinitramfs.d/"${LINUX}".firmware ]; then
+  grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.d/"${LINUX}".firmware | while read FIRMWARE; do
+    install -D "${FIRMWARE}" "${BASE}"/"${FIRMWARE}"
+  done
+else
+  echo "error: /etc/mkinitramfs.d/${LINUX}.firmware doesn't exist or is not readable"
 fi
 
 ################################################################################
@@ -195,8 +214,15 @@ umask 022
 
 cd ..
 
-mv "initramfs-${LINUX}.cpio.gz" /boot
+for DESTINATION in ${INITRAMFS_DESTINATION}; do
+  if [ -d "${DESTINATION}" ]; then
+    install -D -m700 "initramfs-${LINUX}.cpio.gz" "${DESTINATION}"/"initramfs-${LINUX}.cpio.gz"
+  else
+    echo "error: directory ${DESTINATION} doesn't exist"
+  fi
+done
 
+rm -f "initramfs-${LINUX}.cpio.gz"
 rm -rf "${BASE}"
 
 echo "generation done"
