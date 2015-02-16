@@ -34,24 +34,26 @@ if [ $PPID != 1 ]; then
 fi
 
 ################################################################################
+# terminal settings ############################################################
+################################################################################
+
+stty opost onlcr
+
+################################################################################
 # kill user processes ##########################################################
 ################################################################################
+
+echo ""
+echo "shutdown: sending SIGTERM to user processes"
 
 for USER in `users | grep -v root`; do
   kill -TERM `ps -o pid,user | grep "${USER}" | awk '{ print $1 }'` 1>/dev/null 2>/dev/null
 done
 
 ################################################################################
-# terminal settings ############################################################
-################################################################################
-
-stty onlcr
-
-################################################################################
 # local script #################################################################
 ################################################################################
 
-echo ""
 echo "shutdown: starting local shutdown script"
 
 . /etc/rc.shutdown.local
@@ -103,13 +105,13 @@ wait_pids() {
   return 1
 }
 
-echo "shutdown: sending SIGTERM to processes"
+echo "shutdown: sending SIGTERM to remaining processes"
 
 killall5 -TERM
 wait_pids 120
 
 if [ $? -ne 0 ]; then
-  echo "shutdown: sending SIGKILL to processes"
+  echo "shutdown: sending SIGKILL to remaining processes"
 
   killall5 -KILL
   wait_pids 120
