@@ -1,14 +1,11 @@
 
 post_install() {
-  printf '==> For every kernel (e.g. linux, linux-lts) installed\n'
-  printf '    and defined in /etc/mkinitramfs.conf you have to create\n'
+  printf '==> For every .preset file in /etc/mkinitcpio.d you have to create\n'
   printf '    a .module and .firmware file in the directory /etc/mkinitramfs.d\n\n'
   printf '    The .module file has to contain the list of modules\n'
   printf '    to include in the initramfs (without path nor extension).\n'
   printf '    The .firmware file has to contain the firmwares\n'
   printf '    to include in the initramfs (with path and extension).\n\n'
-  printf '    In /etc/mkinitramfs.conf, you have to define as well\n'
-  printf '    the directory(ies) where the initramfs will be installed.\n\n'
   printf '    The list of modules can be defined like this:\n'
   printf '      for i in `lsinitcpio /boot/initramfs-linux.img | grep .ko`; do basename "$i" .ko; done\n\n'
   printf '    After defining or changing the list, (re)generate the initramfs like this:\n'
@@ -17,9 +14,7 @@ post_install() {
 }
 
 post_upgrade() {
-  . /etc/mkinitramfs.conf
-
-  for KERNEL in ${INITRAMFS_KERNEL}; do
-    mkinitramfs "${KERNEL}"
+  for PRESET in /etc/mkinitcpio.d/*.preset; do
+    mkinitramfs `basename "${PRESET}" .preset`
   done
 }

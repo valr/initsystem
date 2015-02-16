@@ -26,8 +26,6 @@ set -e
 
 PATH=/opt/busybox
 
-. /etc/mkinitramfs.conf
-
 ################################################################################
 # parameters ###################################################################
 ################################################################################
@@ -37,20 +35,10 @@ if [ `id -u` -ne 0 ]; then
   exit 1
 fi
 
-if [ $# -ne 1 ]; then
-  echo "error: one and only one parameter required"
-  exit 1
-fi
+LINUX="$1"
 
-LINUX=""
-for KERNEL in ${INITRAMFS_KERNEL}; do
-  if [ "$1" = "${KERNEL}" ]; then
-    LINUX="$1"
-  fi
-done
-
-if [ -z "${LINUX}" ]; then
-  echo "error: parameter $1 is not a kernel defined in /etc/mkinitramfs.conf"
+if [ ! -e /etc/mkinitcpio.d/"${LINUX}".preset ]; then
+  echo "error: parameter is not a .preset file in /etc/mkinitcpio.d"
   exit 1
 fi
 
@@ -214,13 +202,7 @@ umask 022
 
 cd ..
 
-for DESTINATION in ${INITRAMFS_DESTINATION}; do
-  if [ -d "${DESTINATION}" ]; then
-    install -D -m700 "initramfs-${LINUX}.cpio.gz" "${DESTINATION}"/"initramfs-${LINUX}.cpio.gz"
-  else
-    echo "error: directory ${DESTINATION} doesn't exist"
-  fi
-done
+install -D -m700 "initramfs-${LINUX}.cpio.gz" /boot/"initramfs-${LINUX}.cpio.gz"
 
 rm -f "initramfs-${LINUX}.cpio.gz"
 rm -rf "${BASE}"

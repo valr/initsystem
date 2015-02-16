@@ -1,0 +1,17 @@
+#!/bin/bash
+
+. /etc/mkinitramfs.conf
+
+build() {
+  for SOURCE in ${EFISTUB_SOURCE}; do
+    for DESTINATION in ${EFISTUB_DESTINATION}; do
+      install -D "${SOURCE}" "${DESTINATION}"/`basename "${SOURCE}"`
+    done
+  done
+}
+
+help() {
+  cat <<HELPEOF
+This hook installs the EFI stub source(s) into destination directory(ies).
+HELPEOF
+}

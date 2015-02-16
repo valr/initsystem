@@ -9,16 +9,19 @@ license=('GPL')
 groups=('initsystem')
 arch=('any')
 depends=('busybox' 'fsck-ext' 'fsck-fat')
+backup=('etc/mkinitramfs.conf')
 install='initramfs.install'
 source=('mkinitramfs'
         'mkinitramfs.conf'
         'initramfs'
         'initramfs.mkinitcpio'
+        'efistub.mkinitcpio'
         'LICENSE')
-md5sums=('74724f8fb1280f1ad578a3a16dc32dba'
-         'bded02702cf4cc49621ffe41adaa2cc3'
+md5sums=('a738216761b792c744a7c3f065b500e2'
+         'e7186d8c761aa8e8dfe919a45185215f'
          '1b807c659b88d69b901beacbef046e4a'
-         '788a4223763cc48a175ec1e758b6d512'
+         '9f1c6ff05b3f32f8ea72e919fac41d40'
+         '2df3f7bc61d2e2ba2482972a4d9d15b1'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
@@ -27,5 +30,6 @@ package() {
   install -Dm755 mkinitramfs "${pkgdir}"/usr/bin/mkinitramfs
   install -Dm755 initramfs "${pkgdir}"/usr/lib/initramfs/initramfs
   install -Dm644 "${srcdir}"/initramfs.mkinitcpio "${pkgdir}"/usr/lib/initcpio/install/initramfs
+  install -Dm644 "${srcdir}"/efistub.mkinitcpio "${pkgdir}"/usr/lib/initcpio/install/efistub
   install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
