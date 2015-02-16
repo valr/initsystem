@@ -26,16 +26,13 @@ umask 022
 . /etc/conf.d/lm_sensors
 
 start() {
-  STATUS=0
-
-  /usr/bin/modprobe -a -b -s "${BUS_MODULES}" "${HWMON_MODULES}" || STATUS=1
-  /usr/bin/sensors -s                                            || STATUS=1
-
-  return $STATUS
+  /usr/bin/modprobe -a -b -s "${BUS_MODULES}" "${HWMON_MODULES}"
+  /usr/bin/sensors -s
 }
 
 stop() {
   /usr/bin/modprobe -a -b -s -r "${BUS_MODULES}" "${HWMON_MODULES}"
+  return 0
 }
 
 display() {
