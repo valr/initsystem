@@ -22,6 +22,7 @@ PATH=/opt/busybox
 cd /
 umask 022
 
+. /etc/rc.subr
 . /etc/rc.conf
 
 ################################################################################
@@ -46,9 +47,14 @@ stty opost onlcr
 echo ""
 echo "shutdown: sending SIGTERM to user processes"
 
-for USER in `users | grep -v root`; do
-  kill -TERM `ps -o pid,user | grep "${USER}" | awk '{ print $1 }'` 1>/dev/null 2>/dev/null
-done
+USERS=`users | tr ' ' '|'`
+if [ "${USERS}" ]; then
+  PIDS=`ps -eo pid,user | grep -E "(${USERS})" | grep -v root | awk '{ print $1 }'`
+  if [ "${PIDS}" ]; then
+    kill -TERM ${PIDS} 1>/dev/null 2>/dev/null
+    pidwait "${PIDS}" 12
+  fi
+fi
 
 ################################################################################
 # local script #################################################################
@@ -88,33 +94,19 @@ if [ -x /usr/lib/systemd/systemd-udevd ]; then
 fi
 
 ################################################################################
-# kill remaining processes #####################################################
+# kill processes ###############################################################
 ################################################################################
 
-wait_pids() {
-  for i in `seq $1`; do
-    killall5 -CONT;
-
-    if [ $? -eq 2 ]; then
-      return 0
-    fi
-
-    sleep .25
-  done
-
-  return 1
-}
-
-echo "shutdown: sending SIGTERM to remaining processes"
+echo "shutdown: sending SIGTERM to processes"
 
 killall5 -TERM
-wait_pids 120
+pidwait5 120
 
 if [ $? -ne 0 ]; then
-  echo "shutdown: sending SIGKILL to remaining processes"
+  echo "shutdown: sending SIGKILL to processes"
 
   killall5 -KILL
-  wait_pids 120
+  pidwait5 120
 fi
 
 ################################################################################

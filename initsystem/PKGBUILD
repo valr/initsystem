@@ -19,6 +19,7 @@ source=('init.c'
         'rc.respawn'
         'rc.shutdown'
         'rc.shutdown.local'
+        'rc.subr'
         'shutdown'
         'tmpfiles'
         'LICENSE')
@@ -27,8 +28,9 @@ md5sums=('82b4e82d46e72e4bbfc02e4b670745ea'
          '19c591f1d9eb2e26ce126a2c33e7343d'
          'f9d345202573c58dfea5f7d39530b36d'
          'a6781031e16aab769c200c7f69d3735c'
-         '7e0fb6be477bd1800c1fd122cf500c32'
+         '31389dfd1278fe3b6dda6e4cc29703e0'
          '8c53ae0e2e5584999f47f905bc226e5f'
+         '70b45924d33ebbd5cc2f32cb37c0d9cc'
          '07c56d75dd64e0a04a3cccf28f5d7e97'
          'ab33b386c1a5b7c4415300f69d4a6dfa'
          '4641e94ec96f98fabc56ff9cc48be14b')
@@ -53,6 +55,7 @@ package() {
   install -Dm755 "${srcdir}"/rc.respawn        "${pkgdir}"/etc/rc.respawn
   install -Dm755 "${srcdir}"/rc.shutdown       "${pkgdir}"/etc/rc.shutdown
   install -Dm755 "${srcdir}"/rc.shutdown.local "${pkgdir}"/etc/rc.shutdown.local
+  install -Dm755 "${srcdir}"/rc.subr           "${pkgdir}"/etc/rc.subr
   install -Dm755 "${srcdir}"/shutdown          "${pkgdir}"/usr/bin/shutdown
   install -Dm755 "${srcdir}"/tmpfiles          "${pkgdir}"/usr/bin/tmpfiles
 

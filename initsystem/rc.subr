@@ -18,7 +18,7 @@
 
 pwait() {
   for i in `seq $2`; do
-    pgrep -n -x "$1" 1>/dev/null 2>/dev/null 
+    pgrep -n -x $1 1>/dev/null 2>/dev/null 
 
     if [ $? -ne 0 ]; then
       return 0
@@ -32,7 +32,7 @@ pwait() {
 
 pidwait() {
   for i in `seq $2`; do
-    kill -CONT "$1" 1>/dev/null 2>/dev/null
+    kill -CONT $1 1>/dev/null 2>/dev/null
 
     if [ $? -ne 0 ]; then
       return 0
@@ -44,15 +44,28 @@ pidwait() {
   return 1
 }
 
-pidfile() {
-  PID=0
+pidwait5() {
+  for i in `seq $1`; do
+    killall5 -CONT 1>/dev/null 2>/dev/null
 
+    if [ $? -eq 2 ]; then
+      return 0
+    fi
+
+    sleep .25
+  done
+
+  return 1
+}
+
+pidfile() {
   if [ ! -r "$1" ]; then
     return 1
   fi
 
+  PID=0
   read -r PID 2>/dev/null <"$1"
-  CMD=`strings /proc/"${PID}"/cmdline 2>/dev/null | head -n 1`
+  CMD=`strings /proc/${PID}/cmdline 2>/dev/null | head -n 1`
 
   if [ "${CMD}" != "$2" ]; then
     return 2

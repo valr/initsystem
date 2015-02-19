@@ -10,7 +10,6 @@ groups=('initsystem')
 arch=('any')
 depends=('initsystem')
 source=('rc'
-        'rc.subr'
         'rc.d.acpi'
         'rc.d.alsa'
         'rc.d.bumblebee'
@@ -29,7 +28,6 @@ source=('rc'
         'rc.d.wireless'
         'LICENSE')
 md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
-         '99c2389f648568956ae2ba15e2e68d36'
          'da7d730867c4b9b40e849058cb45f24e'
          '6fd3ad2827b1e7ac09bfe8bfc0d6fa40'
          '5286bac75b9afba0d1ab2553dc47ba1c'
@@ -55,8 +53,6 @@ package() {
   install -Dm755 "${srcdir}"/rc "${pkgdir}"/usr/bin/rc
 
   # services
-
-  install -Dm755 "${srcdir}"/rc.subr "${pkgdir}"/etc/rc.subr
 
   install -Dm755 "${srcdir}"/rc.d.acpi      "${pkgdir}"/etc/rc.d/acpi
   install -Dm755 "${srcdir}"/rc.d.alsa      "${pkgdir}"/etc/rc.d/alsa
