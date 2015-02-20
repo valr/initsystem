@@ -5,13 +5,13 @@
 build() {
   for SOURCE in ${EFISTUB_SOURCE}; do
     for DESTINATION in ${EFISTUB_DESTINATION}; do
-      install -D "${SOURCE}" "${DESTINATION}"/`basename "${SOURCE}"`
+      install -D ${SOURCE} ${DESTINATION}
     done
   done
 }
 
 help() {
   cat <<HELPEOF
-This hook installs the EFI stub source(s) into destination directory(ies).
+This hook installs the EFI stub source(s) into the destination directory(ies).
 HELPEOF
 }
