@@ -2,7 +2,7 @@
 
 pkgname=busybox
 pkgver=1.23.1
-pkgrel=1
+pkgrel=2
 pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
@@ -10,18 +10,22 @@ groups=('initsystem')
 arch=('i686' 'x86_64')
 source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
-        'config_suid')
-# http://busybox.net/downloads/fixes-${pkgver}/busybox-$pkgver-{ash,date,iplink,lzop,nc,zcat-no-ext}.patch
+        'config_suid'
+        http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{dc,modinfo,modprobe-small,wget}.patch)
 md5sums=('5c94d6301a964cd91619bd4d74605245'
          'fd275f9a6a77a7db6e7d48c6897d5b1b'
-         'ab4d3af046ecf738a4813f5094b5f0a3')
+         'ab4d3af046ecf738a4813f5094b5f0a3'
+         '0f6d96206d98ba4de68317bd2a232e35'
+         '05e2f11bd968bae952f74745c46ee43e'
+         '4152f8eb84b727beba2af02b856f8e94'
+         'fb515c1c849330eeb6596519f65d4540')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-#  for PATCH in "${srcdir}"/*.patch; do
-#    patch -p1 <${PATCH}
-#  done
+  for PATCH in "${srcdir}"/*.patch; do
+    patch -p1 <${PATCH}
+  done
 
   sed -i '1,1i#include <sys/resource.h>' include/libbb.h
 
