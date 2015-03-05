@@ -1,15 +1,15 @@
-# $Id: PKGBUILD 230189 2015-01-28 16:02:54Z heftig $
+# $Id: PKGBUILD 232069 2015-02-27 12:41:35Z heftig $
 # Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=colord
-pkgver=1.2.8
+pkgver=1.2.9
 pkgrel=1
 pkgdesc="System daemon for managing color devices"
 arch=(i686 x86_64)
 url="http://www.freedesktop.org/software/colord"
 license=(GPL2)
-depends=(lcms2 libgusb polkit sqlite dconf dbus)
+depends=(lcms2 libgusb polkit sqlite systemd dconf dbus)
 makedepends=(intltool gobject-introspection vala docbook2x sane bash-completion
              argyllcms)
 optdepends=('sane: scanner support'
@@ -17,7 +17,7 @@ optdepends=('sane: scanner support'
 replaces=('shared-color-profiles')
 install=colord.install
 source=($url/releases/$pkgname-$pkgver.tar.xz{,.asc})
-sha1sums=('e5c2a3432896cac180b089291c0e38bd809328cf'
+sha1sums=('1b6319812b12ab7f906983959bbaaf2e5b78bdb7'
           'SKIP')
 validpgpkeys=('163EB50119225DB3DF8F49EA17ACBA8DFA970E17')
 groups=('noupgrade')
