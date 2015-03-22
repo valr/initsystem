@@ -1,7 +1,0 @@
-*.gz
-*.bz2
-*.xz
-*.sig
-
-/src/
-/pkg/
