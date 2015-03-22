@@ -38,13 +38,13 @@ fi
 # terminal settings ############################################################
 ################################################################################
 
-stty opost onlcr
+stty sane < /dev/console
+echo ""
 
 ################################################################################
 # kill user processes ##########################################################
 ################################################################################
 
-echo ""
 echo "shutdown: sending SIGTERM to user processes"
 
 USERS=`users | tr ' ' '|'`
@@ -144,7 +144,11 @@ umask 022
 
 echo "shutdown: syncing filesystems"
 
-sync; sleep 3
+sync; sleep 1
+
+echo "shutdown: deactivating swap"
+
+swapoff -a
 
 echo "shutdown: unmounting filesystems"
 

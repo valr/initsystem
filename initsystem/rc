@@ -140,6 +140,10 @@ echo "initscript: mounting filesystems"
 mount -o remount,rw /
 mount -a
 
+echo "initscript: activating swap"
+
+swapon -a
+
 ################################################################################
 # random number generator ######################################################
 ################################################################################

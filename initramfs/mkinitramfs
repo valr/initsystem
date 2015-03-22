@@ -86,18 +86,11 @@ dumpkmap > "${BASE}"/etc/keymap
 install -D -m644 /etc/localtime "${BASE}"/etc/localtime
 
 ################################################################################
-# binaries #####################################################################
+# statically linked binaries ###################################################
 ################################################################################
 
 install -D -m755 /usr/bin/busybox "${BASE}"/usr/bin/busybox
 install -D -m4755 /usr/bin/busybox-suid "${BASE}"/usr/bin/busybox-suid
-
-install -D -m755 /usr/bin/fsck.ext-static "${BASE}"/usr/bin/fsck.ext2
-install -D -m755 /usr/bin/fsck.ext-static "${BASE}"/usr/bin/fsck.ext3
-install -D -m755 /usr/bin/fsck.ext-static "${BASE}"/usr/bin/fsck.ext4
-
-install -D -m755 /usr/bin/fsck.fat-static "${BASE}"/usr/bin/fsck.fat
-install -D -m755 /usr/bin/fsck.fat-static "${BASE}"/usr/bin/fsck.vfat
 
 for BINARY in /usr/bin/busybox /usr/bin/busybox-suid; do
   for APPLET in `"${BASE}"/"${BINARY}" --list`; do
@@ -105,14 +98,39 @@ for BINARY in /usr/bin/busybox /usr/bin/busybox-suid; do
   done
 done
 
-#add_binary() {
-#  install -D "$1" "${BASE}"/"$1"
-#  for BINARY in `/usr/bin/ldd "$1" | grep -v linux-vdso.so.1 | sed 's/.*=>//' | sed 's/(0x.*//'`; do
-#    install -D "${BINARY}" "${BASE}"/"${BINARY}"
-#  done
-#}
-#
-# add_binary /usr/bin/the_binary_dynamically_linked
+################################################################################
+# dynamically linked binaries ##################################################
+################################################################################
+
+_add_binary() {
+  SBINARY="$1"
+  RBINARY=`readlink -f "${SBINARY}"`
+
+  if [ ! -e "${BASE}"/"${RBINARY}" ]; then
+    install -D "${RBINARY}" "${BASE}"/"${RBINARY}"
+  fi
+
+  if [ "${SBINARY}" != "${RBINARY}" ]; then
+    if [ ! -L "${BASE}"/"${SBINARY}" ]; then
+      ln -s "${RBINARY}" "${BASE}"/"${SBINARY}"
+    fi
+  fi
+}
+
+add_binary() {
+  _add_binary "$1"
+
+  for BINARY in `/usr/bin/ldd "$1" | grep -v linux-vdso.so.1 | sed 's/.*=>//' | sed 's/(0x.*//'`; do
+    _add_binary "${BINARY}"
+  done
+}
+
+for FILESYSTEM in ext2 ext3 ext4 fat vfat msdos; do
+  add_binary /usr/bin/fsck."${FILESYSTEM}"
+done
+
+install -D -m644 /dev/null "${BASE}"/etc/ld.so.conf
+/usr/bin/ldconfig -r "${BASE}" -f /etc/ld.so.conf -C /etc/ld.so.cache
 
 ################################################################################
 # modules ######################################################################

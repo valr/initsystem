@@ -1,13 +1,13 @@
 #!/bin/bash
 
-export LC_ALL=C
+LC_ALL=C
 
 searchfile() {
   readelf -d "$2" | grep library | grep "$1" | cut -d ':' -f 2 | tr -d '[]'
 }
 
 searchdirectory() {
-  for FILE in `find "$1"`; do
+  for FILE in `find "$1" -type f`; do
     LIBRARY=`readelf -d "${FILE}" 2>/dev/null | grep library | grep "$2" | cut -d ':' -f 2 | tr -d '[]'`
 
     if [ "${LIBRARY}" -a "${LIBRARY}" != " " ]; then

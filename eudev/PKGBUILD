@@ -1,11 +1,13 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_udev_ver=217
+_udev_ver=219
+_src_uri='http://dev.gentoo.org/~blueness/eudev'
+
 pkgname=eudev
-pkgver=2.1.1
-pkgrel=3
+pkgver=3.0
+pkgrel=1
 pkgdesc='userspace device manager'
-url='http://dev.gentoo.org/~blueness/eudev'
+url='http://www.gentoo.org/proj/en/eudev'
 license=('GPL')
 groups=('initsystem')
 arch=('i686' 'x86_64')
@@ -21,12 +23,12 @@ conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
 options=(!makeflags !libtool)
 install='eudev.install'
-source=("${url}/${pkgname}-${pkgver}.tar.gz"
+source=("${_src_uri}/${pkgname}-${pkgver}.tar.gz"
         'initcpio_hooks'
         'initcpio_install')
-md5sums=('dd945ce34314b4544e9036153d3a97e9'
+md5sums=('a2706a1413723b6b82eecb7d6982763c'
          'e7bbe35b79cddd7c82bf201f6297722d'
-         '1e5610279d24e77e1bf1547edd2f6d10')
+         'ac595576711e1e1b57ebe3f83493d2de')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -39,10 +41,8 @@ build() {
     --enable-split-usr \
     --enable-introspection \
     --enable-gudev \
-    --enable-rule-generator \
     --with-rootprefix=/usr \
-    --with-html-dir=/usr/share/doc/"${pkgname}-${pkgver}"/html \
-    --with-modprobe=/usr/bin/modprobe
+    --with-html-dir=/usr/share/doc/"${pkgname}-${pkgver}"/html
 
     make
 }
