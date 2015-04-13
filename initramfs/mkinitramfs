@@ -22,8 +22,6 @@
 # gunzip initramfs-linux.cpio.gz
 # busybox cpio -i -d -H newc -F initramfs-linux.cpio
 
-set -e
-
 PATH=/opt/busybox
 
 ################################################################################
@@ -56,17 +54,10 @@ trap 'rm -rf "${BASE}"; echo "an error occured, stopping!"; exit 1' INT TERM EXI
 # directory structure ##########################################################
 ################################################################################
 
-for DIR in dev etc mnt newroot proc root run sys tmp usr/bin usr/lib var; do
+for DIR in bin dev etc lib lib64 mnt newroot proc root run sbin sys tmp usr \
+           usr/bin usr/lib usr/lib64 usr/sbin var; do
   install -d -m755 "${BASE}"/"${DIR}"
 done
-
-ln -s usr/bin "${BASE}"/bin
-ln -s usr/bin "${BASE}"/sbin
-ln -s usr/bin "${BASE}"/usr/sbin
-
-ln -s usr/lib "${BASE}"/lib
-ln -s usr/lib "${BASE}"/lib64
-ln -s usr/lib "${BASE}"/usr/lib64
 
 ################################################################################
 # etc ##########################################################################
@@ -83,6 +74,7 @@ umask 022
 
 dumpkmap > "${BASE}"/etc/keymap
 
+install -D -m644 /dev/null "${BASE}"/etc/ld.so.conf
 install -D -m644 /etc/localtime "${BASE}"/etc/localtime
 
 ################################################################################
@@ -94,7 +86,7 @@ install -D -m4755 /usr/bin/busybox-suid "${BASE}"/usr/bin/busybox-suid
 
 for BINARY in /usr/bin/busybox /usr/bin/busybox-suid; do
   for APPLET in `"${BASE}"/"${BINARY}" --list`; do
-    ln -s "${BINARY}" "${BASE}"/usr/bin/"${APPLET}"
+    ln -s "${BINARY}" "${BASE}"/bin/"${APPLET}"
   done
 done
 
@@ -102,34 +94,33 @@ done
 # dynamically linked binaries ##################################################
 ################################################################################
 
-_add_binary() {
-  SBINARY="$1"
-  RBINARY=`readlink -f "${SBINARY}"`
+add_one_binary() {
+  OBINARY="$1"
+  RBINARY=`readlink -f "${OBINARY}"`
 
   if [ ! -e "${BASE}"/"${RBINARY}" ]; then
     install -D "${RBINARY}" "${BASE}"/"${RBINARY}"
   fi
 
-  if [ "${SBINARY}" != "${RBINARY}" ]; then
-    if [ ! -L "${BASE}"/"${SBINARY}" ]; then
-      ln -s "${RBINARY}" "${BASE}"/"${SBINARY}"
+  if [ "${OBINARY}" != "${RBINARY}" ]; then
+    if [ ! -L "${BASE}"/"${OBINARY}" ]; then
+      ln -s "${RBINARY}" "${BASE}"/"${OBINARY}"
     fi
   fi
 }
 
-add_binary() {
-  _add_binary "$1"
+add_all_binary() {
+  add_one_binary "$1"
 
   for BINARY in `/usr/bin/ldd "$1" | grep -v linux-vdso.so.1 | sed 's/.*=>//' | sed 's/(0x.*//'`; do
-    _add_binary "${BINARY}"
+    add_one_binary "${BINARY}"
   done
 }
 
 for FILESYSTEM in ext2 ext3 ext4 fat vfat msdos; do
-  add_binary /usr/bin/fsck."${FILESYSTEM}"
+  add_all_binary /usr/bin/fsck."${FILESYSTEM}"
 done
 
-install -D -m644 /dev/null "${BASE}"/etc/ld.so.conf
 /usr/bin/ldconfig -r "${BASE}" -f /etc/ld.so.conf -C /etc/ld.so.cache
 
 ################################################################################
@@ -151,7 +142,7 @@ add_module() {
   fi
 
   # install module in initramfs
-  install -D -m644 /"${MOD_PTH}" "${BASE}"/"${MOD_PTH}"
+  install -D -m644 /"${MOD_PTH}" "${BASE}"/"${MOD_PTH#usr}"
 
   if [ $# -eq 1 ]; then
     echo "${MOD_NAM}" >> "${BASE}"/etc/modules
@@ -179,7 +170,7 @@ if [ -r /etc/mkinitramfs.d/"${LINUX}".module ]; then
     add_module "${MODULE}"
   done
 
-  depmod -b "${BASE}"/usr "${MOD_VER}"
+  depmod -b "${BASE}" "${MOD_VER}"
 
   for MOD_OPT in /etc/modprobe.d/*; do
     if [ -e "${MOD_OPT}" ]; then
@@ -215,14 +206,14 @@ install -D -m755 /usr/lib/initramfs/initramfs "${BASE}"/init
 cd "${BASE}"
 
 umask 077
-find . | cpio -o -H newc | gzip > "../initramfs-${LINUX}.cpio.gz"
+find . | cpio -o -H newc | gzip > ../initramfs-"${LINUX}".cpio.gz
 umask 022
 
 cd ..
 
-install -D -m700 "initramfs-${LINUX}.cpio.gz" /boot/"initramfs-${LINUX}.cpio.gz"
+install -D -m700 initramfs-"${LINUX}".cpio.gz /boot/initramfs-"${LINUX}".cpio.gz
 
-rm -f "initramfs-${LINUX}.cpio.gz"
+rm -f initramfs-"${LINUX}".cpio.gz
 rm -rf "${BASE}"
 
 echo "generation done"

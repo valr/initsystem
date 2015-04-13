@@ -24,7 +24,7 @@ source=('init.c'
         'tmpfiles'
         'LICENSE')
 md5sums=('82b4e82d46e72e4bbfc02e4b670745ea'
-         '887ac1eedd45b0f6715375e15c32f469'
+         'e445348296796f0e8ff8f10a3e6b176a'
          'a2a4f6896a26643f01c980bc898625fb'
          'f9d345202573c58dfea5f7d39530b36d'
          'a6781031e16aab769c200c7f69d3735c'

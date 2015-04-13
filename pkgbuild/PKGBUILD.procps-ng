@@ -1,15 +1,16 @@
-# $Id: PKGBUILD 226083 2014-11-12 01:25:37Z bisson $
+# $Id: PKGBUILD 235285 2015-03-30 17:53:09Z bisson $
 # Maintainer: Gaetan Bisson <bisson@archlinux.org>
 # Contributor: Eric Bélanger <eric@archlinux.org>
 
 pkgname=procps-ng
 pkgver=3.3.10
-pkgrel=1
+pkgrel=2
 pkgdesc='Utilities for monitoring your system and its processes'
 url='http://sourceforge.net/projects/procps-ng/'
 license=('GPL' 'LGPL')
 arch=('i686' 'x86_64')
-depends=('ncurses')
+makedepends=('systemd')
+depends=('ncurses' 'libsystemd')
 source=("http://downloads.sourceforge.net/project/${pkgname}/Production/${pkgname}-${pkgver}.tar.xz")
 sha1sums=('484db198d6a18a42b4011d5ecb2cb784a81b0e4f')
 

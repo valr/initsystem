@@ -5,7 +5,7 @@ _src_uri='http://dev.gentoo.org/~blueness/eudev'
 
 pkgname=eudev
 pkgver=3.0
-pkgrel=1
+pkgrel=2
 pkgdesc='userspace device manager'
 url='http://www.gentoo.org/proj/en/eudev'
 license=('GPL')
@@ -41,6 +41,7 @@ build() {
     --enable-split-usr \
     --enable-introspection \
     --enable-gudev \
+    --enable-kmod \
     --with-rootprefix=/usr \
     --with-html-dir=/usr/share/doc/"${pkgname}-${pkgver}"/html
 

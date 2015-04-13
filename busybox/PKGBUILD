@@ -1,8 +1,8 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=busybox
-pkgver=1.23.1
-pkgrel=3
+pkgver=1.23.2
+pkgrel=1
 pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
@@ -10,22 +10,18 @@ groups=('initsystem')
 arch=('i686' 'x86_64')
 source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
-        'config_suid'
-        http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{dc,modinfo,modprobe-small,wget}.patch)
-md5sums=('5c94d6301a964cd91619bd4d74605245'
+        'config_suid')
+#        http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{dc,modinfo,modprobe-small,wget}.patch
+md5sums=('7925683d7dd105aabe9b6b618d48cc73'
          'fd275f9a6a77a7db6e7d48c6897d5b1b'
-         'ab4d3af046ecf738a4813f5094b5f0a3'
-         '0f6d96206d98ba4de68317bd2a232e35'
-         '05e2f11bd968bae952f74745c46ee43e'
-         '4152f8eb84b727beba2af02b856f8e94'
-         'fb515c1c849330eeb6596519f65d4540')
+         'ab4d3af046ecf738a4813f5094b5f0a3')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  for PATCH in "${srcdir}"/*.patch; do
-    patch -p1 <${PATCH}
-  done
+# for PATCH in "${srcdir}"/*.patch; do
+#   patch -p1 <${PATCH}
+# done
 
   sed -i '1,1i#include <sys/resource.h>' include/libbb.h
 
