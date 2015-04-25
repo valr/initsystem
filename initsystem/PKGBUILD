@@ -12,7 +12,7 @@ depends=('busybox' 'kbd')
 optdepends=('eudev: replaces udev from systemd')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 install='initsystem.install'
-source=('init.c'
+source=('init-og.c'
         'rc.conf'
         'rc'
         'rc.local'
@@ -38,7 +38,7 @@ md5sums=('82b4e82d46e72e4bbfc02e4b670745ea'
 build() {
   cd "${srcdir}"
 
-  cc -Wall -static -o init init.c
+  cc -Wall -static -o init-og init-og.c
 }
 
 package() {
@@ -49,7 +49,7 @@ package() {
 
   # binaries
 
-  install -Dm755 "${srcdir}"/init              "${pkgdir}"/usr/bin/init
+  install -Dm755 "${srcdir}"/init-og           "${pkgdir}"/usr/bin/init-og
   install -Dm755 "${srcdir}"/rc                "${pkgdir}"/etc/rc
   install -Dm755 "${srcdir}"/rc.local          "${pkgdir}"/etc/rc.local
   install -Dm755 "${srcdir}"/rc.respawn        "${pkgdir}"/etc/rc.respawn

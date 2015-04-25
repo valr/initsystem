@@ -8,8 +8,6 @@ Installation
 
 Build and install the following packages:
 
-- musl-cross-compiler-x86_64
-- musl
 - busybox
 - fsck-fat (for fat & vfat filesystems)
 - fsck-ext (for ext3 & ext4 filesystems)
