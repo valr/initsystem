@@ -22,6 +22,7 @@ source=('rc'
         'rc.d.ip6tables'
         'rc.d.sensors'
         'rc.d.ntp'
+        'rc.d.ssh'
         'rc.d.syslog'
         'rc.d.tlp'
         'rc.d.udev'
@@ -40,6 +41,7 @@ md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
          'f6fe92c5f3bd11c0a2d652fca1f3dd67'
          'bf29f812f290f5b3e769d7bd40291ab6'
          'fef8057b7449caedb856978cff634c86'
+         'b6d3512680acfc8798a49457ab8446d6'
          'c4e1c0e6211477dd616014ab664afe33'
          '3536196ca0072b4368301efd4b415dee'
          '0fa238196130dbdc2feda329cfb6a55e'
@@ -67,6 +69,7 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.sensors   "${pkgdir}"/etc/rc.d/sensors
   install -Dm755 "${srcdir}"/rc.d.ntp       "${pkgdir}"/etc/rc.d/ntp
   install -Dm755 "${srcdir}"/rc.d.tlp       "${pkgdir}"/etc/rc.d/tlp
+  install -Dm755 "${srcdir}"/rc.d.ssh       "${pkgdir}"/etc/rc.d/ssh
   install -Dm755 "${srcdir}"/rc.d.syslog    "${pkgdir}"/etc/rc.d/syslog
   install -Dm755 "${srcdir}"/rc.d.udev      "${pkgdir}"/etc/rc.d/udev
   install -Dm755 "${srcdir}"/rc.d.wireless  "${pkgdir}"/etc/rc.d/wireless
