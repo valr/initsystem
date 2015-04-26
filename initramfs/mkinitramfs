@@ -211,7 +211,7 @@ umask 022
 
 cd ..
 
-install -D -m700 initramfs-"${LINUX}".cpio.gz /boot/initramfs-"${LINUX}".cpio.gz
+install -D -m600 initramfs-"${LINUX}".cpio.gz /boot/initramfs-"${LINUX}".cpio.gz
 
 rm -f initramfs-"${LINUX}".cpio.gz
 rm -rf "${BASE}"
