@@ -8,7 +8,7 @@ url='https://github.com/valr/initsystem'
 license=('GPL')
 groups=('initsystem')
 arch=('any')
-depends=('busybox')
+depends=('busybox' 'dosfstools')
 install='initramfs.install'
 source=('mkinitramfs'
         'initramfs'
