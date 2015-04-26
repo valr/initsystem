@@ -9,27 +9,20 @@ license=('GPL')
 groups=('initsystem')
 arch=('any')
 depends=('busybox')
-backup=('etc/mkinitramfs.conf')
 install='initramfs.install'
 source=('mkinitramfs'
-        'mkinitramfs.conf'
         'initramfs'
         'initramfs.mkinitcpio'
-        'efistub.mkinitcpio'
         'LICENSE')
 md5sums=('fce299e38bc57ff52c3addd5d9b4cfd8'
-         '526e23478edf2f7ec29bd9e8e039d96a'
          '8098ea1975a350026b84ccee4bbe8a46'
          '9f1c6ff05b3f32f8ea72e919fac41d40'
-         '8b7c5ee23f5ae86bd2fc24a9bdd8c85e'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
-  install -Dm644 "${srcdir}"/mkinitramfs.conf "${pkgdir}"/etc/mkinitramfs.conf
   install -dm755 "${pkgdir}"/etc/mkinitramfs.d
   install -Dm755 mkinitramfs "${pkgdir}"/usr/bin/mkinitramfs
   install -Dm755 initramfs "${pkgdir}"/usr/lib/initramfs/initramfs
   install -Dm644 "${srcdir}"/initramfs.mkinitcpio "${pkgdir}"/usr/lib/initcpio/install/initramfs
-  install -Dm644 "${srcdir}"/efistub.mkinitcpio "${pkgdir}"/usr/lib/initcpio/install/efistub
   install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
