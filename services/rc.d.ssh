@@ -22,7 +22,10 @@ PATH=/opt/busybox
 cd /
 umask 022
 
+sshd_FLAGS=""
+
 . /etc/rc.subr
+. /etc/rc.conf
 
 start() {
   pgrep -n -x /usr/bin/sshd 1>/dev/null 2>/dev/null && \
@@ -30,7 +33,7 @@ start() {
 
   rm -f /run/sshd.pid
 
-  /usr/bin/sshd
+  eval /usr/bin/sshd "${sshd_FLAGS}"
 }
 
 stop() {
