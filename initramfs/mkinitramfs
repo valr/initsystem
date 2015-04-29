@@ -162,7 +162,7 @@ add_module() {
 
 if [ -r /etc/mkinitramfs.d/"${LINUX}".module ]; then
   # FIXME: ugly way to identify installed linux kernel
-  MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-3.*`
+  MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-[0-9].*`
   MOD_DEP=`grep 'modules.dep$' "${MOD_PKG}"/files`
   MOD_VER=`echo "${MOD_DEP}" | awk -F/ '{print $(NF-1)}'`
 
