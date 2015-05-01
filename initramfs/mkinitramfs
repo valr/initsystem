@@ -40,19 +40,23 @@ if [ ! -e /etc/mkinitcpio.d/"${LINUX}".preset ]; then
   exit 1
 fi
 
+echo ">>> generating initramfs-${LINUX}.cpio.gz <<<"
+
 ################################################################################
 # base directory ###############################################################
 ################################################################################
 
-echo "generating initramfs-${LINUX}.cpio.gz..."
+echo "mkinitramfs: creating temporary base directory"
 
 BASE=`mktemp -d /tmp/initramfs.XXXXXX`
 
-trap 'rm -rf "${BASE}"; echo "an error occured, stopping!"; exit 1' INT TERM EXIT
+trap 'rm -rf "${BASE}"; echo "mkinitramfs: an error occured, stopping!"; exit 1' INT TERM EXIT
 
 ################################################################################
 # directory structure ##########################################################
 ################################################################################
+
+echo "mkinitramfs: installing directory structure"
 
 for DIR in bin dev etc lib lib64 mnt newroot proc root run sbin sys tmp usr \
            usr/bin usr/lib usr/lib64 usr/sbin var; do
@@ -62,6 +66,8 @@ done
 ################################################################################
 # etc ##########################################################################
 ################################################################################
+
+echo "mkinitramfs: installing configuration files"
 
 echo "root:x:0:0:root:/root:/bin/sh" > "${BASE}"/etc/passwd
 
@@ -81,6 +87,8 @@ install -D -m644 /etc/localtime "${BASE}"/etc/localtime
 # statically linked binaries ###################################################
 ################################################################################
 
+echo "mkinitramfs: installing statically linked binaries"
+
 install -D -m755 /usr/bin/busybox "${BASE}"/usr/bin/busybox
 install -D -m4755 /usr/bin/busybox-suid "${BASE}"/usr/bin/busybox-suid
 
@@ -93,6 +101,8 @@ done
 ################################################################################
 # dynamically linked binaries ##################################################
 ################################################################################
+
+echo "mkinitramfs: installing dynamically linked binaries"
 
 add_one_binary() {
   OBINARY="$1"
@@ -126,6 +136,8 @@ done
 ################################################################################
 # modules ######################################################################
 ################################################################################
+
+echo "mkinitramfs: installing kernel modules"
 
 add_module() {
   # find module in package files
@@ -185,6 +197,8 @@ fi
 # firmwares ####################################################################
 ################################################################################
 
+echo "mkinitramfs: installing firmwares"
+
 if [ -r /etc/mkinitramfs.d/"${LINUX}".firmware ]; then
   grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.d/"${LINUX}".firmware | while read FIRMWARE; do
     install -D "${FIRMWARE}" "${BASE}"/"${FIRMWARE}"
@@ -197,11 +211,15 @@ fi
 # initscript ###################################################################
 ################################################################################
 
+echo "mkinitramfs: installing initscript"
+
 install -D -m755 /usr/lib/initramfs/initramfs "${BASE}"/init
 
 ################################################################################
 # initramfs ####################################################################
 ################################################################################
+
+echo "mkinitramfs: generating initramfs archive"
 
 cd "${BASE}"
 
@@ -209,14 +227,18 @@ umask 077
 find . | cpio -o -H newc | gzip > ../initramfs-"${LINUX}".cpio.gz
 umask 022
 
+echo "mkinitramfs: installing initramfs archive"
+
 cd ..
 
 install -D -m600 initramfs-"${LINUX}".cpio.gz /boot/initramfs-"${LINUX}".cpio.gz
 
+echo "mkinitramfs: cleaning temporary base directory"
+
 rm -f initramfs-"${LINUX}".cpio.gz
 rm -rf "${BASE}"
 
-echo "generation done"
+echo ">>> generation done <<<"
 
 trap - INT TERM EXIT
 
