@@ -10,17 +10,20 @@ groups=('initsystem')
 arch=('any')
 depends=('busybox' 'dosfstools')
 install='initramfs.install'
-source=('mkinitramfs'
+source=('lsinitramfs'
+        'mkinitramfs'
         'initramfs'
         'initramfs.mkinitcpio'
         'LICENSE')
-md5sums=('8843a6fc201a490617a0ede775f0ece4'
+md5sums=('b4167ce1e699d90ad7a41cfdfdbad890'
+         '8843a6fc201a490617a0ede775f0ece4'
          '8098ea1975a350026b84ccee4bbe8a46'
          '9f1c6ff05b3f32f8ea72e919fac41d40'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
   install -dm755 "${pkgdir}"/etc/mkinitramfs.d
+  install -Dm755 lsinitramfs "${pkgdir}"/usr/bin/lsinitramfs
   install -Dm755 mkinitramfs "${pkgdir}"/usr/bin/mkinitramfs
   install -Dm755 initramfs "${pkgdir}"/usr/lib/initramfs/initramfs
   install -Dm644 "${srcdir}"/initramfs.mkinitcpio "${pkgdir}"/usr/lib/initcpio/install/initramfs
