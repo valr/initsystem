@@ -18,7 +18,7 @@ source=('rc'
         'rc.d.dbus'
         'rc.d.dhcpc'
         'rc.d.eudev'
-        'rc.d.haveged'
+        'rc.d.havege'
         'rc.d.iptables'
         'rc.d.ip6tables'
         'rc.d.sensors'
@@ -66,7 +66,7 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
   install -Dm755 "${srcdir}"/rc.d.dhcpc     "${pkgdir}"/etc/rc.d/dhcpc
   install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
-  install -Dm755 "${srcdir}"/rc.d.haveged   "${pkgdir}"/etc/rc.d/haveged
+  install -Dm755 "${srcdir}"/rc.d.havege    "${pkgdir}"/etc/rc.d/havege
   install -Dm755 "${srcdir}"/rc.d.iptables  "${pkgdir}"/etc/rc.d/iptables
   install -Dm755 "${srcdir}"/rc.d.ip6tables "${pkgdir}"/etc/rc.d/ip6tables
   install -Dm755 "${srcdir}"/rc.d.sensors   "${pkgdir}"/etc/rc.d/sensors
