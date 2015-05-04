@@ -18,6 +18,7 @@ source=('rc'
         'rc.d.dbus'
         'rc.d.dhcpc'
         'rc.d.eudev'
+        'rc.d.haveged'
         'rc.d.iptables'
         'rc.d.ip6tables'
         'rc.d.sensors'
@@ -37,6 +38,7 @@ md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
          'c75dea6f4b129ed5b3095b2e47c053f5'
          'bcb04042739ab61ba514daf8f8c38d45'
          '3370f2ea2c2399add28e9dabf765518f'
+         'e4e113ddb009588330a5da2c28932700'
          '1b04af0c8dffc81a7033b3bcb1999b6c'
          'f6fe92c5f3bd11c0a2d652fca1f3dd67'
          'bf29f812f290f5b3e769d7bd40291ab6'
@@ -64,6 +66,7 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
   install -Dm755 "${srcdir}"/rc.d.dhcpc     "${pkgdir}"/etc/rc.d/dhcpc
   install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
+  install -Dm755 "${srcdir}"/rc.d.haveged   "${pkgdir}"/etc/rc.d/haveged
   install -Dm755 "${srcdir}"/rc.d.iptables  "${pkgdir}"/etc/rc.d/iptables
   install -Dm755 "${srcdir}"/rc.d.ip6tables "${pkgdir}"/etc/rc.d/ip6tables
   install -Dm755 "${srcdir}"/rc.d.sensors   "${pkgdir}"/etc/rc.d/sensors
