@@ -27,33 +27,9 @@ sshd_FLAGS=""
 . /etc/rc.subr
 . /etc/rc.conf
 
-keygen() {
-  STATUS=0
-
-  [ -e /etc/ssh/ssh_host_key ]             || STATUS=1
-  [ -e /etc/ssh/ssh_host_key.pub ]         || STATUS=1
-  [ -e /etc/ssh/ssh_host_rsa_key ]         || STATUS=1
-  [ -e /etc/ssh/ssh_host_rsa_key.pub ]     || STATUS=1
-  [ -e /etc/ssh/ssh_host_dsa_key ]         || STATUS=1
-  [ -e /etc/ssh/ssh_host_dsa_key.pub ]     || STATUS=1
-  [ -e /etc/ssh/ssh_host_ecdsa_key ]       || STATUS=1
-  [ -e /etc/ssh/ssh_host_ecdsa_key.pub ]   || STATUS=1
-  [ -e /etc/ssh/ssh_host_ed25519_key ]     || STATUS=1
-  [ -e /etc/ssh/ssh_host_ed25519_key.pub ] || STATUS=1
-
-  if [ $STATUS -eq 1 ]; then
-    /usr/bin/ssh-keygen -A 1>/dev/null 2>/dev/null
-    return $?
-  fi
-
-  return $STATUS
-}
-
 start() {
   pgrep -n -x /usr/bin/sshd 1>/dev/null 2>/dev/null && \
     { echo "sshd is already running"; return 1; }
-
-  keygen
 
   rm -f /run/sshd.pid
 
