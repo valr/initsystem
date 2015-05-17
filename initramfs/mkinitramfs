@@ -141,11 +141,8 @@ echo "mkinitramfs: installing kernel modules"
 
 add_module() {
   # find module in package files
-  MOD_NM1=`echo "$1" | tr '-' '_'`
-  MOD_NM2=`echo "$1" | tr '_' '-'`
-
-  MOD_PTH=`grep -E "(/${MOD_NM1}.ko.gz|/${MOD_NM2}.ko.gz)" "${MOD_PKG}"/files`
-  MOD_NAM=`basename "${MOD_PTH}" .ko.gz`
+  MOD_NAM=`echo "$1" | sed 's/[-_]/[\\-_]/g' | sed 's/$/.ko.gz/g'`
+  MOD_PTH=`grep /"${MOD_NAM}" "${MOD_PKG}"`
 
   # module not found
   if [ -z "${MOD_PTH}" ]; then
@@ -157,11 +154,11 @@ add_module() {
   install -D -m644 /"${MOD_PTH}" "${BASE}"/"${MOD_PTH#usr}"
 
   if [ $# -eq 1 ]; then
-    echo "${MOD_NAM}" >> "${BASE}"/etc/modules
+    basename "${MOD_PTH}" .ko.gz >> "${BASE}"/etc/modules
   fi
 
   # find module dependencies
-  DEP=`grep /"${MOD_NAM}".ko.gz: /"${MOD_DEP}" | cut -d ':' -f 2`
+  DEP=`grep /"${MOD_NAM}": /"${MOD_DEP}" | cut -d ':' -f 2`
 
   for MOD in `echo "${DEP}"`; do
     # find dependency name
@@ -174,8 +171,8 @@ add_module() {
 
 if [ -r /etc/mkinitramfs.d/"${LINUX}".module ]; then
   # FIXME: ugly way to identify installed linux kernel
-  MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-[0-9].*`
-  MOD_DEP=`grep 'modules.dep$' "${MOD_PKG}"/files`
+  MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-[0-9].*`/files
+  MOD_DEP=`grep 'modules.dep$' "${MOD_PKG}"`
   MOD_VER=`echo "${MOD_DEP}" | awk -F/ '{print $(NF-1)}'`
 
   grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.d/"${LINUX}".module | while read MODULE; do
