@@ -140,9 +140,11 @@ done
 echo "mkinitramfs: installing kernel modules"
 
 add_module() {
+  # build regexp to find module
+  MOD_EXP=/`echo "$1" | sed 's/[-_]/[\\-_]/g'`.ko.gz
+
   # find module in package files
-  MOD_NAM=`echo "$1" | sed 's/[-_]/[\\-_]/g' | sed 's/$/.ko.gz/g'`
-  MOD_PTH=`grep /"${MOD_NAM}" "${MOD_PKG}"`
+  MOD_PTH=`grep "${MOD_EXP}" "${MOD_PKG}"`
 
   # module not found
   if [ -z "${MOD_PTH}" ]; then
@@ -158,22 +160,20 @@ add_module() {
   fi
 
   # find module dependencies
-  DEP=`grep /"${MOD_NAM}": /"${MOD_DEP}" | cut -d ':' -f 2`
+  MOD_DEP=`grep "${MOD_EXP}": /usr/lib/modules/"${MOD_VER}"/modules.dep | cut -d ':' -f 2`
 
-  for MOD in `echo "${DEP}"`; do
+  for MOD_NAM in `echo "${MOD_DEP}"`; do
     # find dependency name
-    MOD=`basename "${MOD}" .ko.gz`
+    MOD_NAM=`basename "${MOD_NAM}" .ko.gz`
 
     # recursively add every dependency
-    add_module "${MOD}" "$1"
+    add_module "${MOD_NAM}" "$1"
   done
 }
 
 if [ -r /etc/mkinitramfs.d/"${LINUX}".module ]; then
-  # FIXME: ugly way to identify installed linux kernel
   MOD_PKG=`ls -d /var/lib/pacman/local/${LINUX}-[0-9].*`/files
-  MOD_DEP=`grep 'modules.dep$' "${MOD_PKG}"`
-  MOD_VER=`echo "${MOD_DEP}" | awk -F/ '{print $(NF-1)}'`
+  MOD_VER=`grep 'modules.dep$' "${MOD_PKG}" | awk -F/ '{print $(NF-1)}'`
 
   grep -E -v "^[[:blank:]]*(#|$)" /etc/mkinitramfs.d/"${LINUX}".module | while read MODULE; do
     add_module "${MODULE}"
@@ -182,9 +182,7 @@ if [ -r /etc/mkinitramfs.d/"${LINUX}".module ]; then
   depmod -b "${BASE}" "${MOD_VER}"
 
   for MOD_OPT in /etc/modprobe.d/*; do
-    if [ -e "${MOD_OPT}" ]; then
-      install -D -m644 "${MOD_OPT}" "${BASE}"/"${MOD_OPT}"
-    fi
+    install -D -m644 "${MOD_OPT}" "${BASE}"/"${MOD_OPT}"
   done
 else
   echo "error: /etc/mkinitramfs.d/${LINUX}.module doesn't exist or is not readable"
