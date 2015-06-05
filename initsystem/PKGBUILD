@@ -24,7 +24,7 @@ source=('init-og.c'
         'tmpfiles'
         'LICENSE')
 md5sums=('82b4e82d46e72e4bbfc02e4b670745ea'
-         'd554740a819228f7a94697aff638a390'
+         'f1f7edbc1293d410212950055d411753'
          'a2a4f6896a26643f01c980bc898625fb'
          'f9d345202573c58dfea5f7d39530b36d'
          'a6781031e16aab769c200c7f69d3735c'
