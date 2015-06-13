@@ -1,11 +1,11 @@
-# $Id: PKGBUILD 240431 2015-06-08 20:06:32Z lcarlier $
+# $Id: PKGBUILD 240563 2015-06-11 11:05:49Z jgc $
 # Maintainer: AndyRTR <andyrtr@archlinux.org>
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgbase=xorg-server
 pkgname=('xorg-server' 'xorg-server-xephyr' 'xorg-server-xdmx' 'xorg-server-xvfb' 'xorg-server-xnest' 'xorg-server-xwayland' 'xorg-server-common' 'xorg-server-devel')
 pkgver=1.17.1
-pkgrel=6 # build first with 0.1 and then rebuild it after xf86-input-evdev rebuild
+pkgrel=7 # build first with 0.1 and then rebuild it after xf86-input-evdev rebuild
 arch=('i686' 'x86_64')
 license=('custom')
 url="http://xorg.freedesktop.org"
@@ -27,7 +27,7 @@ source=(${url}/releases/individual/xserver/${pkgbase}-${pkgver}.tar.bz2{,.sig}
         0001-sdksyms.sh-Make-sdksyms.sh-work-with-gcc5.patch
         0001-dix-Add-unaccelerated-valuators-to-the-ValuatorMask.patch
         0002-dix-hook-up-the-unaccelerated-valuator-masks.patch
-        fix-CVE-2015-3164.patch)
+        fix-CVE-2015-3164.patch
 validpgpkeys=('7B27A3F1A6E18CD9588B4AE8310180050905E40C'
               'C383B778255613DFDB409D91DB221A6900000011')
 sha256sums=('2bf8e9f6f0a710dec1d2472467bff1f4e247cb6dcd76eb469aafdc8a2d7db2ab'
@@ -42,7 +42,7 @@ sha256sums=('2bf8e9f6f0a710dec1d2472467bff1f4e247cb6dcd76eb469aafdc8a2d7db2ab'
             'b4a4fbddebfa614d1a97e77dde98748682ee331fbf7be394480050670d6203aa'
             '3dc795002b8763a7d29db94f0af200131da9ce5ffc233bfd8916060f83a8fad7'
             '416a1422eed71efcebb1d893de74e7f27e408323a56c4df003db37f5673b3f96'
-            'bc6ac3e686e16f0357fd3b939c1c1f2845fdb444d5ec9c8c37fb69167cc54a28')
+            'bc6ac3e686e16f0357fd3b939c1c1f2845fdb444d5ec9c8c37fb69167cc54a28'
 
 prepare() {
   cd "${pkgbase}-${pkgver}"
