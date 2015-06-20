@@ -1,4 +1,5 @@
 *.gz
+*.gz.asc
 *.bz2
 *.xz
 
