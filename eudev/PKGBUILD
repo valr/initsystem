@@ -1,13 +1,12 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_udev_ver=219
-_src_uri='http://dev.gentoo.org/~blueness/eudev'
+_udev_ver=220
 
 pkgname=eudev
-pkgver=3.0
-pkgrel=2
+pkgver=3.1.2
+pkgrel=1
 pkgdesc='userspace device manager'
-url='http://www.gentoo.org/proj/en/eudev'
+url='https://wiki.gentoo.org/wiki/Project:Eudev'
 license=('GPL')
 groups=('initsystem')
 arch=('i686' 'x86_64')
@@ -23,10 +22,12 @@ conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
 options=(!makeflags !libtool)
 install='eudev.install'
-source=("${_src_uri}/${pkgname}-${pkgver}.tar.gz"
+source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
+        "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
         'initcpio_hooks'
         'initcpio_install')
-md5sums=('a2706a1413723b6b82eecb7d6982763c'
+md5sums=('07ab33fe310d250f06fc28f010e3fde2'
+         'SKIP'
          'e7bbe35b79cddd7c82bf201f6297722d'
          'ac595576711e1e1b57ebe3f83493d2de')
 
