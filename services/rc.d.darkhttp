@@ -31,7 +31,10 @@ start() {
   pgrep -n -x /usr/bin/darkhttpd 1>/dev/null 2>/dev/null && \
     { echo "darkhttpd is already running"; return 1; }
 
-  eval /usr/bin/darkhttpd /srv/http/darkhttpd --log /var/log/darkhttpd/access.log --chroot --daemon --mimetypes /etc/conf.d/mimetypes --uid nobody --gid nobody "${darkhttpd_FLAGS}"
+  eval /usr/bin/darkhttpd /chroot/darkhttpd \
+    --chroot --daemon --uid nobody --gid nobody \
+    --mimetypes /etc/conf.d/mimetypes \
+    --log /var/log/darkhttpd/access.log "${darkhttpd_FLAGS}"
 }
 
 stop() {
