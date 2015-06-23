@@ -41,7 +41,7 @@ build() {
     --libdir=/usr/lib \
     --enable-split-usr \
     --enable-introspection \
-    --enable-gudev \
+    --disable-gudev \
     --enable-kmod \
     --with-rootprefix=/usr \
     --with-html-dir=/usr/share/doc/"${pkgname}-${pkgver}"/html
