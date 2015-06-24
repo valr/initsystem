@@ -1,15 +1,15 @@
-# $Id: PKGBUILD 235377 2015-04-03 12:01:13Z jgc $
+# $Id: PKGBUILD 241195 2015-06-22 21:17:52Z foutrelis $
 # Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=colord
 pkgver=1.2.9
-pkgrel=2
+pkgrel=3
 pkgdesc="System daemon for managing color devices"
 arch=(i686 x86_64)
 url="http://www.freedesktop.org/software/colord"
 license=(GPL2)
-depends=(lcms2 libgusb polkit sqlite systemd dconf dbus)
+depends=(lcms2 libgusb polkit sqlite systemd dconf dbus libgudev)
 makedepends=(intltool gobject-introspection vala docbook2x sane bash-completion
              argyllcms)
 optdepends=('sane: scanner support'

@@ -1,14 +1,14 @@
-# $Id: PKGBUILD 233313 2015-03-10 08:06:06Z fyan $
+# $Id: PKGBUILD 241213 2015-06-22 21:18:15Z foutrelis $
 # Maintainer: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=udisks2
 pkgver=2.1.5
-pkgrel=1
+pkgrel=2
 pkgdesc="Disk Management Service, version 2"
 arch=('i686' 'x86_64')
 url="http://www.freedesktop.org/wiki/Software/udisks"
 license=('GPL2')
-depends=('glib2' 'systemd' 'polkit' 'libatasmart' 'util-linux')
+depends=('glib2' 'systemd' 'polkit' 'libatasmart' 'util-linux' 'libgudev')
 makedepends=('intltool' 'docbook-xsl' 'gobject-introspection' 'python2')
 optdepends=('parted: partition management'
             'gptfdisk: GUID partition table support'
