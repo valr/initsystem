@@ -36,6 +36,7 @@ source=(http://us1.samba.org/samba/ftp/stable/${pkgbase}-${_realver}.tar.gz
         samba.conf)
 validpgpkeys=('52FBC0B86D954B0843324CDC6F33915B6568B7EA') #Samba Distribution Verification Key <samba-bugs@samba.org>
 ### UNINSTALL dmapi package before building!!!
+groups=('noupgrade')
 
 build() {
   # Use samba-pkg as a staging directory for the split packages
