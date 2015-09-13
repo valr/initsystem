@@ -1,5 +1,3 @@
 #!/bin/sh
 
-/usr/bin/fstrim -v /     2>&1 | /usr/bin/logger -i -t `basename $0`
-/usr/bin/fstrim -v /var  2>&1 | /usr/bin/logger -i -t `basename $0`
-/usr/bin/fstrim -v /home 2>&1 | /usr/bin/logger -i -t `basename $0`
+/usr/bin/fstrim -v / 2>&1 | /usr/bin/logger -i -t `basename $0`

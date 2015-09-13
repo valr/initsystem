@@ -16,7 +16,7 @@ source=('fstrim'
         'pkgstats'
         'shadow'
         'updatedb')
-md5sums=('9c0251e5c155d3be6817055f356f1496'
+md5sums=('fcb00e5aca14441c11be7334ac9a02ed'
          'd8f9a48e01e612a511c4953607e7674e'
          'e8b0e5afdea70098e5aefd06ce677340'
          '6cca04cbfcda3838ef507a4320c42641'
