@@ -1,10 +1,10 @@
-# $Id: PKGBUILD 244396 2015-08-20 03:33:05Z bisson $
+# $Id: PKGBUILD 246467 2015-09-17 21:00:04Z foutrelis $
 # Maintainer: Gaetan Bisson <bisson@archlinux.org>
 # Contributor: Eric Bélanger <eric@archlinux.org>
 
 pkgname=procps-ng
 pkgver=3.3.11
-pkgrel=1
+pkgrel=2
 pkgdesc='Utilities for monitoring your system and its processes'
 url='https://gitlab.com/procps-ng/procps'
 license=('GPL' 'LGPL')
