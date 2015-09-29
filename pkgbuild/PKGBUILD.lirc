@@ -1,8 +1,8 @@
-# Maintainer: Lukas Fleischer <archlinux at cryptocrack dot de>
+# Maintainer: Lukas Fleischer <lfleischer@archlinux.org>
 # Contributor: Paul Mattal <paul@archlinux.org>
 
 pkgname=lirc
-_pkgver=0.9.2a
+_pkgver=0.9.3
 [[ $_pkgver =~ [a-z]$ ]] && pkgver="${_pkgver:0:-1}.${_pkgver: -1}" || pkgver="$_pkgver"
 pkgrel=1
 epoch=1
@@ -11,7 +11,7 @@ arch=('i686' 'x86_64')
 url="http://www.lirc.org/"
 license=('GPL')
 depends=('alsa-lib' 'libx11' 'libftdi-compat' 'libirman')
-makedepends=('help2man' 'alsa-lib' 'libx11' 'libftdi-compat' 'libirman' 'python')
+makedepends=('help2man' 'alsa-lib' 'libx11' 'libftdi-compat' 'libirman' 'libxslt' 'python')
 optdepends=('python: for lirc-setup, irdb-get and pronto2lirc')
 provides=('lirc-utils')
 conflicts=('lirc-utils')
@@ -21,20 +21,10 @@ install=lirc.install
 source=("http://prdownloads.sourceforge.net/${pkgname}/${pkgname}-${_pkgver}.tar.bz2"
         lirc.logrotate
         lirc.tmpfiles)
-md5sums=('639a14ed0b3b34ae227a047b952ea368'
+md5sums=('0a507613d06195a8daab9123190e16fe'
          '3deb02604b37811d41816e9b4385fcc3'
          'febf25c154a7d36f01159e84f26c2d9a')
 groups=('noupgrade')
-
-prepare() {
-  cd "${srcdir}/lirc-${_pkgver}"
-
-  # can you provide a way to disable systemd, please!
-  sed -i 's:libsystemd-daemon:lib-no-systemd-daemon:g' configure.ac
-  sed -i 's:/usr/lib/systemd/system:/usr/lib/no-systemd/system:g' configure.ac
-
-  autoreconf
-}
 
 build() {
   cd "${srcdir}/lirc-${_pkgver}"
