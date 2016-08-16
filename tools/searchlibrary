@@ -3,17 +3,17 @@
 LC_ALL=C
 
 searchfile() {
-  readelf -d "$2" | grep library | grep "$1" | cut -d ':' -f 2 | tr -d '[]'
+  LIBRARY=`readelf -d "$2" 2>/dev/null | grep library | grep "$1" | cut -d ':' -f 2 | tr -d '[]' | tr -d ' '`
+
+  if [ "${LIBRARY}" -a "${LIBRARY}" != "" ]; then
+    PACKAGE=`pkgfile "$2"`
+    echo "library ${LIBRARY} contained in file $2 contained in package ${PACKAGE}"
+  fi
 }
 
 searchdirectory() {
   for FILE in `find "$1" -type f`; do
-    LIBRARY=`readelf -d "${FILE}" 2>/dev/null | grep library | grep "$2" | cut -d ':' -f 2 | tr -d '[]'`
-
-    if [ "${LIBRARY}" -a "${LIBRARY}" != " " ]; then
-      PACKAGE=`pacman -Qqo "${FILE}"`
-      echo "${FILE} ${PACKAGE} ${LIBRARY}"
-    fi
+    searchfile "$2" "${FILE}"
   done
 }
 

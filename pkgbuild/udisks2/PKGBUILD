@@ -1,8 +1,9 @@
-# $Id: PKGBUILD 241583 2015-06-30 21:00:07Z heftig $
-# Maintainer: Ionut Biru <ibiru@archlinux.org>
+# $Id: PKGBUILD 260777 2016-03-04 03:56:11Z fyan $
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=udisks2
-pkgver=2.1.6
+pkgver=2.1.7
 pkgrel=1
 pkgdesc="Disk Management Service, version 2"
 arch=('i686' 'x86_64')
@@ -15,16 +16,13 @@ optdepends=('parted: partition management'
             'ntfs-3g: NTFS filesystem management support'
             'dosfstools: VFAT filesystem management support')
 source=(http://udisks.freedesktop.org/releases/udisks-$pkgver.tar.bz2{,.sign})
-sha256sums=('dec5f5c85fa0f74f39336acbfba1770f9988c096be23873714543c304b09f46a'
+sha256sums=('abae2bb3bdc691ca13c1e4c244630b8c881c4f3b35c207299f1b39b7bec83785'
             'SKIP')
 validpgpkeys=('3DB46B55EFA59D40E6232148D14EF15DAFE11347')  # Martin Pitt
-groups=('noupgrade')
 
 prepare() {
   cd udisks-$pkgver
-  # can you provide a way to disable systemd, please!
-  sed -i 's:libsystemd-login:lib-no-systemd-login:g' configure
-  sed -i 's:libsystemd-daemon:lib-no-systemd-daemon:g' configure
+  sed -i 's:systemd:nosystemd:g' configure
 }
 
 build() {
