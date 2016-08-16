@@ -1,4 +1,5 @@
 .gitignore
+*.tar.gz
 *.tar.xz
 *.tar.xz.asc
 *.tar.bz2
