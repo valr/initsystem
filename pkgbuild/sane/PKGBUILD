@@ -24,8 +24,6 @@ prepare() {
   cd "${srcdir}/${pkgname}-backends-${pkgver}"
    # fix http://vasks.debian.org/tracker/?func=detail&atid=410366&aid=313760&group_id=30186
    patch -Np1 -i ${srcdir}/network.patch
-
-  sed -i 's:systemd:nosystemd:g' configure
 }
 
 build() {
@@ -39,7 +37,8 @@ build() {
     --enable-pthread \
     --disable-rpath \
     --enable-libusb_1_0 \
-    --disable-locking
+    --disable-locking \
+    --with-systemd=no
   make
 }
 
