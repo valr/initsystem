@@ -1,9 +1,9 @@
-# $Id: PKGBUILD 244419 2015-08-20 10:24:39Z jgc $
+# $Id: PKGBUILD 249756 2015-10-25 18:40:43Z heftig $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgname=polkit
 pkgver=0.113
-pkgrel=2
+pkgrel=4
 pkgdesc="Application development toolkit for controlling system-wide privileges"
 arch=(i686 x86_64)
 license=(LGPL)
@@ -13,7 +13,6 @@ makedepends=(intltool gtk-doc gobject-introspection git)
 install=polkit.install
 source=(http://www.freedesktop.org/software/polkit/releases/$pkgname-$pkgver.tar.gz)
 md5sums=('4b77776c9e4f897dcfe03b2c34198edf')
-groups=('noupgrade')
 
 build() {
   cd $pkgname-$pkgver
@@ -34,6 +33,6 @@ package() {
   cd $pkgname-$pkgver
   make DESTDIR="$pkgdir" install
 
-  chown 102 "$pkgdir/etc/polkit-1/rules.d"
-  chown 102 "$pkgdir/usr/share/polkit-1/rules.d"
+  chown root:102 "$pkgdir"/{etc,usr/share}/polkit-1/rules.d
+  chmod 750      "$pkgdir"/{etc,usr/share}/polkit-1/rules.d
 }
