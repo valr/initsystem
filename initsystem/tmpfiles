@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2016 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,24 +17,6 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-# From man tmpfiles.d, not implemented:
-# - If multiple files specify the same path, the entry in the file with 
-# the lexicographically earliest name will be applied, all other
-# conflicting entries will be logged as errors.
-# - When two lines are prefix and suffix of each other, then the prefix
-# is always processed first, the suffix later. Otherwise, the files/directories
-# are processed in the order they are listed.
-# - Exclamation mark in type is not taken into account.
-# - Path with percent sign are skipped.
-# - Tilde in mode is not taken into account.
-# - Age is not taken into account.
-# - In L+ and C types, /usr/share/factory/ is not taken into account
-# - x and X types are skipped
-
-# From man systemd-tmpfiles, implemented:
-# Accepted parameters: --prefix=path --exclude-prefix=path
-# Only one parameter is taken into account
 
 PATH=/opt/busybox
 
@@ -51,9 +33,9 @@ fi
 # parameters ###################################################################
 ################################################################################
 
-INCLUDE=""; EXCLUDE=""
+INCLUDE=""; EXCLUDE=""; REMOVE=""
 
-if [ $# -ge 1 ]; then
+while [ $# -gt 0 ]; do
   case "$1" in
     --prefix=*)
       INCLUDE=`echo "$1" | cut -d '=' -f 2`
@@ -61,8 +43,13 @@ if [ $# -ge 1 ]; then
     --exclude-prefix=*)
       EXCLUDE=`echo "$1" | cut -d '=' -f 2`
       ;;
+    --remove)
+      REMOVE="true"
+      ;;
   esac
-fi
+
+  shift
+done
 
 ################################################################################
 # process tmpfiles #############################################################
@@ -120,77 +107,68 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "f")
 
-        # Create a file if it does not exist yet. If the argument parameter
-        # is given, it will be written to the file.
-
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           [ -z "${MOD}" ] && MOD="0644"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
+
           install -o "${UID}" -g "${GID}" -m "${MOD}" /dev/null "${PTH}"
+
           [ ! -z "${ARG}" ] && echo "${ARG}" > "${PTH}"
         fi
         ;;
 
       "F")
 
-        # Create or truncate a file. If the argument parameter is given,
-        # it will be written to the file.
-
         [ -z "${MOD}" ] && MOD="0644"
         [ -z "${UID}" ] && UID="root"
         [ -z "${GID}" ] && GID="root"
+
         install -m "${MOD}" -o "${UID}" -g "${GID}" /dev/null "${PTH}"
+
         [ ! -z "${ARG}" ] && echo "${ARG}" > "${PTH}"
         ;;
 
       "w")
-
-        # Write the argument parameter to a file, if the file exists. Lines of
-        # this type accept shell-style globs in place of normal path names.
-        # The argument parameter will be written without a trailing newline.
-        # C-style backslash escapes are interpreted.
 
         if [ -e "${PTH}" ]; then
           [ "${ARG}" ] && echo -n -e "${ARG}" > "${PTH}"
         fi
         ;;
 
-      "d")
-
-        # Create a directory if it does not exist yet.
+      "d"|"e"|"v"|"q"|"Q")
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           [ -z "${MOD}" ] && MOD="0755"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
+
           install -d -m "${MOD}" -o "${UID}" -g "${GID}" "${PTH}"
         fi
         ;;
 
       "D")
 
-        # Create or empty a directory.
-
-        if [ -d "${PTH}" ]; then
+        if [ ! -z "${REMOVE}" && -d "${PTH}" ]; then
           find "${PTH}" -mindepth 1 -maxdepth 1 -xdev -print0 | xargs -r0 rm -rf
         fi
+
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           [ -z "${MOD}" ] && MOD="0755"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
+
           install -d -m "${MOD}" -o "${UID}" -g "${GID}" "${PTH}"
         fi
         ;;
 
       "p")
 
-        # Create a named pipe (FIFO) if it does not exist yet.
-
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           [ -z "${MOD}" ] && MOD="0644"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
+
           mkfifo -m "${MOD}" "${PTH}"
           chown "${UID}:${GID}" "${PTH}"
         fi
@@ -198,23 +176,19 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "p+")
 
-        # Create a named pipe (FIFO) if it does not exist yet. If suffixed
-        # with + and a file already exists where the pipe is to be created,
-        # it will be removed and be replaced by the pipe.
-
         if [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
           rm -f "${PTH}"
         fi
+
         [ -z "${MOD}" ] && MOD="0644"
         [ -z "${UID}" ] && UID="root"
         [ -z "${GID}" ] && GID="root"
+
         mkfifo -m "${MOD}" "${PTH}"
         chown "${UID}:${GID}" "${PTH}"
         ;;
 
       "L")
-
-        # Create a symlink if it does not exist yet.
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           if [ "${ARG}" ]; then
@@ -225,15 +199,10 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "L+")
 
-        # Create a symlink if it does not exist yet. If suffixed with + and
-        # a file already exists where the symlink is to be created, it will
-        # be removed and be replaced by the symlink. If the argument is
-        # omitted, symlinks to files with the same name residing in the
-        # directory /usr/share/factory/ are created.
-
         if [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
           rm -f "${PTH}"
         fi
+
         if [ "${ARG}" ]; then
           ln -s "${ARG}" "${PTH}"
         fi
@@ -241,15 +210,15 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "c")
 
-        # Create a character device node if it does not exist yet.
-
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           if [ "${ARG}" ]; then
             MAJOR=`echo ${ARG} | cut -d ':' -f 1`
             MINOR=`echo ${ARG} | cut -d ':' -f 2`
+
             [ -z "${MOD}" ] && MOD="0644"
             [ -z "${UID}" ] && UID="root"
             [ -z "${GID}" ] && GID="root"
+
             mknod -m "${MOD}" "${PTH}" c "${MAJOR}" "${MINOR}"
             chown "${UID}:${GID}" "${PTH}"
           fi
@@ -258,19 +227,18 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "c+")
 
-        # Create a character device node if it does not exist yet. If suffixed
-        # with + and a file already exists where the device node is to be
-        # created, it will be removed and be replaced by the device node.
-
         if [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
           rm -f "${PTH}"
         fi
+
         if [ "${ARG}" ]; then
           MAJOR=`echo ${ARG} | cut -d ':' -f 1`
           MINOR=`echo ${ARG} | cut -d ':' -f 2`
+
           [ -z "${MOD}" ] && MOD="0644"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
+
           mknod -m "${MOD}" "${PTH}" c "${MAJOR}" "${MINOR}"
           chown "${UID}:${GID}" "${PTH}"
         fi
@@ -278,15 +246,15 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "b")
 
-        # Create a block device node if it does not exist yet.
-
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           if [ "${ARG}" ]; then
             MAJOR=`echo ${ARG} | cut -d ':' -f 1`
             MINOR=`echo ${ARG} | cut -d ':' -f 2`
+
             [ -z "${MOD}" ] && MOD="0644"
             [ -z "${UID}" ] && UID="root"
             [ -z "${GID}" ] && GID="root"
+
             mknod -m "${MOD}" "${PTH}" b "${MAJOR}" "${MINOR}"
             chown "${UID}:${GID}" "${PTH}"
           fi
@@ -295,32 +263,24 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "b+")
 
-        # Create a block device node if it does not exist yet. If suffixed
-        # with + and a file already exists where the device node is to be
-        # created, it will be removed and be replaced by the device node.
-
         if [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
           rm -f "${PTH}"
         fi
+
         if [ "${ARG}" ]; then
           MAJOR=`echo ${ARG} | cut -d ':' -f 1`
           MINOR=`echo ${ARG} | cut -d ':' -f 2`
+
           [ -z "${MOD}" ] && MOD="0644"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
+
           mknod -m "${MOD}" "${PTH}" b "${MAJOR}" "${MINOR}"
           chown "${UID}:${GID}" "${PTH}"
         fi
         ;;
 
       "C")
-
-        # Recursively copy a file or directory, if the destination files or
-        # directories do not exist yet. Note that this command will not
-        # descend into subdirectories if the destination directory already
-        # exists. Instead, the entire copy operation is skipped. If the argument
-        # is omitted, files from the source directory /usr/share/factory/
-        # with the same name are copied.
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           if [ "${ARG}" ]; then
@@ -339,10 +299,6 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "r")
 
-        # Remove a file or directory if it exists. This may not be used to
-        # remove non-empty directories, use R for that. Lines of this type
-        # accept shell-style globs in place of normal path names.
-
         if [ -d "${PTH}" ]; then
           rmdir "${PTH}"
         elif [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
@@ -352,10 +308,6 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "R")
 
-        # Recursively remove a path and all its subdirectories (if it is
-        # a directory). Lines of this type accept shell-style globs in place
-        # of normal path names.
-
         if [ -e "${PTH}" ] || [ -L "${PTH}" ]; then
           rm -rf "${PTH}"
         fi
@@ -363,17 +315,15 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "z")
 
-        # Adjust the access mode, group and user, and restore the SELinux
-        # security context of a file or directory, if it exists. Lines of
-        # this type accept shell-style globs in place of normal path names.
-
         if [ -e "${PTH}" ]; then
           if [ "${MOD}" ]; then
             chmod "${MOD}" "${PTH}"
           fi
+
           if [ "${UID}" ]; then
             chown "${UID}" "${PTH}"
           fi
+
           if [ "${GID}" ]; then
             chown :"${GID}" "${PTH}"
           fi
@@ -382,19 +332,15 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
       "Z")
 
-        # Recursively set the access mode, group and user, and restore the
-        # SELinux security context of a file or directory if it exists,
-        # as well as of its subdirectories and the files contained therein
-        # (if applicable). Lines of this type accept shell-style globs in place
-        # of normal path names.
-
         if [ -e "${PTH}" ]; then
           if [ "${MOD}" ]; then
             chmod -R "${MOD}" "${PTH}"
           fi
+
           if [ "${UID}" ]; then
             chown -R "${UID}" "${PTH}"
           fi
+
           if [ "${GID}" ]; then
             chown -R :"${GID}" "${PTH}"
           fi

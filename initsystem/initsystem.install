@@ -1,3 +1,4 @@
+
 reexec_init() {
   if grep -q init-og /proc/1/comm; then
     # ask init (pid 1) to re-exec itself

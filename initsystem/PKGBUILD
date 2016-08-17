@@ -32,7 +32,7 @@ md5sums=('82b4e82d46e72e4bbfc02e4b670745ea'
          '8c53ae0e2e5584999f47f905bc226e5f'
          '70b45924d33ebbd5cc2f32cb37c0d9cc'
          '07c56d75dd64e0a04a3cccf28f5d7e97'
-         'ab33b386c1a5b7c4415300f69d4a6dfa'
+         'e22d1e4e684294fcc01009d033f30595'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
