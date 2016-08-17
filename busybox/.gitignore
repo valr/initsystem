@@ -1,7 +1,3 @@
-*.gz
 *.bz2
-*.xz
 *.patch
-
-/src/
-/pkg/
+*.pkg.tar.xz
