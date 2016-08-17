@@ -1,4 +1,4 @@
-# $Id: PKGBUILD 247541 2015-09-27 16:15:30Z heftig $
+# $Id: PKGBUILD 270751 2016-06-28 07:21:32Z heftig $
 # Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 # Contributor: Corrado Primier <bardo@aur.archlinux.org>
@@ -7,8 +7,8 @@
 pkgbase=pulseaudio
 pkgname=(pulseaudio libpulse pulseaudio-{gconf,zeroconf,lirc,xen,jack,bluetooth,equalizer})
 pkgdesc="A featureful, general-purpose sound server"
-pkgver=7.0
-pkgrel=2
+pkgver=9.0
+pkgrel=1
 arch=(i686 x86_64)
 url="http://www.freedesktop.org/wiki/Software/PulseAudio"
 license=(LGPL)
@@ -19,9 +19,8 @@ makedepends=(libasyncns libcap attr libxtst libsm libsndfile libtool rtkit libso
 options=(!emptydirs)
 source=(http://freedesktop.org/software/$pkgbase/releases/$pkgbase-$pkgver.tar.xz
         padsp-lib32.patch)
-sha256sums=('ca1ae1377e8926bfc3ffe2aeb9f657f6c363a16f72861166fcf9454e3eeae8fa'
+sha256sums=('c3d3d66b827f18fbe903fe3df647013f09fc1e2191c035be1ee2d82a9e404686'
             '7832fc59df76538ff10aedd297c03cb7ff117235da8bfad26082994bb5b84332')
-groups=('noupgrade')
 
 prepare() {
   cd $pkgbase-$pkgver
@@ -41,7 +40,8 @@ build() {
     --disable-samplerate \
     --disable-rpath \
     --disable-default-build-tests \
-    --disable-systemd \
+    --disable-systemd-daemon \
+    --disable-systemd-login \
     --disable-systemd-journal \
     DATADIRNAME=share
 
@@ -72,11 +72,16 @@ package_pulseaudio() {
   cd "$pkgdir"
   patch -Np1 -i "$srcdir/padsp-lib32.patch"
 
-  sed -e '/flat-volumes/iflat-volumes=no' \
+  # Assumes that any volume adjustment is intended by the user, who can control
+  # each app's volume. Misbehaving clients can trigger earsplitting volume
+  # jumps. App volumes can diverge wildly and cause apps without their own
+  # volume control to fall below sink volume; a sink-only volume control will
+  # suddenly be unable to make such an app loud enough.
+  sed -e '/flat-volumes/iflat-volumes = no' \
       -i etc/pulse/daemon.conf
 
   # Superseded by socket activation
-  sed -e '/autospawn/iautospawn=no' \
+  sed -e '/autospawn/iautospawn = no' \
       -i etc/pulse/client.conf
 
   # Disable cork-request module, can result in e.g. media players unpausing
@@ -85,10 +90,6 @@ package_pulseaudio() {
       -i usr/bin/start-pulseaudio-x11
 
   rm etc/dbus-1/system.d/pulseaudio-system.conf
-
-  # mkdir usr/lib/systemd/user/sockets.target.wants
-  # ln -s ../pulseaudio.socket \
-  #   usr/lib/systemd/user/sockets.target.wants/pulseaudio.socket
 
 ### Split libpulse
 
