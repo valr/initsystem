@@ -4,5 +4,6 @@
 *.tar.bz2.sig
 *.tar.bz2.sign
 *.tar.gz
+*.tar.sign
 *.tar.xz
 *.tar.xz.asc

@@ -1,12 +1,13 @@
-# $Id: PKGBUILD 247968 2015-10-01 16:02:43Z fyan $
+# $Id: PKGBUILD 273834 2016-08-16 00:39:16Z dreisner $
 # Maintainer: Tom Gundersen <teg@jklm.no>
 # Maintainer: Dave Reisner <dreisner@archlinux.org>
 # Contributor: judd <jvinet@zeroflux.org>
 
 pkgbase=util-linux
 pkgname=(util-linux libutil-linux)
-pkgver=2.27
-pkgrel=5
+_pkgmajor=2.28
+pkgver=${_pkgmajor}.1
+pkgrel=1
 pkgdesc="Miscellaneous system utilities for Linux"
 url="https://www.kernel.org/pub/linux/utils/util-linux/"
 arch=('i686' 'x86_64')
@@ -14,21 +15,13 @@ makedepends=('systemd' 'python')
 license=('GPL2')
 options=('strip' 'debug')
 validpgpkeys=('B0C64D14301CC6EFAEDF60E4E4B71D5EEC39C284')  # Karel Zak
-source=("https://www.kernel.org/pub/linux/utils/util-linux/v2.27/$pkgbase-$pkgver.tar."{xz,sign}
-        "0001-libmount-monitor-don-t-check-for-regular-mtab.patch"
+source=("https://www.kernel.org/pub/linux/utils/util-linux/v$_pkgmajor/$pkgbase-$pkgver.tar."{xz,sign}
         pam-{login,common,su})
-md5sums=('5b06bbda9309624ee7add15bc8d8ca22'
+md5sums=('e2d863efaf4fd330a42c5efe9f1b02b4'
          'SKIP'
-         'f9e06605db9107b9c4bb1c48059fe18e'
          '4368b3f98abd8a32662e094c54e7f9b1'
          'a31374fef2cba0ca34dfc7078e2969e4'
          'fa85e5cce5d723275b14365ba71a8aad')
-
-prepare() {
-  cd "$pkgbase-$pkgver"
-
-  patch -Np1 <../0001-libmount-monitor-don-t-check-for-regular-mtab.patch
-}
 
 build() {
   cd "$pkgbase-$pkgver"
@@ -57,8 +50,7 @@ package_util-linux() {
   replaces=('zramctl')
   depends=('pam' 'shadow' 'coreutils' 'libsystemd' 'libutil-linux')
   optdepends=('python: python bindings to libmount')
-  install=util-linux.install
-  groups=('base' 'base-devel' 'noupgrade')
+  groups=('base' 'base-devel')
   backup=(etc/pam.d/chfn
           etc/pam.d/chsh
           etc/pam.d/login
@@ -92,7 +84,6 @@ package_util-linux() {
 package_libutil-linux() {
   pkgdesc="util-linux runtime libraries"
   provides=('libblkid.so' 'libfdisk.so' 'libmount.so' 'libsmartcols.so' 'libuuid.so')
-  groups=('noupgrade')
 
   make -C "$pkgbase-$pkgver" DESTDIR="$pkgdir" install-usrlib_execLTLIBRARIES
 }
