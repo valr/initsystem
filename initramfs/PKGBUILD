@@ -17,8 +17,8 @@ source=('lsinitramfs'
         'LICENSE')
 md5sums=('b4167ce1e699d90ad7a41cfdfdbad890'
          '6a3972da83e84cb314843729334c3c1e'
-         '8098ea1975a350026b84ccee4bbe8a46'
-         '9f1c6ff05b3f32f8ea72e919fac41d40'
+         '946352e998e8c7fa15bf71229af607f9'
+         '860d93b1551ee671ab4c139a62d2dc3f'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {

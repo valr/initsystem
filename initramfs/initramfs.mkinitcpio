@@ -8,6 +8,6 @@ build() {
 
 help() {
   cat <<HELPEOF
-This hook generates initramfs for initsystem.
+This hook generates an initramfs for the initsystem.
 HELPEOF
 }

@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2016 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -105,6 +105,7 @@ if [ "${BREAK}" = "initramfs-early" ]; then
 fi
 
 if [ -z "${INIT}" ]; then
+  echo "initramfs: using default /sbin/init"
   INIT="/sbin/init"
 fi
 
