@@ -16,7 +16,6 @@ source=('rc'
         'rc.d.cron'
         'rc.d.cups'
         'rc.d.dbus'
-        'rc.d.darkhttp'
         'rc.d.dhcpc'
         'rc.d.eudev'
         'rc.d.fcron'
@@ -38,7 +37,6 @@ md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
          '6cbc1f79f059f038e12cd6c2d237e1ac'
          '640891f99aad19b24ac3238565895826'
          'c75dea6f4b129ed5b3095b2e47c053f5'
-         'f8936d7464777db8470f140fdc96aec1'
          'bcb04042739ab61ba514daf8f8c38d45'
          '3370f2ea2c2399add28e9dabf765518f'
          '56100809b41d764631816f7a0943a728'
@@ -67,7 +65,6 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.bumblebee "${pkgdir}"/etc/rc.d/bumblebee
   install -Dm755 "${srcdir}"/rc.d.cron      "${pkgdir}"/etc/rc.d/cron
   install -Dm755 "${srcdir}"/rc.d.cups      "${pkgdir}"/etc/rc.d/cups
-  install -Dm755 "${srcdir}"/rc.d.darkhttp  "${pkgdir}"/etc/rc.d/darkhttp
   install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
   install -Dm755 "${srcdir}"/rc.d.dhcpc     "${pkgdir}"/etc/rc.d/dhcpc
   install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
