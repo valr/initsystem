@@ -17,6 +17,7 @@ source=('rc'
         'rc.d.cups'
         'rc.d.dbus'
         'rc.d.dhcpc'
+        'rc.d.dnsmasq'
         'rc.d.eudev'
         'rc.d.fcron'
         'rc.d.havege'
@@ -38,6 +39,7 @@ md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
          '640891f99aad19b24ac3238565895826'
          'c75dea6f4b129ed5b3095b2e47c053f5'
          'bcb04042739ab61ba514daf8f8c38d45'
+         '41d11a26f37bbcfc25cfda490f47eda6'
          '3370f2ea2c2399add28e9dabf765518f'
          '56100809b41d764631816f7a0943a728'
          'e4e113ddb009588330a5da2c28932700'
@@ -67,6 +69,7 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.cups      "${pkgdir}"/etc/rc.d/cups
   install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
   install -Dm755 "${srcdir}"/rc.d.dhcpc     "${pkgdir}"/etc/rc.d/dhcpc
+  install -Dm755 "${srcdir}"/rc.d.dnsmasq   "${pkgdir}"/etc/rc.d/dnsmasq
   install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
   install -Dm755 "${srcdir}"/rc.d.fcron     "${pkgdir}"/etc/rc.d/fcron
   install -Dm755 "${srcdir}"/rc.d.havege    "${pkgdir}"/etc/rc.d/havege
