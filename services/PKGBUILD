@@ -6,7 +6,6 @@ pkgrel=1
 pkgdesc='services for the init system'
 url='https://github.com/valr/initsystem'
 license=('GPL')
-groups=('initsystem')
 arch=('any')
 depends=('initsystem')
 source=('rc'

@@ -6,7 +6,6 @@ pkgrel=1
 pkgdesc='initramfs image creation utility'
 url='https://github.com/valr/initsystem'
 license=('GPL')
-groups=('initsystem')
 arch=('any')
 depends=('busybox' 'dosfstools')
 install='initramfs.install'

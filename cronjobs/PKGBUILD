@@ -6,7 +6,6 @@ pkgrel=1
 pkgdesc='cron jobs for the init system'
 url='https://github.com/valr/initsystem'
 license=('GPL')
-groups=('initsystem')
 arch=('any')
 depends=('cron')
 source=('fstrim'

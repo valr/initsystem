@@ -8,7 +8,6 @@ pkgrel=1
 pkgdesc='userspace device manager'
 url='https://wiki.gentoo.org/wiki/Project:Eudev'
 license=('GPL')
-groups=('initsystem')
 arch=('i686' 'x86_64')
 backup=('etc/udev/udev.conf')
 depends=('glib2' 'kbd' 'kmod' 'hwids' 'util-linux')

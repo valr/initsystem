@@ -6,7 +6,6 @@ pkgrel=1
 pkgdesc='an init system'
 url='https://github.com/valr/initsystem'
 license=('GPL')
-groups=('initsystem')
 arch=('i686' 'x86_64')
 depends=('busybox' 'kbd')
 optdepends=('eudev: replaces udev from systemd')
