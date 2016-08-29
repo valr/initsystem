@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2015 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2015-2016 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,13 +23,9 @@
 # busybox cpio -i -d -H newc -F initramfs-linux.cpio
 
 PATH=/opt/busybox
-
-if [ `id -u` -ne 0 ]; then
-  echo "error: this script should be run as root"
-  exit 1
-fi
+export PATH
 
 while [ $# -gt 0 ]; do
-  gunzip -c "$1" | cpio -it | sort
+  gunzip -c "$1" | cpio -it 2>/dev/null | sort
   shift
 done

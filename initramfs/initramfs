@@ -99,11 +99,6 @@ for COMMAND in `cat /proc/cmdline`; do
   esac
 done
 
-if [ "${BREAK}" = "initramfs-early" ]; then
-  echo "initramfs: break on initramfs-early"
-  rescue_shell
-fi
-
 if [ -z "${INIT}" ]; then
   echo "initramfs: using default /sbin/init"
   INIT="/sbin/init"
@@ -139,6 +134,11 @@ if [ -f /etc/modules ]; then
   done < /etc/modules
 fi
 
+if [ "${BREAK}" = "initramfs-early" ]; then
+  echo "initramfs: break on initramfs-early"
+  rescue_shell
+fi
+
 ################################################################################
 # filesystems ##################################################################
 ################################################################################
@@ -157,7 +157,7 @@ wait_filesystem() {
 
 echo "initramfs: waiting for root filesystem"
 
-wait_filesystem "${ROOT}" 120
+wait_filesystem "${ROOT}" 240
 
 if [ $? -ne 0 ]; then
   echo "initramfs: timeout reached for ${ROOT}"
