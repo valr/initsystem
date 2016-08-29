@@ -18,5 +18,4 @@ Build and install the following packages:
 
 Configure the following components:
 
-- initramfs: module and firmware files in /etc/mkinitramfs.d
 - initsystem: /etc/rc.conf
