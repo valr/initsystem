@@ -1,7 +1,7 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=cronjobs
-pkgver=1.0.0
+pkgver=1.1.0
 pkgrel=1
 pkgdesc='cron jobs for the init system'
 url='https://github.com/valr/initsystem'
@@ -15,13 +15,13 @@ source=('fstrim'
         'pkgstats'
         'shadow'
         'updatedb')
-md5sums=('fcb00e5aca14441c11be7334ac9a02ed'
-         'd8f9a48e01e612a511c4953607e7674e'
-         'e8b0e5afdea70098e5aefd06ce677340'
-         '6cca04cbfcda3838ef507a4320c42641'
-         'caf030943bc1152f54e46f29def17b9c'
-         'f1d5449e2eaadadd13b3acca85544a46'
-         '91b757a126c63fd0b17a9fda8f4ff2d3')
+md5sums=('ccfaa86b6b025ce9366ff6cf69020df6'
+         '9e540a2cc7133d66bc3fff597fb77d33'
+         '5938e7328e1deaaca93b346c310e8858'
+         '7373c1deae71fb79ea4b4d58625f6427'
+         'ad68d88674d877e16b1a5bd3b43f1cae'
+         '6fbe5f2bcaf195d6b396cafce66e4dc6'
+         'd0dd3f4725ae10a079479f21f37f50db')
 
 package() {
   install -Dm755 "${srcdir}"/logrotate "${pkgdir}"/etc/cron.daily/logrotate
