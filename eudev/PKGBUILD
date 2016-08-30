@@ -3,7 +3,7 @@
 _udev_ver=220
 
 pkgname=eudev
-pkgver=3.1.2
+pkgver=3.2
 pkgrel=1
 pkgdesc='userspace device manager'
 url='https://wiki.gentoo.org/wiki/Project:Eudev'
@@ -14,21 +14,21 @@ depends=('glib2' 'kbd' 'kmod' 'hwids' 'util-linux')
 makedepends=('gobject-introspection' 'gperf' 'gtk-doc' 'intltool')
 provides=("udev=${_udev_ver}"
           "libudev=${_udev_ver}"
-          'libgudev-1.0.so'
           'libudev.so'
-          'systemd' 'libsystemd') # fake because of archlinux packaging
+          'systemd' 'libsystemd')
 conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
 options=(!makeflags !libtool)
-install='eudev.install'
 source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
         'initcpio_hooks'
-        'initcpio_install')
-md5sums=('07ab33fe310d250f06fc28f010e3fde2'
+        'initcpio_install'
+        'udev-hwdb.hook')
+md5sums=('7e42d9b9ed8162021665139520676367'
          'SKIP'
          'e7bbe35b79cddd7c82bf201f6297722d'
-         'ac595576711e1e1b57ebe3f83493d2de')
+         'ac595576711e1e1b57ebe3f83493d2de'
+         '7fce0d7c0ecace6c34e44fe6e24470ee')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -38,12 +38,13 @@ build() {
     --sbindir=/usr/bin \
     --sysconfdir=/etc \
     --libdir=/usr/lib \
+    --htmldir=/usr/share/doc/"${pkgname}-${pkgver}"/html \
     --enable-split-usr \
     --enable-introspection \
-    --disable-gudev \
+    --enable-manpages \
     --enable-kmod \
-    --with-rootprefix=/usr \
-    --with-html-dir=/usr/share/doc/"${pkgname}-${pkgver}"/html
+    --enable-hwdb \
+    --with-rootprefix=/usr
 
     make
 }
@@ -59,9 +60,9 @@ package() {
                s#GROUP="cdrom"#GROUP="optical"#g' "${i}"
   done
 
-  install -Dm644 "${srcdir}"/initcpio_hooks "${pkgdir}"/usr/lib/initcpio/hooks/udev
-  install -Dm644 "${srcdir}"/initcpio_install "${pkgdir}"/usr/lib/initcpio/install/udev
+  install -D -m644 "${srcdir}"/initcpio_hooks "${pkgdir}"/usr/lib/initcpio/hooks/udev
+  install -D -m644 "${srcdir}"/initcpio_install "${pkgdir}"/usr/lib/initcpio/install/udev
+  install -D -m644 "${srcdir}"/udev-hwdb.hook "${pkgdir}"/usr/share/libalpm/hooks/udev-hwdb.hook
 
-  install -Dm644 README "${pkgdir}"/usr/share/doc/"${pkgname}"/README
-  install -Dm644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
+  install -D -m644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
