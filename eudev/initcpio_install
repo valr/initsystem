@@ -1,7 +1,8 @@
 #!/bin/bash
 
 build() {
-  add_file "/etc/udev/udev.conf"
+  local rule tool
+
   add_binary /usr/bin/udevd
   add_binary /usr/bin/udevadm
 
