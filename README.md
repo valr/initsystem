@@ -13,5 +13,5 @@ Build and install the following packages:
 - initsystem
 - services
 - cronjobs
-- eudev (optional: removes systemd and replaces udev components from systemd)
+- eudev (optional: removes systemd & libsystemd and replaces udev components from systemd)
 - packages in pkgbuild directory (optional: removes dependencies on systemd libraries)
