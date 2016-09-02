@@ -1,0 +1,99 @@
+#!/bin/sh
+
+set -u
+
+################################################################################
+# vbox #########################################################################
+################################################################################
+
+# vboxmanage clonehd archlinux-dynamic.vdi archlinux.vdi --variant Fixed
+
+# vboxmanage list hdds
+# vboxmanage list vms
+# vboxmanage showvminfo archlinux
+
+# if [ $# -ne 1 ]; then
+#   echo "error: wrong number of parameters"
+#   echo "usage: `basename $0` ro|rw"
+#   exit 1
+# fi
+
+# if [ "$1" != "ro" ] && [ "$1" != "rw" ]; then
+#   echo "error: expecting 'ro' or 'rw' as parameter"
+#   exit 1
+# fi
+
+# if [ "$1" = "ro" ]; then
+#   vboxmanage storageattach archlinux --storagectl SATA --port 0 --medium none
+#   vboxmanage modifyhd 11448d1e-804c-44c6-af0f-115d4c4ab423 --type immutable
+#   vboxmanage modifyhd 11448d1e-804c-44c6-af0f-115d4c4ab423 --autoreset off
+#   vboxmanage storageattach archlinux --storagectl SATA --port 0 --type hdd --medium 11448d1e-804c-44c6-af0f-115d4c4ab423
+# else
+#   vboxmanage storageattach archlinux --storagectl SATA --port 0 --medium none
+#   vboxmanage modifyhd 11448d1e-804c-44c6-af0f-115d4c4ab423 --type normal
+#   vboxmanage storageattach archlinux --storagectl SATA --port 0 --type hdd --medium 11448d1e-804c-44c6-af0f-115d4c4ab423
+# fi
+
+vboxmanage startvm archlinux
+
+exit 0
+
+################################################################################
+# qemu #########################################################################
+################################################################################
+
+if [ $# -ne 1 ]; then
+  echo "error: wrong number of parameters"
+  echo "usage: `basename $0` snapshot|no-snapshot"
+  exit 1
+fi
+
+if [ "$1" != "snapshot" ] && [ "$1" != "no-snapshot" ]; then
+  echo "error: expecting 'snapshot' or 'no-snapshot' as parameter"
+  exit 1
+fi
+
+if [ "$1" = "snapshot" ]; then
+  SNAPSHOT="-snapshot"
+else
+  SNAPSHOT=""
+fi
+
+qemu-system-x86_64 \
+  -smp 2 \
+  -boot c \
+  -m 1024 \
+  -hda /home/valr/document/system/qemu/archlinux/archlinux.img \
+  -usb -usbdevice mouse \
+  -net nic -net user \
+  -enable-kvm \
+  -daemonize \
+  ${SNAPSHOT}
+
+exit 0
+
+################################################################################
+# old qemu #####################################################################
+################################################################################
+
+# create image:
+# qemu-img create -f qcow2 archlinux.img 8G
+
+# install archlinux:
+# qemu-system-x86_64 \
+#  -smp 2 \
+#  -boot d \
+#  -m 1024 \
+#  -hda /home/valr/document/qemu/system/archlinux/archlinux.img \
+#  -cdrom ~/download/archlinux-2013.12.01-dual.iso \
+#  -usb -usbdevice mouse \
+#  -net nic -net user \
+#  -enable-kvm \
+#  -daemonize
+
+# run vm:
+# sudo qemu-system-x86_64 \
+#   -kernel /boot/vmlinuz-linux \
+#   -initrd /boot/initramfs-linux.cpio.gz \
+#   -append "root=/dev/sda2 rootfstype=ext4 init=/bin/sh" \
+#   /dev/zero

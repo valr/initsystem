@@ -1,0 +1,116 @@
+#!/bin/sh
+
+set -u
+
+if [ `id -u` -ne 0 ]; then
+  echo "error: this script should be run as root"
+  exit 1
+fi
+
+################################################################################
+# vbox #########################################################################
+################################################################################
+
+# sudo qemu-nbd -c /dev/nbd0 "/home/valr/document/system/vbox/archlinux/archlinux.vdi"
+# sudo partx -a /dev/nbd0
+# sudo mount -t ext4 /dev/nbd0p2 /mnt
+# sudo mount -t vfat /dev/nbd0p1 /mnt/boot
+# sudo mount -t ext4 /dev/nbd0p3 /mnt/var
+# sudo chroot /mnt /bin/bash
+# sudo umount /mnt/var
+# sudo umount /mnt/boot
+# sudo umount /mnt
+# sudo qemu-nbd -d /dev/nbd0
+
+DEVICE="/dev/nbd0"
+PARTITION_ROOT="/dev/nbd0p2"
+PARTITION_BOOT="/dev/nbd0p1"
+PARTITION_VAR="/dev/nbd0p3"
+ROOT="/mnt"
+IMAGE="/home/valr/document/system/vbox/archlinux/archlinux.vdi"
+
+wait_device() {
+  for i in $(seq $2); do
+    if [ -e "$1" ]; then
+      return 0
+    fi
+
+    sleep .25
+  done
+
+  return 1
+}
+
+qemu-nbd -c "${DEVICE}" "${IMAGE}"
+partx -a "${DEVICE}"
+
+wait_device "${PARTITION_ROOT}" 40 && mount -t ext4 "${PARTITION_ROOT}" "${ROOT}"
+wait_device "${PARTITION_BOOT}" 40 && mount -t vfat "${PARTITION_BOOT}" "${ROOT}"/boot
+wait_device "${PARTITION_VAR}"  40 && mount -t ext4 "${PARTITION_VAR}"  "${ROOT}"/var
+
+pacman -U \
+  --dbpath   "${ROOT}"/var/lib/pacman/ \
+  --root     "${ROOT}"/ \
+  --cachedir "${ROOT}"/var/cache/pacman/pkg/ \
+  --config   "${ROOT}"/etc/pacman.conf \
+  --gpgdir   "${ROOT}"/etc/pacman.d/gnupg/ \
+  --hookdir  "${ROOT}"/usr/share/libalpm/hooks/ \
+  --logfile  "${ROOT}"/var/log/pacman.log \
+  --noconfirm \
+  --noscriptlet \
+  ../busybox/busybox-1.24.2-2-x86_64.pkg.tar.xz \
+  ../initramfs/initramfs-1.1.0-1-any.pkg.tar.xz \
+  ../initsystem/initsystem-1.0.0-1-x86_64.pkg.tar.xz \
+  ../services/services-1.0.0-1-any.pkg.tar.xz
+
+cp -f ../busybox/busybox-1.24.2-2-x86_64.pkg.tar.xz "${ROOT}"/root
+cp -f ../initramfs/initramfs-1.1.0-1-any.pkg.tar.xz "${ROOT}"/root
+cp -f ../initsystem/initsystem-1.0.0-1-x86_64.pkg.tar.xz "${ROOT}"/root
+cp -f ../services/services-1.0.0-1-any.pkg.tar.xz "${ROOT}"/root
+
+sync
+
+umount "${ROOT}"/var
+umount "${ROOT}"/boot
+umount "${ROOT}"
+
+qemu-nbd -d "${DEVICE}"
+
+exit 0
+
+################################################################################
+# qemu #########################################################################
+################################################################################
+
+# sudo qemu-nbd -P 1 -c "/dev/nbd0" "/home/valr/document/system/qemu/archlinux/archlinux.img"
+# sudo mount -t ext4 -o rw /dev/nbd0 /mnt
+# ...
+# sudo umount /mnt
+# sudo qemu-nbd -d /dev/nbd0
+
+DEVICE="/dev/nbd0"
+ROOT="/mnt"
+IMAGE="/home/valr/document/system/qemu/archlinux/archlinux.img"
+
+qemu-nbd -P 1 -c "${DEVICE}" "${IMAGE}"
+mount -t ext4 "${DEVICE}" "${ROOT}"
+
+pacman -U \
+  --root     "${ROOT}" \
+  --config   "${ROOT}"/etc/pacman.conf \
+  --gpgdir   "${ROOT}"/etc/pacman.d/gnupg \
+  --dbpath   "${ROOT}"/var/lib/pacman \
+  --cachedir "${ROOT}"/var/cache/pacman/pkg \
+  --logfile  "${ROOT}"/var/log/pacman.log \
+  --noscriptlet --noconfirm \
+  ../busybox/busybox-1.24.2-2-x86_64.pkg.tar.xz \
+  ../initramfs/initramfs-1.1.0-1-any.pkg.tar.xz \
+  ../initsystem/initsystem-1.0.0-1-x86_64.pkg.tar.xz \
+  ../services/services-1.0.0-1-any.pkg.tar.xz
+
+sync
+
+umount "${ROOT}"
+qemu-nbd -d "${DEVICE}"
+
+exit 0
