@@ -12,8 +12,8 @@ source=("$url/downloads/$pkgname-$pkgver.tar.bz2"
         'config_suid'
         http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch)
 md5sums=('2eaae519cac1143bcf583636a745381f'
-         'e069d74f3e58b323c8ecfaf43a3ba28a'
-         'f0646f5799d60e0de43d960806721e0b'
+         '7188c49bd2b3ab44d84061fb20c48f0e'
+         'a1e5dedebe2f13b0c34ddfb0def8f9d5'
          'c45a85f5ced712743efbb683900f8c1d'
          '850a57ca2871e370b4916161a0320a3f'
          'b59eb7536609db1ab5215de860d9e558')
