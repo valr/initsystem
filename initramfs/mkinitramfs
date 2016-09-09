@@ -32,7 +32,7 @@ umask 022
 # parameters ###################################################################
 ################################################################################
 
-if [ `id -u` -ne 0 ]; then
+if [ $(id -u) -ne 0 ]; then
   echo "error: this script should be run as root"
   exit 1
 fi
@@ -52,7 +52,7 @@ echo ">>> generating initramfs-${LINUX}.cpio.gz <<<"
 
 echo "mkinitramfs: creating temporary base directory"
 
-BASE=`mktemp -d /tmp/initramfs.XXXXXX`
+BASE=$(mktemp -d /tmp/initramfs.XXXXXX)
 
 trap 'rm -rf "${BASE}"; echo "mkinitramfs: an error has occurred, aborting!"; exit 1' INT TERM EXIT
 
@@ -97,7 +97,7 @@ install -m755 /usr/bin/busybox "${BASE}"/usr/bin/busybox
 install -m4755 /usr/bin/busybox-suid "${BASE}"/usr/bin/busybox-suid
 
 for BINARY in /usr/bin/busybox /usr/bin/busybox-suid; do
-  for APPLET in `"${BASE}/${BINARY}" --list`; do
+  for APPLET in $("${BASE}/${BINARY}" --list); do
     ln -s "${BINARY}" "${BASE}/bin/${APPLET}"
   done
 done
@@ -121,10 +121,10 @@ add_binary() {
 }
 
 add_binaries() {
-  add_binary `readlink -f "$1"` "$1"
+  add_binary "$(readlink -f "$1")" "$1"
 
-  for BINARY in `/usr/bin/ldd "$1" | grep -v "linux-vdso.so.1" | awk '{print $(NF-1)}'`; do
-    add_binary `readlink -f "${BINARY}"` "${BINARY}"
+  for BINARY in $(/usr/bin/ldd "$1" | grep -v "linux-vdso.so.1" | awk '{print $(NF-1)}'); do
+    add_binary "$(readlink -f "${BINARY}")" "${BINARY}"
   done
 }
 
@@ -141,8 +141,8 @@ done
 echo "mkinitramfs: installing kernel modules and firmwares"
 
 add_module() {
-  REGEXP=`basename "$1" | sed 's/[-_]/[\\-_]/g'`
-  MODULES=`grep "/${REGEXP}.*:" "/usr/lib/modules/${VERSION}/modules.dep"`
+  REGEXP=$(basename "$1" | sed 's/[-_]/[\\-_]/g')
+  MODULES=$(grep "/${REGEXP}.*:" "/usr/lib/modules/${VERSION}/modules.dep")
 
   for MODULE in $MODULES; do
     MODULE="${MODULE%:}"
@@ -157,9 +157,9 @@ add_firmware() {
   fi
 }
 
-VERSION=`/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".img | grep -m 1 "usr/lib/modules/" | awk -F / '{print $4}'`
+VERSION=$(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".img | grep -m 1 "usr/lib/modules/" | awk -F / '{print $4}')
 
-for FILE in `/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".img`; do
+for FILE in $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".img); do
   case "${FILE}" in
     "usr/lib/modules/"*.ko) add_module "${FILE}" ;;
     "usr/lib/firmware/"*) add_firmware "${FILE#usr}" ;;

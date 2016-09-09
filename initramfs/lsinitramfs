@@ -23,7 +23,9 @@
 # busybox cpio -i -d -H newc -F initramfs-linux.cpio
 
 PATH=/opt/busybox
-export PATH
+LC_ALL=C
+
+export PATH LC_ALL
 
 while [ $# -gt 0 ]; do
   gunzip -c "$1" | cpio -it 2>/dev/null | sort

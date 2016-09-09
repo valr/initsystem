@@ -19,7 +19,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
-export PATH
+LC_ALL=C
+
+export PATH LC_ALL
 
 cd /
 umask 022
@@ -82,18 +84,18 @@ mount -t tmpfs -o nosuid,nodev shm /dev/shm
 
 echo "initramfs: parsing kernel command line"
 
-for COMMAND in `cat /proc/cmdline`; do
+for COMMAND in $(cat /proc/cmdline); do
   case "${COMMAND}" in
-    break\=*)
+    break=*)
       BREAK="${COMMAND#break=}"
       ;;
-    init\=*)
+    init=*)
       INIT="${COMMAND#init=}"
       ;;
-    root\=*)
+    root=*)
       ROOT="${COMMAND#root=}"
       ;;
-    rootfstype\=*)
+    rootfstype=*)
       TYPE="${COMMAND#rootfstype=}"
       ;;
   esac
@@ -144,7 +146,7 @@ fi
 ################################################################################
 
 wait_filesystem() {
-  for i in `seq $2`; do
+  for i in $(seq $2); do
     if [ -e "$1" ]; then
       return 0
     fi
