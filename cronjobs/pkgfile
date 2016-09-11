@@ -1,3 +1,3 @@
 #!/bin/sh
 
-/usr/bin/pkgfile -u 2>&1 >/dev/null | /usr/bin/logger -i -t `/usr/bin/basename $0`
+/usr/bin/pkgfile -u 2>&1 >/dev/null | /usr/bin/logger -i -t $(/usr/bin/basename $0)

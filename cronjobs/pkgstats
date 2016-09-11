@@ -1,3 +1,3 @@
 #!/bin/sh
 
-/usr/bin/su -c '/usr/bin/pkgstats -q 2>&1 | /usr/bin/logger -i -t `/usr/bin/basename $0`' -s /bin/sh nobody
+/usr/bin/su -c '/usr/bin/pkgstats -q 2>&1 | /usr/bin/logger -i -t $(/usr/bin/basename $0)' -s /bin/sh nobody
