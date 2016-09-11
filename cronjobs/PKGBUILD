@@ -15,13 +15,13 @@ source=('fstrim'
         'pkgstats'
         'shadow'
         'updatedb')
-md5sums=('ccfaa86b6b025ce9366ff6cf69020df6'
-         '9e540a2cc7133d66bc3fff597fb77d33'
-         '5938e7328e1deaaca93b346c310e8858'
-         '7373c1deae71fb79ea4b4d58625f6427'
-         'ad68d88674d877e16b1a5bd3b43f1cae'
-         '6fbe5f2bcaf195d6b396cafce66e4dc6'
-         'd0dd3f4725ae10a079479f21f37f50db')
+md5sums=('7689e8c6b0d9d5f9774b7ec15c277f25'
+         'f87aa95f8b330fd40f123a8c39fa6ec1'
+         '8fc99cbc45083cf0ac3c4eab5f8c613c'
+         '080dbd0807fd3103dec58ea2e011e6a9'
+         '3d2d9c2d0479c2a46b83e824d0ece37b'
+         'a1109ce7643f18e0829f689c65f7b29c'
+         '32503574c807219589c3999aa51613fe')
 
 package() {
   install -Dm755 "${srcdir}"/logrotate "${pkgdir}"/etc/cron.daily/logrotate
