@@ -18,7 +18,7 @@
 
 pwait() {
   for i in $(seq $2); do
-    pgrep -n -x $1 1>/dev/null 2>/dev/null 
+    pgrep -n -x "$1" 1>/dev/null 2>/dev/null 
 
     if [ $? -ne 0 ]; then
       return 0
