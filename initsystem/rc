@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2016 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +19,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 PATH=/opt/busybox
+LC_ALL=C
+
+export PATH LC_ALL
+
 cd /
 umask 022
 
@@ -95,7 +99,7 @@ echo "initscript: loading modules"
 DIR1="/etc/modules-load.d"
 DIR2="/usr/lib/modules-load.d"
 
-for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /dev/null | sort -u`; do
+for FILE in $(find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /dev/null | sort -u); do
 
   [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
   [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
@@ -163,12 +167,12 @@ chmod 600 "${RANDOM_SEED}"
 POOL_FILE=/proc/sys/kernel/random/poolsize
 
 if [ -r "${POOL_FILE}" ]; then
-  POOL_SIZE=`cat "${POOL_FILE}"`
+  POOL_SIZE=$(cat "${POOL_FILE}")
 else
   POOL_SIZE=512
 fi
 
-dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=${POOL_SIZE} 1>/dev/null 2>/dev/null
+dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs="${POOL_SIZE}" 1>/dev/null 2>/dev/null
 
 ################################################################################
 # volatile and temporary files #################################################
@@ -188,7 +192,7 @@ echo "initscript: setting kernel parameters"
 DIR1="/etc/sysctl.d"
 DIR2="/usr/lib/sysctl.d"
 
-for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /dev/null | sort -u`; do
+for FILE in $(find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /dev/null | sort -u); do
 
   [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
   [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"

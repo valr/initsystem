@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2016 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,6 +19,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 PATH=/opt/busybox
+LC_ALL=C
+
+export PATH LC_ALL
+
 cd /
 umask 022
 
@@ -47,9 +51,9 @@ echo ""
 
 echo "shutdown: sending SIGTERM to user processes"
 
-USERS=`users | tr ' ' '|'`
+USERS=$(users | tr ' ' '|')
 if [ "${USERS}" ]; then
-  PIDS=`ps -eo pid,user | grep -E "(${USERS})" | grep -v root | awk '{ print $1 }'`
+  PIDS=$(ps -eo pid,user | grep -E "(${USERS})" | grep -v root | awk '{print $1}')
   if [ "${PIDS}" ]; then
     kill -TERM ${PIDS} 1>/dev/null 2>/dev/null
     pidwait "${PIDS}" 12
@@ -121,12 +125,12 @@ chmod 600 "${RANDOM_SEED}"
 POOL_FILE=/proc/sys/kernel/random/poolsize
 
 if [ -r "${POOL_FILE}" ]; then
-  POOL_SIZE=`cat "${POOL_FILE}"`
+  POOL_SIZE=$(cat "${POOL_FILE}")
 else
   POOL_SIZE=512
 fi
 
-dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs=${POOL_SIZE} 1>/dev/null 2>/dev/null
+dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs="${POOL_SIZE}" 1>/dev/null 2>/dev/null
 
 ################################################################################
 # dmesg ########################################################################
@@ -152,7 +156,7 @@ swapoff -a
 
 echo "shutdown: unmounting filesystems"
 
-MOUNTS=`tac /proc/self/mounts | cut -d ' ' -f 2`
+MOUNTS=$(tac /proc/self/mounts | cut -d ' ' -f 2)
 for MOUNT in ${MOUNTS}; do
   case "${MOUNT}" in
     /|/proc|/sys|/run|/dev|/dev/pts)

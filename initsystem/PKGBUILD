@@ -1,7 +1,7 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=initsystem
-pkgver=1.0.0
+pkgver=1.1.0
 pkgrel=1
 pkgdesc='an init system'
 url='https://github.com/valr/initsystem'
@@ -23,14 +23,14 @@ source=('init-og.c'
         'tmpfiles'
         'LICENSE')
 md5sums=('82b4e82d46e72e4bbfc02e4b670745ea'
-         'd554740a819228f7a94697aff638a390'
-         'a2a4f6896a26643f01c980bc898625fb'
-         'f9d345202573c58dfea5f7d39530b36d'
-         'a6781031e16aab769c200c7f69d3735c'
-         'bdf026eee198ed00b780caabbb511c8f'
-         '8c53ae0e2e5584999f47f905bc226e5f'
-         '70b45924d33ebbd5cc2f32cb37c0d9cc'
-         '07c56d75dd64e0a04a3cccf28f5d7e97'
+         'c2204cbe9137bfe5842ae6a515847394'
+         '5035ef97997965dd280eaac04fe1a018'
+         'd21512ddfd60b3f15f54f04a120a8e86'
+         '10e17beee700ee7ec9cebe188bf6e241'
+         'c7760407a2bfb707a92675637bbcbe2f'
+         '9779378412f0772b64ee5c01eaf99684'
+         '62e9dbc81926f8a1a71116f763fc0d6f'
+         '4d156389c1e51bcfa12088cc7c14a7bd'
          'e22d1e4e684294fcc01009d033f30595'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
