@@ -24,12 +24,11 @@ md5sums=('7689e8c6b0d9d5f9774b7ec15c277f25'
          '32503574c807219589c3999aa51613fe')
 
 package() {
-  install -Dm755 "${srcdir}"/logrotate "${pkgdir}"/etc/cron.daily/logrotate
-  install -Dm755 "${srcdir}"/mandb     "${pkgdir}"/etc/cron.daily/mandb
-  install -Dm755 "${srcdir}"/pkgfile   "${pkgdir}"/etc/cron.daily/pkgfile
-  install -Dm755 "${srcdir}"/shadow    "${pkgdir}"/etc/cron.daily/shadow
-  install -Dm755 "${srcdir}"/updatedb  "${pkgdir}"/etc/cron.daily/updatedb
+  for JOB in logrotate mandb pkgfile shadow updatedb; do
+    install -D -m 755 "${srcdir}/${JOB}" "${pkgdir}"/etc/cron.daily/"${JOB}"
+  done
 
-  install -Dm755 "${srcdir}"/fstrim    "${pkgdir}"/etc/cron.weekly/fstrim
-  install -Dm755 "${srcdir}"/pkgstats  "${pkgdir}"/etc/cron.weekly/pkgstats
+  for JOB in fstrim pkgstats; do
+    install -D -m 755 "${srcdir}/${JOB}" "${pkgdir}"/etc/cron.weekly/"${JOB}"
+  done
 }

@@ -50,10 +50,10 @@ package() {
   # binaries
 
   cd "${srcdir}"/nosuid
-  install -Dm755 busybox "${pkgdir}"/usr/bin/busybox
+  install -D -m 755 busybox "${pkgdir}"/usr/bin/busybox
 
   cd "${srcdir}"/suid
-  install -Dm4755 busybox "${pkgdir}"/usr/bin/busybox-suid
+  install -D -m 4755 busybox "${pkgdir}"/usr/bin/busybox-suid
 
   # symlinks: install applets in /usr/bin
 
@@ -65,7 +65,7 @@ package() {
   install -d "${pkgdir}"/opt/busybox
   cd "${pkgdir}"/opt/busybox
 
-  for APPLET in $("${pkgdir}"/usr/bin/busybox --list); do
+  for APPLET in $( "${pkgdir}"/usr/bin/busybox --list ); do
     case "${APPLET}" in
       halt|poweroff|reboot)
         ;;
@@ -75,10 +75,10 @@ package() {
     esac
   done
 
-  for APPLET in $("${pkgdir}"/usr/bin/busybox-suid --list); do
+  for APPLET in $( "${pkgdir}"/usr/bin/busybox-suid --list ); do
     ln -s /usr/bin/busybox-suid "${APPLET}"
   done
 
-  install -Dm644 "${srcdir}"/nosuid/README "${pkgdir}"/usr/share/doc/"${pkgname}"/README
-  install -Dm644 "${srcdir}"/nosuid/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
+  install -D -m 644 "${srcdir}"/nosuid/README "${pkgdir}"/usr/share/doc/"${pkgname}"/README
+  install -D -m 644 "${srcdir}"/nosuid/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
