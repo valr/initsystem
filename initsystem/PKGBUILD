@@ -44,23 +44,23 @@ package() {
 
   # configuration
 
-  install -Dm644 "${srcdir}"/rc.conf "${pkgdir}"/etc/rc.conf
+  install -D -m 644 "${srcdir}"/rc.conf "${pkgdir}"/etc/rc.conf
 
   # binaries
 
-  install -Dm755 "${srcdir}"/init-og           "${pkgdir}"/usr/bin/init-og
-  install -Dm755 "${srcdir}"/rc                "${pkgdir}"/etc/rc
-  install -Dm755 "${srcdir}"/rc.local          "${pkgdir}"/etc/rc.local
-  install -Dm755 "${srcdir}"/rc.respawn        "${pkgdir}"/etc/rc.respawn
-  install -Dm755 "${srcdir}"/rc.shutdown       "${pkgdir}"/etc/rc.shutdown
-  install -Dm755 "${srcdir}"/rc.shutdown.local "${pkgdir}"/etc/rc.shutdown.local
-  install -Dm755 "${srcdir}"/rc.subr           "${pkgdir}"/etc/rc.subr
-  install -Dm755 "${srcdir}"/shutdown          "${pkgdir}"/usr/bin/shutdown
-  install -Dm755 "${srcdir}"/tmpfiles          "${pkgdir}"/usr/bin/tmpfiles
+  install -D -m 755 "${srcdir}"/init-og           "${pkgdir}"/usr/bin/init-og
+  install -D -m 755 "${srcdir}"/rc                "${pkgdir}"/etc/rc
+  install -D -m 755 "${srcdir}"/rc.local          "${pkgdir}"/etc/rc.local
+  install -D -m 755 "${srcdir}"/rc.respawn        "${pkgdir}"/etc/rc.respawn
+  install -D -m 755 "${srcdir}"/rc.shutdown       "${pkgdir}"/etc/rc.shutdown
+  install -D -m 755 "${srcdir}"/rc.shutdown.local "${pkgdir}"/etc/rc.shutdown.local
+  install -D -m 755 "${srcdir}"/rc.subr           "${pkgdir}"/etc/rc.subr
+  install -D -m 755 "${srcdir}"/shutdown          "${pkgdir}"/usr/bin/shutdown
+  install -D -m 755 "${srcdir}"/tmpfiles          "${pkgdir}"/usr/bin/tmpfiles
 
   # services
 
-  install -dm755 "${pkgdir}"/etc/rc.d
+  install -d -m 755 "${pkgdir}"/etc/rc.d
 
   # symlinks
 
@@ -72,5 +72,5 @@ package() {
 
   # license
 
-  install -Dm644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
+  install -D -m 644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
