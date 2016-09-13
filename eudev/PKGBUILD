@@ -55,9 +55,9 @@ package() {
                s#GROUP="cdrom"#GROUP="optical"#g' "${RULES}"
   done
 
-  install -D -m 644 "${srcdir}"/initcpio_hooks "${pkgdir}"/usr/lib/initcpio/hooks/udev
+  install -D -m 644 "${srcdir}"/initcpio_hooks   "${pkgdir}"/usr/lib/initcpio/hooks/udev
   install -D -m 644 "${srcdir}"/initcpio_install "${pkgdir}"/usr/lib/initcpio/install/udev
-  install -D -m 644 "${srcdir}"/udev-hwdb.hook "${pkgdir}"/usr/share/libalpm/hooks/udev-hwdb.hook
+  install -D -m 644 "${srcdir}"/udev-hwdb.hook   "${pkgdir}"/usr/share/libalpm/hooks/udev-hwdb.hook
 
   install -D -m 644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }

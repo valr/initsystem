@@ -79,6 +79,6 @@ package() {
     ln -s /usr/bin/busybox-suid "${APPLET}"
   done
 
-  install -D -m 644 "${srcdir}"/nosuid/README "${pkgdir}"/usr/share/doc/"${pkgname}"/README
+  install -D -m 644 "${srcdir}"/nosuid/README  "${pkgdir}"/usr/share/doc/"${pkgname}"/README
   install -D -m 644 "${srcdir}"/nosuid/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
