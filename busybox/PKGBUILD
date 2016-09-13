@@ -65,7 +65,7 @@ package() {
   install -d "${pkgdir}"/opt/busybox
   cd "${pkgdir}"/opt/busybox
 
-  for APPLET in $( "${pkgdir}"/usr/bin/busybox --list ); do
+  for APPLET in $("${pkgdir}"/usr/bin/busybox --list); do
     case "${APPLET}" in
       halt|poweroff|reboot)
         ;;
@@ -75,7 +75,7 @@ package() {
     esac
   done
 
-  for APPLET in $( "${pkgdir}"/usr/bin/busybox-suid --list ); do
+  for APPLET in $("${pkgdir}"/usr/bin/busybox-suid --list); do
     ln -s /usr/bin/busybox-suid "${APPLET}"
   done
 
