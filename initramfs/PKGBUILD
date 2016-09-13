@@ -21,9 +21,9 @@ md5sums=('30d47a90609e7766ad9da76f539c6b07'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
-  install -D -m755 "${srcdir}"/lsinitramfs "${pkgdir}"/usr/bin/lsinitramfs
-  install -D -m755 "${srcdir}"/mkinitramfs "${pkgdir}"/usr/bin/mkinitramfs
-  install -D -m755 "${srcdir}"/initramfs "${pkgdir}"/usr/lib/initramfs/initramfs
-  install -D -m644 "${srcdir}"/initramfs.hook "${pkgdir}"/usr/share/libalpm/hooks/initramfs.hook
-  install -D -m644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
+  install -D -m 755 "${srcdir}"/lsinitramfs    "${pkgdir}"/usr/bin/lsinitramfs
+  install -D -m 755 "${srcdir}"/mkinitramfs    "${pkgdir}"/usr/bin/mkinitramfs
+  install -D -m 755 "${srcdir}"/initramfs      "${pkgdir}"/usr/lib/initramfs/initramfs
+  install -D -m 644 "${srcdir}"/initramfs.hook "${pkgdir}"/usr/share/libalpm/hooks/initramfs.hook
+  install -D -m 644 "${srcdir}"/LICENSE        "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
