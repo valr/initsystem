@@ -19,12 +19,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 PATH=/opt/busybox
+LC_ALL=C
+
+export PATH LC_ALL
 
 ################################################################################
 # sanity check #################################################################
 ################################################################################
 
-if [ `id -u` != 0 ]; then
+if [ $(id -u) != 0 ]; then
   echo "error: this script should be run as root"
   exit 1
 fi
@@ -37,15 +40,9 @@ INCLUDE=""; EXCLUDE=""; REMOVE=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --prefix=*)
-      INCLUDE=`echo "$1" | cut -d '=' -f 2`
-      ;;
-    --exclude-prefix=*)
-      EXCLUDE=`echo "$1" | cut -d '=' -f 2`
-      ;;
-    --remove)
-      REMOVE="true"
-      ;;
+    --prefix=*)         INCLUDE="${1#--prefix=}" ;;
+    --exclude-prefix=*) EXCLUDE="${1#--exclude-prefix=}" ;;
+    --remove)           REMOVE="true" ;;
   esac
 
   shift
@@ -58,7 +55,7 @@ done
 DIR1="/usr/lib/tmpfiles.d"
 DIR2="/etc/tmpfiles.d"
 
-for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /dev/null | sort -u`; do
+for FILE in $(find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /dev/null | sort -u); do
 
   [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
   [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
@@ -67,10 +64,10 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
     TYP=""; PTH=""; MOD=""; UID=""; GID=""; AGE=""; ARG=""
 
-    for FIELD in `echo "${LINE}" | \
-      awk -F'"' -v OFS='' '{ for (i=2; i<=NF; i+=2) gsub(" ", "\\\x20", $i) } 1'`; do
+    for FIELD in $(echo "${LINE}" | \
+      awk -F '"' -v OFS='' '{ for (i=2; i<=NF; i+=2) gsub(" ", "\\x20", $i) } 1'); do
 
-      FIELD=`echo -e "${FIELD}"`
+      FIELD=$(echo -e "${FIELD}")
 
       [ -z "${TYP}" ] && TYP="${FIELD}" && continue
       [ -z "${PTH}" ] && PTH="${FIELD}" && continue
@@ -85,14 +82,14 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
     [ "${INCLUDE}" ] && [ "${PTH##${INCLUDE}*}" ] && continue
     [ "${EXCLUDE}" ] && [ ! "${PTH##${EXCLUDE}*}" ] && continue
 
-    # remove trailing ! from type
-    [ `echo ${TYP} | grep !` ] && TYP="${TYP%?}"
-
     # skip path with a percent sign
-    [ `echo ${PTH} | grep %` ] && continue
+    [ $(echo ${PTH} | grep '%') ] && continue
+
+    # remove trailing ! from type
+    [ $(echo ${TYP} | grep '!$') ] && TYP="${TYP%?}"
 
     # remove leading ~ from mode
-    [ `echo ${MOD} | grep \~` ] && MOD="${MOD#~}"
+    [ $(echo ${MOD} | grep '^~') ] && MOD="${MOD#~}"
 
     [ "${MOD}" = "-" ] && MOD=""
     [ "${UID}" = "-" ] && UID=""
@@ -212,8 +209,8 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           if [ "${ARG}" ]; then
-            MAJOR=`echo ${ARG} | cut -d ':' -f 1`
-            MINOR=`echo ${ARG} | cut -d ':' -f 2`
+            MAJOR=$(echo ${ARG} | cut -d ':' -f 1)
+            MINOR=$(echo ${ARG} | cut -d ':' -f 2)
 
             [ -z "${MOD}" ] && MOD="0644"
             [ -z "${UID}" ] && UID="root"
@@ -232,8 +229,8 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         fi
 
         if [ "${ARG}" ]; then
-          MAJOR=`echo ${ARG} | cut -d ':' -f 1`
-          MINOR=`echo ${ARG} | cut -d ':' -f 2`
+          MAJOR=$(echo ${ARG} | cut -d ':' -f 1)
+          MINOR=$(echo ${ARG} | cut -d ':' -f 2)
 
           [ -z "${MOD}" ] && MOD="0644"
           [ -z "${UID}" ] && UID="root"
@@ -248,8 +245,8 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           if [ "${ARG}" ]; then
-            MAJOR=`echo ${ARG} | cut -d ':' -f 1`
-            MINOR=`echo ${ARG} | cut -d ':' -f 2`
+            MAJOR=$(echo ${ARG} | cut -d ':' -f 1)
+            MINOR=$(echo ${ARG} | cut -d ':' -f 2)
 
             [ -z "${MOD}" ] && MOD="0644"
             [ -z "${UID}" ] && UID="root"
@@ -268,8 +265,8 @@ for FILE in `find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /de
         fi
 
         if [ "${ARG}" ]; then
-          MAJOR=`echo ${ARG} | cut -d ':' -f 1`
-          MINOR=`echo ${ARG} | cut -d ':' -f 2`
+          MAJOR=$(echo ${ARG} | cut -d ':' -f 1)
+          MINOR=$(echo ${ARG} | cut -d ':' -f 2)
 
           [ -z "${MOD}" ] && MOD="0644"
           [ -z "${UID}" ] && UID="root"
