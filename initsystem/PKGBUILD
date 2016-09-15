@@ -42,6 +42,12 @@ build() {
 
 package() {
 
+  # directories
+
+  install -d -m 755 "${pkgdir}"/etc/rc.d
+  install -d -m 755 "${pkgdir}"/etc/tmpfiles.d
+  install -d -m 755 "${pkgdir}"/usr/lib/tmpfiles.d
+
   # configuration
 
   install -D -m 644 "${srcdir}"/rc.conf "${pkgdir}"/etc/rc.conf
@@ -57,10 +63,6 @@ package() {
   install -D -m 755 "${srcdir}"/rc.subr           "${pkgdir}"/etc/rc.subr
   install -D -m 755 "${srcdir}"/shutdown          "${pkgdir}"/usr/bin/shutdown
   install -D -m 755 "${srcdir}"/tmpfiles          "${pkgdir}"/usr/bin/tmpfiles
-
-  # services
-
-  install -d -m 755 "${pkgdir}"/etc/rc.d
 
   # symlinks
 

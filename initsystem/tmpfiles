@@ -345,7 +345,7 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /d
         ;;
 
       *)
-        echo "error: unknown type ${TYP}"
+        echo "error: unknown type ${TYP} for '${LINE}'"
         ;;
 
     esac
