@@ -136,8 +136,8 @@ if [ -f /etc/modules ]; then
   done < /etc/modules
 fi
 
-if [ "${BREAK}" = "initramfs-early" ]; then
-  echo "initramfs: break on initramfs-early"
+if [ "${BREAK}" = "premount" ]; then
+  echo "initramfs: break on premount"
   rescue_shell
 fi
 
@@ -219,8 +219,8 @@ if [ ! -x /newroot/"${INIT}" ]; then
   rescue_shell
 fi
 
-if [ "${BREAK}" = "initramfs-late" ]; then
-  echo "initramfs: break on initramfs-late"
+if [ "${BREAK}" = "postmount" ]; then
+  echo "initramfs: break on postmount"
   rescue_shell
 fi
 
