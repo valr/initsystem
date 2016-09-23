@@ -136,8 +136,12 @@ if [ -f /etc/modules ]; then
   done < /etc/modules
 fi
 
+################################################################################
+# pre-mount break ##############################################################
+################################################################################
+
 if [ "${BREAK}" = "premount" ]; then
-  echo "initramfs: break on premount"
+  echo "initramfs: break on pre-mount"
   rescue_shell
 fi
 
@@ -209,6 +213,15 @@ if [ $STATUS -ne 0 ] && [ $STATUS -ne 1 ] && [ $STATUS -ne 32 ]; then
 fi
 
 ################################################################################
+# post-mount break #############################################################
+################################################################################
+
+if [ "${BREAK}" = "postmount" ]; then
+  echo "initramfs: break on post-mount"
+  rescue_shell
+fi
+
+################################################################################
 # init #########################################################################
 ################################################################################
 
@@ -216,11 +229,6 @@ echo "initramfs: checking init"
 
 if [ ! -x /newroot/"${INIT}" ]; then
   echo "initramfs: init program ${INIT} doesn't exist or is not executable"
-  rescue_shell
-fi
-
-if [ "${BREAK}" = "postmount" ]; then
-  echo "initramfs: break on postmount"
   rescue_shell
 fi
 
