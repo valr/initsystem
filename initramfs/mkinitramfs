@@ -203,12 +203,13 @@ echo "mkinitramfs: cleaning temporary files"
 rm -f /tmp/initramfs-"${LINUX}".cpio.gz
 rm -rf "${BASE}"
 
-echo "mkinitramfs: listing initramfs archive content"
+echo "mkinitramfs: listing summary of initramfs archive"
 
 echo "binaries $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E '^(bin|sbin|usr/bin|usr/sbin)' | wc -l)"
 echo "configs $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E '^(etc)' | wc -l)"
+echo "firmwares $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E '^(lib/firmware)' | wc -l)"
 echo "modules $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E '^(lib/modules)' | wc -l)"
-echo "libraries $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E '^(lib|lib64|usr/lib|usr/lib64)' | grep -v '^lib/modules' | wc -l)"
+echo "libraries $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E '^(lib|lib64|usr/lib|usr/lib64)' | grep -v -E '^lib/(firmware|modules)' | wc -l)"
 
 echo ">>> generation done <<<"
 
