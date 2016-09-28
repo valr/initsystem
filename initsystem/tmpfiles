@@ -55,7 +55,7 @@ done
 DIR1="/usr/lib/tmpfiles.d"
 DIR2="/etc/tmpfiles.d"
 
-for FILE in $(find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /dev/null | sort -u); do
+for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
 
   [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
   [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
@@ -78,60 +78,63 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name *.conf -exec basename '{}' \; 2> /d
       [ -z "${ARG}" ] && ARG="${FIELD}" && continue
     done
 
-    # skip included/excluded paths
-    [ "${INCLUDE}" ] && [ "${PTH##${INCLUDE}*}" ] && continue
-    [ "${EXCLUDE}" ] && [ ! "${PTH##${EXCLUDE}*}" ] && continue
-
-    # skip path with a percent sign
-    [ $(echo ${PTH} | grep '%') ] && continue
-
-    # remove trailing ! from type
-    [ $(echo ${TYP} | grep '!$') ] && TYP="${TYP%?}"
-
-    # remove leading ~ from mode
-    [ $(echo ${MOD} | grep '^~') ] && MOD="${MOD#~}"
-
     [ "${MOD}" = "-" ] && MOD=""
     [ "${UID}" = "-" ] && UID=""
     [ "${GID}" = "-" ] && GID=""
     [ "${AGE}" = "-" ] && AGE=""
     [ "${ARG}" = "-" ] && ARG=""
 
+    # skip when no type or path
     [ -z "${TYP}" ] && continue
     [ -z "${PTH}" ] && continue
+
+    # skip included/excluded paths
+    [ "${INCLUDE}" ] && [ "${PTH##${INCLUDE}*}" ] && continue
+    [ "${EXCLUDE}" ] && [ ! "${PTH##${EXCLUDE}*}" ] && continue
+
+    # skip paths with a percent sign
+    [ $(echo "${PTH}" | grep '%') ] && continue
+
+    # remove trailing ! from type
+    [ $(echo "${TYP}" | grep '!$') ] && TYP="${TYP%?}"
+
+    # remove leading ~ from mode
+    [ $(echo "${MOD}" | grep '^~') ] && MOD="${MOD#~}"
 
     case "${TYP}" in
 
       "f")
-
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           [ -z "${MOD}" ] && MOD="0644"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
 
-          install -o "${UID}" -g "${GID}" -m "${MOD}" /dev/null "${PTH}"
+          install -m "${MOD}" -o "${UID}" -g "${GID}" /dev/null "${PTH}"
 
-          [ ! -z "${ARG}" ] && echo "${ARG}" > "${PTH}"
+          [ "${ARG}" ] && echo "${ARG}" > "${PTH}"
         fi
         ;;
 
       "F")
+        if [ ! -L "${PTH}" ]; then
+          [ -z "${MOD}" ] && MOD="0644"
+          [ -z "${UID}" ] && UID="root"
+          [ -z "${GID}" ] && GID="root"
 
-        [ -z "${MOD}" ] && MOD="0644"
-        [ -z "${UID}" ] && UID="root"
-        [ -z "${GID}" ] && GID="root"
+          rm -f "${PTH}"
+          install -m "${MOD}" -o "${UID}" -g "${GID}" /dev/null "${PTH}"
 
-        install -m "${MOD}" -o "${UID}" -g "${GID}" /dev/null "${PTH}"
-
-        [ ! -z "${ARG}" ] && echo "${ARG}" > "${PTH}"
+          [ "${ARG}" ] && echo "${ARG}" > "${PTH}"
+        fi
         ;;
 
       "w")
-
         if [ -e "${PTH}" ]; then
           [ "${ARG}" ] && echo -n -e "${ARG}" > "${PTH}"
         fi
         ;;
+
+# todo: check, f/F/w for symlinks, and also (non-)existence test 
 
       "d"|"e"|"v"|"q"|"Q")
 
