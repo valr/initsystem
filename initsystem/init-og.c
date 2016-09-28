@@ -1,7 +1,7 @@
 /*
  * This file is part of initsystem
  *
- * Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
+ * Copyright (C) 2014-2016 Valère Monseur (valere dot monseur at ymail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,7 +172,7 @@ int main (int argc, char **argv)
     reboot (RB_DISABLE_CAD);
     putenv ("PATH=/sbin:/bin:/usr/sbin:/usr/bin");
     setsid ();
-    umask (0);
+    umask (S_IRWXG|S_IRWXO);
     chdir ("/");
 
     sigfillset (&signal_set);
