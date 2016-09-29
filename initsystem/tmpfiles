@@ -134,11 +134,12 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
         fi
         ;;
 
-# todo: check, f/F/w for symlinks, and also (non-)existence test 
-
-      "d"|"e"|"v"|"q"|"Q")
-
-        if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
+      "d")
+        if [ -d "${PTH}" ]; then
+          [ "${MOD}" ] && chmod "${MOD}" "${PTH}"
+          [ "${UID}" ] && chown "${UID}" "${PTH}"
+          [ "${GID}" ] && chown :"${GID}" "${PTH}"
+        else
           [ -z "${MOD}" ] && MOD="0755"
           [ -z "${UID}" ] && UID="root"
           [ -z "${GID}" ] && GID="root"
@@ -148,10 +149,30 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
         ;;
 
       "D")
+        if [ -d "${PTH}" ]; then
+          [ "${REMOVE}" ] && find "${PTH}" -mindepth 1 -maxdepth 1 -xdev -print0 | xargs -r0 rm -rf
 
-        if [ ! -z "${REMOVE}" && -d "${PTH}" ]; then
-          find "${PTH}" -mindepth 1 -maxdepth 1 -xdev -print0 | xargs -r0 rm -rf
+          [ "${MOD}" ] && chmod "${MOD}" "${PTH}"
+          [ "${UID}" ] && chown "${UID}" "${PTH}"
+          [ "${GID}" ] && chown :"${GID}" "${PTH}"
+        else
+          [ -z "${MOD}" ] && MOD="0755"
+          [ -z "${UID}" ] && UID="root"
+          [ -z "${GID}" ] && GID="root"
+
+          install -d -m "${MOD}" -o "${UID}" -g "${GID}" "${PTH}"
         fi
+        ;;
+
+      "e")
+        if [ -d "${PTH}" ]; then
+          [ "${MOD}" ] && chmod "${MOD}" "${PTH}"
+          [ "${UID}" ] && chown "${UID}" "${PTH}"
+          [ "${GID}" ] && chown :"${GID}" "${PTH}"
+        fi
+        ;;
+
+      "v"|"q"|"Q")
 
         if [ ! -e "${PTH}" ] && [ ! -L "${PTH}" ]; then
           [ -z "${MOD}" ] && MOD="0755"
