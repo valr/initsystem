@@ -1,0 +1,116 @@
+#!/bin/ash
+
+PATH=/opt/busybox
+LC_ALL=C
+
+export PATH LC_ALL
+
+# install testing directory
+rm -rf /tmp/tmpfiles.d
+
+install -d -m 0755 /tmp/tmpfiles.d
+
+# install testing script
+install -m 0755 ./tmpfiles /tmp/tmpfiles.d/tmpfiles
+
+sed -i -e 's|/usr/lib/tmpfiles.d|/tmp/tmpfiles.d|' /tmp/tmpfiles.d/tmpfiles
+sed -i -e 's|/etc/tmpfiles.d|/tmp/tmpfiles.d|'     /tmp/tmpfiles.d/tmpfiles
+
+# prepare test cases
+install -m 0644 /dev/null /tmp/tmpfiles.d/tmpfiles.conf
+
+install -m 0644 /dev/null /tmp/tmpfiles.d/testf4
+install -m 0644 /dev/null /tmp/tmpfiles.d/testF4
+install -m 0644 /dev/null /tmp/tmpfiles.d/testw1
+install -d -m 0755        /tmp/tmpfiles.d/testd1
+install -d -m 0755        /tmp/tmpfiles.d/testD1/directory
+install -m 0644 /dev/null /tmp/tmpfiles.d/testD1/file
+install -d -m 0755        /tmp/tmpfiles.d/teste1
+install -d -m 0755        /tmp/tmpfiles.d/teste2
+install -m 0644 /dev/null /tmp/tmpfiles.d/testp1
+install -m 0644 /dev/null /tmp/tmpfiles.d/testp1+
+install -m 0644 /dev/null /tmp/tmpfiles.d/testL1
+install -m 0644 /dev/null /tmp/tmpfiles.d/testL1+
+install -m 0644 /dev/null /tmp/tmpfiles.d/testc1
+install -m 0644 /dev/null /tmp/tmpfiles.d/testc1+
+install -m 0644 /dev/null /tmp/tmpfiles.d/testb1
+install -m 0644 /dev/null /tmp/tmpfiles.d/testb1+
+install -d -m 0755        /tmp/tmpfiles.d/testC1/x/y/z
+install -d -m 0755        /tmp/tmpfiles.d/testC2
+install -m 0644 /dev/null /tmp/tmpfiles.d/testr1
+install -d -m 0755        /tmp/tmpfiles.d/testr2
+install -d -m 0755        /tmp/tmpfiles.d/testR1/x/y/z
+install -m 0644 /dev/null /tmp/tmpfiles.d/testz1
+install -d -m 0755        /tmp/tmpfiles.d/testz2
+
+echo 'f /tmp/tmpfiles.d/testf1'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'f /tmp/tmpfiles.d/testf2 - - - - -'                                       >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'f /tmp/tmpfiles.d/testf3 0600 nobody nobody 1d "hello world"'             >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'f /tmp/tmpfiles.d/testf4 - - - - "not overwritten"'                       >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'F /tmp/tmpfiles.d/testF1'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'F /tmp/tmpfiles.d/testF2 - - - - -'                                       >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'F /tmp/tmpfiles.d/testF3 0600 nobody nobody 1d "hello world"'             >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'F /tmp/tmpfiles.d/testF4 - - - - "overwritten"'                           >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'w /tmp/tmpfiles.d/testw1 - - - - "overwritten"'                           >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'w /tmp/tmpfiles.d/testw1 - - - - "hello\\tworld"'                         >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'w /tmp/tmpfiles.d/testw2 - - - - "not written"'                           >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'd /tmp/tmpfiles.d/testd1 0700 nobody nobody'                              >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'd /tmp/tmpfiles.d/testd2'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'd /tmp/tmpfiles.d/testd3 0700 nobody nobody'                              >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'D /tmp/tmpfiles.d/testD1 0700 nobody nobody'                              >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'D /tmp/tmpfiles.d/testD2'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'D /tmp/tmpfiles.d/testD3 0700 nobody nobody'                              >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'e /tmp/tmpfiles.d/teste1 0700 - nobody'                                   >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'e /tmp/tmpfiles.d/teste2 0777'                                            >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'e /tmp/tmpfiles.d/teste3 0777'                                            >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'p /tmp/tmpfiles.d/testp1'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'p /tmp/tmpfiles.d/testp2'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'p /tmp/tmpfiles.d/testp3 - - - - -'                                       >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'p /tmp/tmpfiles.d/testp4 0600 nobody nobody'                              >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'p+ /tmp/tmpfiles.d/testp1+'                                               >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'p+ /tmp/tmpfiles.d/testp2+'                                               >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'p+ /tmp/tmpfiles.d/testp3+ - - - - -'                                     >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'p+ /tmp/tmpfiles.d/testp4+ 0600 nobody nobody'                            >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'L /tmp/tmpfiles.d/testL1 - - - - "/tmp/tmpfiles.d/testf1"'                >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'L /tmp/tmpfiles.d/testL2 - - - - "/tmp/tmpfiles.d/testf2"'                >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'L+ /tmp/tmpfiles.d/testL1+ - - - - "/tmp/tmpfiles.d/testf1"'              >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'L+ /tmp/tmpfiles.d/testL2+ - - - - "/tmp/tmpfiles.d/testf2"'              >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'c /tmp/tmpfiles.d/testc1 - - - - "1:1"'                                   >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'c /tmp/tmpfiles.d/testc2 - - - - "2:2"'                                   >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'c /tmp/tmpfiles.d/testc3 0600 nobody nobody - "3:3"'                      >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'c+ /tmp/tmpfiles.d/testc1+ - - - - "1:1"'                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'c+ /tmp/tmpfiles.d/testc2+ - - - - "2:2"'                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'c+ /tmp/tmpfiles.d/testc3+ 0600 nobody nobody - "3:3"'                    >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'b /tmp/tmpfiles.d/testb1 - - - - "1:1"'                                   >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'b /tmp/tmpfiles.d/testb2 - - - - "2:2"'                                   >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'b /tmp/tmpfiles.d/testb3 0600 nobody nobody - "3:3"'                      >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'b+ /tmp/tmpfiles.d/testb1+ - - - - "1:1"'                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'b+ /tmp/tmpfiles.d/testb2+ - - - - "2:2"'                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'b+ /tmp/tmpfiles.d/testb3+ 0600 nobody nobody - "3:3"'                    >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'C /tmp/tmpfiles.d/testC2 - - - - "/tmp/tmpfiles.d/testC1"'                >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'C /tmp/tmpfiles.d/testC3 - - - - "/tmp/tmpfiles.d/testC1"'                >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'r /tmp/tmpfiles.d/testr1'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'r /tmp/tmpfiles.d/testr2'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'R /tmp/tmpfiles.d/testR1'                                                 >> /tmp/tmpfiles.d/tmpfiles.conf
+
+echo 'z /tmp/tmpfiles.d/testz1 0600 nobody nobody'                              >> /tmp/tmpfiles.d/tmpfiles.conf
+echo 'z /tmp/tmpfiles.d/testz2 0700 - -'                                        >> /tmp/tmpfiles.d/tmpfiles.conf
+
+# run test cases
+/tmp/tmpfiles.d/tmpfiles # --remove

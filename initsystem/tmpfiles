@@ -207,10 +207,10 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
         ;;
 
       "c")
-        if [ ! -e "${PTH}" ]; then
-          MAJOR=$(echo "${ARG}" | cut -d ':' -f 1)
-          MINOR=$(echo "${ARG}" | cut -d ':' -f 2)
+        MAJOR=$(echo "${ARG}" | cut -d ':' -f 1)
+        MINOR=$(echo "${ARG}" | cut -d ':' -f 2)
 
+        if [ ! -e "${PTH}" ]; then
           set_default_permissions_file
           mknod -m "${MOD}" "${PTH}" c "${MAJOR}" "${MINOR}"
           chown "${UID}:${GID}" "${PTH}"
@@ -228,10 +228,10 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
         ;;
 
       "b")
-        if [ ! -e "${PTH}" ]; then
-          MAJOR=$(echo "${ARG}" | cut -d ':' -f 1)
-          MINOR=$(echo "${ARG}" | cut -d ':' -f 2)
+        MAJOR=$(echo "${ARG}" | cut -d ':' -f 1)
+        MINOR=$(echo "${ARG}" | cut -d ':' -f 2)
 
+        if [ ! -e "${PTH}" ]; then
           set_default_permissions_file
           mknod -m "${MOD}" "${PTH}" b "${MAJOR}" "${MINOR}"
           chown "${UID}:${GID}" "${PTH}"
