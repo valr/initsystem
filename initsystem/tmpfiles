@@ -91,7 +91,7 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
   [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
   [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
 
-  grep -E -v "^[[:blank:]]*(#|$)" "${IFILE}" | while read LINE; do
+  grep -v "^[[:blank:]]*#" "${IFILE}" | while read LINE; do
 
     TYP=""; PTH=""; MOD=""; UID=""; GID=""; AGE=""; ARG=""
 
@@ -136,14 +136,16 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
 
       "f")
         if [ ! -e "${PTH}" ]; then
-          echo -n "${ARG}" > "${PTH}"
+          > "${PTH}"
+          [ "${ARG}" ] && echo "${ARG}" > "${PTH}"
           set_default_permissions_file
           set_permissions
         fi
         ;;
 
       "F")
-        echo -n "${ARG}" > "${PTH}"
+        > "${PTH}"
+        [ "${ARG}" ] && echo "${ARG}" > "${PTH}"
         set_default_permissions_file
         set_permissions
         ;;
@@ -284,13 +286,8 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
       # "t"|"T")
       # ;;
 
-      "h")
-        chattr "${ARG}" "${PTH}"
-        ;;
-
-      "H")
-        chattr -R "${ARG}" "${PTH}"
-        ;;
+      "h") chattr "${ARG}" "${PTH}" ;;
+      "H") chattr -R "${ARG}" "${PTH}" ;;
 
       # "a"|"a+"|"A"|"A+")
       # ;;

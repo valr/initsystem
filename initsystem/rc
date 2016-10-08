@@ -104,7 +104,7 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
   [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
   [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
 
-  grep -E -v "^[[:blank:]]*(#|;|$)" "${IFILE}" | while read -r MOD; do
+  grep -E -v "^[[:blank:]]*(#|;)" "${IFILE}" | while read -r MOD; do
     modprobe "${MOD}"
   done
 done
