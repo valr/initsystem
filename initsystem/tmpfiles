@@ -136,16 +136,14 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
 
       "f")
         if [ ! -e "${PTH}" ]; then
-          > "${PTH}"
-          [ "${ARG}" ] && echo "${ARG}" > "${PTH}"
+          > "${PTH}"; [ "${ARG}" ] && echo "${ARG}" > "${PTH}"
           set_default_permissions_file
           set_permissions
         fi
         ;;
 
       "F")
-        > "${PTH}"
-        [ "${ARG}" ] && echo "${ARG}" > "${PTH}"
+        > "${PTH}"; [ "${ARG}" ] && echo "${ARG}" > "${PTH}"
         set_default_permissions_file
         set_permissions
         ;;
