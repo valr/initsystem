@@ -25,11 +25,11 @@ umask 022
 . /etc/rc.subr
 
 start() {
-  /usr/bin/tlp init start
+  PATH=/usr/bin /usr/bin/tlp init start
 }
 
 stop() {
-  /usr/bin/tlp init stop
+  PATH=/usr/bin /usr/bin/tlp init stop
 }
 
 restart() {
