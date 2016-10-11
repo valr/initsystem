@@ -17,7 +17,7 @@ source=('lsinitramfs'
 md5sums=('30d47a90609e7766ad9da76f539c6b07'
          '0da08f58d3e89aa8bb3627529ee5a528'
          '6cf6ed5d84bf49942d54c42c39b5cb7d'
-         '0750631f5e759bc776ff0a5deb7e3795'
+         '5ae693cc8340469ec2ddc5cf0c1a5ff4'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {

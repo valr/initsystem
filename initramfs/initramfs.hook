@@ -3,6 +3,7 @@ Operation = Install
 Operation = Upgrade
 Type = File
 Target = etc/mkinitcpio.d/*.preset
+Target = usr/lib/firmware/*
 
 [Trigger]
 Operation = Install
