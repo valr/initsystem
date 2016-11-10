@@ -58,12 +58,12 @@ pacman -U \
   --logfile  "${ROOT}"/var/log/pacman.log \
   --noconfirm \
   --noscriptlet \
-  ../busybox/busybox-1.24.2-2-x86_64.pkg.tar.xz \
+  ../busybox/busybox-1.25.1-1-x86_64.pkg.tar.xz \
   ../initramfs/initramfs-1.1.0-1-any.pkg.tar.xz \
   ../initsystem/initsystem-1.1.0-1-x86_64.pkg.tar.xz \
   ../services/services-1.0.0-1-any.pkg.tar.xz
 
-cp -f ../busybox/busybox-1.24.2-2-x86_64.pkg.tar.xz "${ROOT}"/root
+cp -f ../busybox/busybox-1.25.1-1-x86_64.pkg.tar.xz "${ROOT}"/root
 cp -f ../initramfs/initramfs-1.1.0-1-any.pkg.tar.xz "${ROOT}"/root
 cp -f ../initsystem/initsystem-1.1.0-1-x86_64.pkg.tar.xz "${ROOT}"/root
 cp -f ../services/services-1.0.0-1-any.pkg.tar.xz "${ROOT}"/root

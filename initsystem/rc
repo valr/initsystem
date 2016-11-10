@@ -76,7 +76,11 @@ hwclock -t -u
 
 echo "initscript: setting volatile and temporary files"
 
-/usr/bin/tmpfiles --prefix=/dev
+if [ -x /usr/bin/systemd-tmpfiles ]; then
+  /usr/bin/systemd-tmpfiles --prefix=/dev --create --boot
+elif [ -x /usr/bin/tmpfiles ]; then
+  /usr/bin/tmpfiles --prefix=/dev
+fi
 
 ################################################################################
 # devices ######################################################################
@@ -84,10 +88,10 @@ echo "initscript: setting volatile and temporary files"
 
 echo "initscript: starting devices handler"
 
-if [ -x /usr/bin/udevd ]; then
-  /etc/rc.d/eudev start
-elif [ -x /usr/lib/systemd/systemd-udevd ]; then
+if [ -x /usr/lib/systemd/systemd-udevd ]; then
   /etc/rc.d/udev start
+elif [ -x /usr/bin/udevd ]; then
+  /etc/rc.d/eudev start
 fi
 
 ################################################################################
@@ -180,7 +184,12 @@ dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs="${POOL_SIZE}" 1>/dev/null 2>/
 
 echo "initscript: setting volatile and temporary files"
 
-/usr/bin/tmpfiles --exclude-prefix=/dev
+if [ -x /usr/bin/systemd-tmpfiles ]; then
+  /usr/bin/systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
+elif [ -x /usr/bin/tmpfiles ]; then
+  /usr/bin/tmpfiles --exclude-prefix=/dev
+fi
+
 rm -f /run/nologin
 
 ################################################################################
