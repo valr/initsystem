@@ -13,7 +13,7 @@ source=("$url/downloads/$pkgname-$pkgver.tar.bz2"
         # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch
 md5sums=('bb59d25ee2643db20f212eec539429f1'
          'caf6c6764e145e93f44321dbaa92a117'
-         'a501699a7c2d20076a84b22a97cdace6')
+         '9b4723d9fbdc5338602146dc3bc0d091')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
