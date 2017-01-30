@@ -1,10 +1,10 @@
-# $Id: PKGBUILD 278501 2016-10-12 16:54:26Z heftig $
+# $Id: PKGBUILD 284407 2016-12-21 23:43:57Z heftig $
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgbase=gvfs
 pkgname=(gvfs gvfs-{smb,afc,gphoto2,goa,mtp,nfs,google})
-pkgver=1.30.1
-pkgrel=2
+pkgver=1.30.3
+pkgrel=1
 pkgdesc="Virtual filesystem implementation for GIO"
 url="https://wiki.gnome.org/Projects/gvfs"
 arch=(i686 x86_64)
@@ -14,8 +14,8 @@ depends=(avahi dconf fuse libarchive libcdio-paranoia libsoup udisks2 libsecret
 makedepends=(dbus intltool libgphoto2 libimobiledevice smbclient docbook-xsl
              gtk3 libmtp gnome-online-accounts libnfs libgdata git gtk-doc python)
 groups=(gnome)
-_commit=0467de697398bd66e063848e64bf83ef01f5ae5f  # tags/1.30.1^0
-source=("git://git.gnome.org/gvfs#commit=$_commit"
+_commit=a2d150392fb454b953e0a9707bc5b3de75d7f0e1  # tags/1.30.3^0
+source=("git+https://git.gnome.org/browse/gvfs#commit=$_commit"
         gvfsd.hook)
 sha256sums=('SKIP'
             '478b9cf7b4c242959fc640dbf0cd4935f16c59b81f5828a3af102d608d7a9d72')
