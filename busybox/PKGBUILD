@@ -1,8 +1,8 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=busybox
-pkgver=1.25.1
-pkgrel=1
+pkgver=1.26.2
+pkgrel=2
 pkgdesc='utilities for rescue and embedded systems'
 arch=('i686' 'x86_64')
 url='http://www.busybox.net/'
@@ -10,10 +10,10 @@ license=('GPL')
 source=("$url/downloads/$pkgname-$pkgver.tar.bz2"
         'config_nosuid'
         'config_suid')
-       # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch
-md5sums=('4f4c5de50b479b11ff636d7d8eb902a2'
-         'ea407ac0ce99fb2954b2eba14324ebdb'
-         '6978dc3585e36ceebcd086b2b8f70d4b')
+        # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch
+md5sums=('bb59d25ee2643db20f212eec539429f1'
+         'caf6c6764e145e93f44321dbaa92a117'
+         'a501699a7c2d20076a84b22a97cdace6')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
