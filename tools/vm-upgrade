@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 set -u
 
-if [ `id -u` -ne 0 ]; then
+if [ $(id -u) -ne 0 ]; then
   echo "error: this script should be run as root"
   exit 1
 fi
