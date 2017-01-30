@@ -1,0 +1,15 @@
+polkit.addRule(function(action, subject) {
+    if (
+         (  action.id == 'org.freedesktop.login1.set-wall-message'
+         || action.id == 'org.freedesktop.login1.reboot'
+         || action.id == 'org.freedesktop.login1.power-off'
+         || action.id == 'org.freedesktop.login1.reboot-multiple-sessions'
+         || action.id == 'org.freedesktop.login1.reboot-ignore-inhibit'
+         || action.id == 'org.freedesktop.systemd1.manage-units'
+         )
+         && subject.isInGroup("adm")
+       )
+    {
+        return polkit.Result.YES;
+    }
+});
