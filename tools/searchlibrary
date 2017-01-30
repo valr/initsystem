@@ -3,16 +3,16 @@
 export LC_ALL=C
 
 searchfile() {
-  LIBRARY=`readelf -d "$2" 2>/dev/null | grep library | grep "$1" | cut -d ':' -f 2 | tr -d '[]' | tr -d ' '`
+  LIBRARY=$(readelf -d "$2" 2>/dev/null | grep library | grep "$1" | cut -d ':' -f 2 | tr -d '[]' | tr -d ' ')
 
   if [ "${LIBRARY}" -a "${LIBRARY}" != "" ]; then
-    PACKAGE=`pkgfile "$2"`
-    echo "library ${LIBRARY} contained in file $2 contained in package ${PACKAGE}"
+    PACKAGE=$(pkgfile "$2")
+    echo "library ${LIBRARY} used by file $2 contained in package ${PACKAGE}"
   fi
 }
 
 searchdirectory() {
-  for FILE in `find "$1" -type f`; do
+  for FILE in $(find "$1" -type f); do
     searchfile "$2" "${FILE}"
   done
 }
@@ -22,17 +22,17 @@ case $# in
     echo ""
     echo "scanning for $1 in /usr/bin"
     echo ""
-    searchdirectory "/usr/bin" "$1" | sort -k2 | column -t
+    searchdirectory "/usr/bin" "$1" | sort -k2 | column -t -o ' '
 
     echo ""
     echo "scanning for $1 in /usr/lib"
     echo ""
-    searchdirectory "/usr/lib" "$1" | sort -k2 | column -t
+    searchdirectory "/usr/lib" "$1" | sort -k2 | column -t -o ' '
 
     echo ""
     echo "scanning for $1 in /usr/lib32"
     echo ""
-    searchdirectory "/usr/lib32" "$1" | sort -k2 | column -t
+    searchdirectory "/usr/lib32" "$1" | sort -k2 | column -t -o ' '
     ;;
   2)
     searchfile "$1" "$2"
