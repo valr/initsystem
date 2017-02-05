@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2016 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2017 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,10 +18,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
-LC_ALL=C
-
-export PATH LC_ALL
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export LC_ALL=C
 
 cd /
 umask 022
@@ -40,10 +38,10 @@ fi
 ################################################################################
 
 reboot_system() {
-  echo "initramfs: rebooting in 7 seconds"
+  echo "initramfs: rebooting in 10 seconds"
 
-  killall5 -TERM; sleep 4
-  killall5 -KILL; sleep 3
+  killall5 -TERM; sleep 5
+  killall5 -KILL; sleep 5
 
   umount -a -r
   reboot -f
@@ -52,15 +50,39 @@ reboot_system() {
 rescue_shell() {
   echo "initramfs: loading keymap"
 
-  if [ -f /etc/keymap ]; then
-    loadkmap < /etc/keymap
-  fi
+  loadkmap < /etc/keymap
 
   echo "initramfs: dropping to rescue shell"
-  echo "initramfs: 'setsid cttyhack sh' to get a controlling terminal"
+  echo "initramfs: type 'setsid cttyhack ash' to get a controlling terminal"
+  echo "initramfs: type 'exit' to reboot the system"
 
   sulogin /dev/console
   reboot_system
+}
+
+wait_filesystem() {
+  for i in $(seq $2); do
+    if [ -e "$(findfs "$1")" ]; then
+      return
+    fi
+
+    sleep .25
+  done
+
+  echo "initramfs: timeout reached"
+  rescue_shell
+}
+
+check_fsck() {
+  if [ $(( $1 & 2 )) -eq 2 ]; then
+    echo "initramfs: system will be rebooted due to fsck error(s) $1"
+    reboot_system
+  fi
+
+  if [ $(( $1 | 33 )) -ne 33 ]; then
+    echo "initramfs: fsck error(s) $1"
+    rescue_shell
+  fi
 }
 
 ################################################################################
@@ -93,26 +115,19 @@ for COMMAND in $(cat /proc/cmdline); do
       INIT="${COMMAND#init=}"
       ;;
     root=*)
+      # root=/dev/xxx or root=UUID=xxx or root=LABEL=xxx
       ROOT="${COMMAND#root=}"
-      ;;
-    rootfstype=*)
-      TYPE="${COMMAND#rootfstype=}"
       ;;
   esac
 done
 
 if [ -z "${INIT}" ]; then
-  echo "initramfs: using default /sbin/init"
+  echo "initramfs: using default init=/sbin/init"
   INIT="/sbin/init"
 fi
 
 if [ -z "${ROOT}" ]; then
-  echo "initramfs: missing root=the_device (e.g. /dev/sda1) on kernel command line"
-  rescue_shell
-fi
-
-if [ -z "${TYPE}" ]; then
-  echo "initramfs: missing rootfstype=the_filesystem_type (e.g. ext4) on kernel command line"
+  echo "initramfs: missing root filesystem"
   rescue_shell
 fi
 
@@ -130,11 +145,9 @@ hwclock -t -u
 
 echo "initramfs: loading modules"
 
-if [ -f /etc/modules ]; then
-  while IFS= read -r MODULE; do
-    modprobe "${MODULE}"
-  done < /etc/modules
-fi
+while IFS= read -r MODULE; do
+  modprobe "${MODULE}"
+done < /etc/modules
 
 ################################################################################
 # pre-mount break ##############################################################
@@ -149,50 +162,27 @@ fi
 # filesystems ##################################################################
 ################################################################################
 
-wait_filesystem() {
-  for i in $(seq $2); do
-    if [ -e "$1" ]; then
-      return 0
-    fi
-
-    sleep .25
-  done
-
-  return 1
-}
-
-echo "initramfs: waiting for root filesystem"
+echo "initramfs: waiting for root filesystem ${ROOT}"
 
 wait_filesystem "${ROOT}" 240
 
-if [ $? -ne 0 ]; then
-  echo "initramfs: timeout reached for ${ROOT}"
-  rescue_shell
-fi
+ROOT="$(findfs "${ROOT}")" # get the filesystem device
+eval $(blkid "${ROOT}" | awk '{print $NF}') # get the filesystem type
 
-echo "initramfs: checking root filesystem"
+echo "initramfs: checking root filesystem ${ROOT} (${TYPE})"
 
 touch /etc/fstab
 ln -s /proc/self/mounts /etc/mtab
 
-fsck -T -t "${TYPE}" "${ROOT}"; STATUS=$?
-
-if [ $STATUS -ne 0 ] && [ $STATUS -ne 1 ] && [ $STATUS -ne 32 ]; then
-  echo "initramfs: fsck error ${STATUS} encountered on ${ROOT}"
-
-  if [ $STATUS -eq 2 ]; then
-    reboot_system
-  fi
-
-  rescue_shell
-fi
+fsck -T -t "${TYPE}" "${ROOT}"
+check_fsck $?
 
 echo "initramfs: mounting root filesystem read-only"
 
 mount -r -t "${TYPE}" "${ROOT}" /newroot
 
 if [ $? -ne 0 ]; then
-  echo "initramfs: cannot mount ${ROOT} with type ${TYPE}"
+  echo "initramfs: cannot mount root filesystem"
   rescue_shell
 fi
 
@@ -200,17 +190,8 @@ echo "initramfs: checking other filesystems"
 
 cp -f /newroot/etc/fstab /etc/fstab
 
-fsck -T -A -R; STATUS=$?
-
-if [ $STATUS -ne 0 ] && [ $STATUS -ne 1 ] && [ $STATUS -ne 32 ]; then
-  echo "initramfs: fsck error ${STATUS} encountered"
-
-  if [ $STATUS -eq 2 ]; then
-    reboot_system
-  fi
-
-  rescue_shell
-fi
+fsck -T -A -R
+check_fsck $?
 
 ################################################################################
 # post-mount break #############################################################
@@ -225,10 +206,10 @@ fi
 # init #########################################################################
 ################################################################################
 
-echo "initramfs: checking init"
+echo "initramfs: checking init program ${INIT}"
 
 if [ ! -x /newroot/"${INIT}" ]; then
-  echo "initramfs: init program ${INIT} doesn't exist or is not executable"
+  echo "initramfs: init program doesn't exist or is not executable"
   rescue_shell
 fi
 
@@ -253,6 +234,6 @@ echo "initramfs: switching root filesystem"
 
 exec env -i /bin/switch_root /newroot "${INIT}"
 
-echo "initramfs: cannot switch to /newroot and execute ${INIT}"
+echo "initramfs: cannot switch root filesystem and execute init program"
 
 rescue_shell

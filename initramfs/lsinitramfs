@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2015-2016 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2015-2017 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,10 +22,8 @@
 # gunzip initramfs-linux.cpio.gz
 # busybox cpio -i -d -H newc -F initramfs-linux.cpio
 
-PATH=/opt/busybox
-LC_ALL=C
-
-export PATH LC_ALL
+export PATH=/opt/busybox
+export LC_ALL=C
 
 while [ $# -gt 0 ]; do
   gunzip -c "$1" | cpio -it 2>/dev/null | sort

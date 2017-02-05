@@ -1,7 +1,7 @@
 [Trigger]
+Type = File
 Operation = Install
 Operation = Upgrade
-Type = File
 Target = etc/mkinitcpio.d/*.preset
 Target = usr/lib/firmware/*
 
@@ -13,8 +13,9 @@ Target = busybox
 Target = dosfstools
 Target = e2fsprogs
 Target = initramfs
+Target = mkinitcpio
 
 [Action]
 Description = Rebuilding initramfs
-Exec = /bin/bash -c 'for PRESET in /etc/mkinitcpio.d/*.preset; do mkinitramfs $(basename "${PRESET}" .preset); done'
 When = PostTransaction
+Exec = /bin/bash -c 'for PRESET in /etc/mkinitcpio.d/*.preset; do mkinitramfs $(basename "${PRESET}" .preset); done'
