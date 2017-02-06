@@ -175,7 +175,6 @@ for FILE in $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".img); do
   esac
 done
 
-sed -i '/^\s*$/d' "${BASE}"/etc/modules
 depmod -b "${BASE}" "${VERSION}"
 
 for OPTION in /etc/modprobe.d/*.conf /lib/modprobe.d/*.conf; do
