@@ -1,7 +1,7 @@
 /*
  * This file is part of initsystem
  *
- * Copyright (C) 2014-2016 Valère Monseur (valere dot monseur at ymail dot com)
+ * Copyright (C) 2014-2017 Valère Monseur (valere dot monseur at ymail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,10 @@
  * Both the initscript and the shutdown script have a timeout period of
  * 5 minutes.
  *
- * When the initscript reaches the timeout period, the rest of the process will
- * simply continue i.e. respawn processes are started.
+ * If the initscript reaches the timeout period, the rest of the process will
+ * continue i.e. respawn processes are started.
  *
- * When the shutdown script reaches the timeout period, the status of the
+ * If the shutdown script reaches the timeout period, the status of the
  * shutdown process is reset as if it was not executed i.e. respawn processes
  * are (re)started.
  */
@@ -170,7 +170,7 @@ int main (int argc, char **argv)
         return EXIT_FAILURE;
 
     reboot (RB_DISABLE_CAD);
-    putenv ("PATH=/sbin:/bin:/usr/sbin:/usr/bin");
+    putenv ("PATH=/bin:/sbin:/usr/bin:/usr/sbin");
     setsid ();
     umask (S_IRWXG|S_IRWXO);
     chdir ("/");

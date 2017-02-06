@@ -1,6 +1,6 @@
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2016 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2017 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ pwait() {
 
 pidwait() {
   for i in $(seq $2); do
-    kill -CONT $1 1>/dev/null 2>/dev/null
+    kill -CONT "$1" 1>/dev/null 2>/dev/null
 
     if [ $? -ne 0 ]; then
       return 0
@@ -63,8 +63,7 @@ pidfile() {
     return 1
   fi
 
-  PID=0
-  read -r PID 2>/dev/null <"$1"
+  PID=0; read -r PID 2>/dev/null <"$1"
   CMD=$(strings /proc/${PID}/cmdline 2>/dev/null | head -n 1)
 
   if [ "${CMD}" != "$2" ]; then
@@ -75,8 +74,8 @@ pidfile() {
 }
 
 rc_run() {
-  for SRV in $1; do
-    if [ "${SRV}" = "$2" ]; then
+  for CMD in $1; do
+    if [ "${CMD}" = "$2" ]; then
       "$2"; STATUS=$?
 
       if [ "$2" != "status" -a $STATUS -ne 0 ]; then

@@ -1,7 +1,7 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=initsystem
-pkgver=1.1.0
+pkgver=1.2.0
 pkgrel=1
 pkgdesc='an init system'
 url='https://github.com/valr/initsystem'
@@ -12,8 +12,8 @@ optdepends=('eudev: replaces udev from systemd')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 install='initsystem.install'
 source=('init-og.c'
-        'rc.conf'
         'rc'
+        'rc.conf'
         'rc.local'
         'rc.respawn'
         'rc.shutdown'
@@ -22,15 +22,15 @@ source=('init-og.c'
         'shutdown'
         'tmpfiles'
         'LICENSE')
-md5sums=('59205da903f0ed1d32ed32fcfed498cf'
-         'c2204cbe9137bfe5842ae6a515847394'
-         'b4411a9148847f2f7b8083604bceeb53'
-         'd21512ddfd60b3f15f54f04a120a8e86'
-         '10e17beee700ee7ec9cebe188bf6e241'
-         'f70868b51c8fcc45c88edb57d6d34a99'
-         '9779378412f0772b64ee5c01eaf99684'
-         '9764f1cccb6a891bdedafba7f3e8841f'
-         '4d156389c1e51bcfa12088cc7c14a7bd'
+md5sums=('b3cf734052c09ec4b558a3454e31e571'
+         '145748f0d236195cd384f5d429fd64ca'
+         '369e8e643b2aa27cea8e2c6ed456a1d8'
+         'f7d069d93eaf70b58e73fe83502755ac'
+         '7f266b0c053da7561499e635ed0f7c14'
+         '7a70d10fc788bd065079aaf91988ca8c'
+         'eb9604938eb06d6c4f512dabcbbdb607'
+         '114de2fa76a968d9827c8070c2fa3abb'
+         'ceb7d8724fadc3d350b50164121c7b88'
          '1967c02f5b3053fa8d59e9489c3572a7'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
@@ -41,7 +41,6 @@ build() {
 }
 
 package() {
-
   # directories
 
   install -d -m 755 "${pkgdir}"/etc/rc.d
