@@ -148,20 +148,27 @@ echo "shutdown: syncing filesystems"
 
 sync; sleep 1
 
+echo "shutdown: unmounting swap-backed filesystems"
+
+cat /proc/self/mounts | cut -d ' ' -f 2,3 | sort -r -k1,1 | \
+while read -r MOUNT TYPE; do
+  case "${MOUNT}" in
+    /|/proc|/sys|/run|/dev|/dev/pts) ;;
+    *) [ "${TYPE}" = 'tmpfs' ] && umount -r "${MOUNT}" ;;
+  esac
+done
+
 echo "shutdown: deactivating swap"
 
 swapoff -a
 
 echo "shutdown: unmounting filesystems"
 
-MOUNTS=$(tac /proc/self/mounts | cut -d ' ' -f 2)
-for MOUNT in ${MOUNTS}; do
+cat /proc/self/mounts | cut -d ' ' -f 2 | sort -r | \
+while read -r MOUNT; do
   case "${MOUNT}" in
-    /|/proc|/sys|/run|/dev|/dev/pts|/dev/shm)
-      ;;
-    *)
-      umount -r -l "${MOUNT}"
-      ;;
+    /|/proc|/sys|/run|/dev|/dev/pts) ;;
+    *) umount -r "${MOUNT}" ;;
   esac
 done
 
