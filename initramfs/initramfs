@@ -103,10 +103,10 @@ mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts
 
 echo "initramfs: start logging"
 
-mkfifo /dev/.bootlog
-tee /dev/kmsg < /dev/.bootlog &
-exec 3>&1 4>&2 &> /dev/.bootlog
-rm /dev/.bootlog
+mkfifo /tmp/bootlog
+tee /dev/kmsg < /tmp/bootlog &
+exec 3>&1 4>&2 &> /tmp/bootlog
+rm /tmp/bootlog
 
 ################################################################################
 # kernel command line ##########################################################
