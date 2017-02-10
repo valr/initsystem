@@ -101,6 +101,17 @@ mkdir -p /dev/shm
 mount -t tmpfs -o nosuid,nodev shm /dev/shm
 
 ################################################################################
+# start logging ################################################################
+################################################################################
+
+echo "initramfs: start logging"
+
+mkfifo /dev/.bootlog
+tee /dev/kmsg < /dev/.bootlog &
+exec 3>&1 4>&2 &> /dev/.bootlog
+rm /dev/.bootlog
+
+################################################################################
 # kernel command line ##########################################################
 ################################################################################
 
@@ -174,7 +185,7 @@ echo "initramfs: checking root filesystem ${ROOT} (${TYPE})"
 touch /etc/fstab
 ln -s /proc/self/mounts /etc/mtab
 
-fsck -T -t "${TYPE}" "${ROOT}"
+fsck -T -t "${TYPE}" "${ROOT}" 1>&3
 check_fsck $?
 
 echo "initramfs: mounting root filesystem read-only"
@@ -190,7 +201,7 @@ echo "initramfs: checking other filesystems"
 
 cp -f /newroot/etc/fstab /etc/fstab
 
-fsck -T -A -R
+fsck -T -A -R 1>&3
 check_fsck $?
 
 ################################################################################
@@ -212,6 +223,14 @@ if [ ! -x /newroot/"${INIT}" ]; then
   echo "initramfs: init program doesn't exist or is not executable"
   rescue_shell
 fi
+
+################################################################################
+# stop logging #################################################################
+################################################################################
+
+echo "initramfs: stop logging"
+
+exec 1>&3 2>&4 3>&- 4>&-
 
 ################################################################################
 # in-memory filesystems ########################################################
