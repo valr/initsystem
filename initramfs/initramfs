@@ -101,7 +101,7 @@ mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts
 # start logging ################################################################
 ################################################################################
 
-echo "initramfs: start logging"
+echo "initramfs: logging started"
 
 mkfifo /tmp/bootlog
 tee /dev/kmsg < /tmp/bootlog &
@@ -225,7 +225,7 @@ fi
 # stop logging #################################################################
 ################################################################################
 
-echo "initramfs: stop logging"
+echo "initramfs: logging stopped"
 
 exec 1>&3 2>&4 3>&- 4>&-
 
