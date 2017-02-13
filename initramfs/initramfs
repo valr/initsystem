@@ -98,17 +98,6 @@ mkdir -p /dev/pts
 mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts
 
 ################################################################################
-# start logging ################################################################
-################################################################################
-
-echo "initramfs: logging started"
-
-mkfifo /tmp/bootlog
-tee /dev/kmsg < /tmp/bootlog &
-exec 3>&1 4>&2 &> /tmp/bootlog
-rm /tmp/bootlog
-
-################################################################################
 # kernel command line ##########################################################
 ################################################################################
 
@@ -182,7 +171,7 @@ echo "initramfs: checking root filesystem ${ROOT} (${TYPE})"
 touch /etc/fstab
 ln -s /proc/self/mounts /etc/mtab
 
-fsck -T -t "${TYPE}" "${ROOT}" 1>&3
+fsck -T -t "${TYPE}" "${ROOT}"
 check_fsck $?
 
 echo "initramfs: mounting root filesystem read-only"
@@ -198,7 +187,7 @@ echo "initramfs: checking other filesystems"
 
 cp -f /newroot/etc/fstab /etc/fstab
 
-fsck -T -A -R 1>&3
+fsck -T -A -R
 check_fsck $?
 
 ################################################################################
@@ -220,14 +209,6 @@ if [ ! -x /newroot/"${INIT}" ]; then
   echo "initramfs: init program doesn't exist or is not executable"
   rescue_shell
 fi
-
-################################################################################
-# stop logging #################################################################
-################################################################################
-
-echo "initramfs: logging stopped"
-
-exec 1>&3 2>&4 3>&- 4>&-
 
 ################################################################################
 # in-memory filesystems ########################################################
