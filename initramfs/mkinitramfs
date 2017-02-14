@@ -40,14 +40,14 @@ fi
 # parameters ###################################################################
 ################################################################################
 
-LINUX="$1"
+LINUX=$1
 
-if [ ! -e /etc/mkinitcpio.d/"${LINUX}".preset ]; then
-  echo "mkinitramfs: ${LINUX} is not a .preset file in /etc/mkinitcpio.d/"
+if [ ! -e /etc/mkinitcpio.d/$LINUX.preset ]; then
+  echo "mkinitramfs: $LINUX is not a .preset file in /etc/mkinitcpio.d"
   exit 1
 fi
 
-echo ">>> generating /boot/initramfs-${LINUX}.cpio.gz <<<"
+echo ">>> generating /boot/initramfs-$LINUX.cpio.gz <<<"
 
 ################################################################################
 # base directory ###############################################################
@@ -55,14 +55,14 @@ echo ">>> generating /boot/initramfs-${LINUX}.cpio.gz <<<"
 
 echo "mkinitramfs: creating temporary base directory"
 
-BASE="$(mktemp -d /tmp/initramfs.XXXXXX)"
+BASE=$(mktemp -d /tmp/initramfs.XXXXXX)
 
 if [ $? -ne 0 ]; then
   echo "mkinitramfs: cannot create temporary base directory"
   exit 1
 fi
 
-trap 'rm -rf "${BASE}"; echo "mkinitramfs: an error has occurred, aborting!"; exit 1' INT TERM EXIT
+trap 'rm -rf $BASE; echo "mkinitramfs: an error has occurred, aborting!"; exit 1' INT TERM EXIT
 
 ################################################################################
 # directory structure ##########################################################
@@ -72,7 +72,7 @@ echo "mkinitramfs: installing directory structure"
 
 for DIRECTORY in bin dev etc etc/modprobe.d lib lib64 mnt newroot proc root \
                  run sbin sys tmp usr usr/bin usr/lib usr/lib64 usr/sbin var; do
-  install -d -m755 "${BASE}/${DIRECTORY}"
+  install -d -m755 $BASE/$DIRECTORY
 done
 
 ################################################################################
@@ -81,19 +81,19 @@ done
 
 echo "mkinitramfs: installing configuration files"
 
-echo "root:x:0:0:root:/root:/bin/ash" > "${BASE}"/etc/passwd
+echo "root:x:0:0:root:/root:/bin/ash" > $BASE/etc/passwd
 
-echo "root:x:0:root" > "${BASE}"/etc/group
-echo "tty:x:5:" >> "${BASE}"/etc/group
+echo "root:x:0:root" > $BASE/etc/group
+echo "tty:x:5:" >> $BASE/etc/group
 
 umask 077
-grep "^root:" /etc/shadow > "${BASE}"/etc/shadow
+grep '^root:' /etc/shadow > $BASE/etc/shadow
 umask 022
 
-dumpkmap > "${BASE}"/etc/keymap
+dumpkmap > $BASE/etc/keymap
 
-install -m644 /dev/null "${BASE}"/etc/ld.so.conf
-install -m644 /etc/localtime "${BASE}"/etc/localtime
+install -m644 /dev/null $BASE/etc/ld.so.conf
+install -m644 /etc/localtime $BASE/etc/localtime
 
 ################################################################################
 # statically linked binaries ###################################################
@@ -101,12 +101,12 @@ install -m644 /etc/localtime "${BASE}"/etc/localtime
 
 echo "mkinitramfs: installing statically linked binaries"
 
-install -m755 /usr/bin/busybox "${BASE}"/usr/bin/busybox
-install -m4755 /usr/bin/busybox-suid "${BASE}"/usr/bin/busybox-suid
+install -m755 /usr/bin/busybox $BASE/usr/bin/busybox
+install -m4755 /usr/bin/busybox-suid $BASE/usr/bin/busybox-suid
 
 for BINARY in /usr/bin/busybox /usr/bin/busybox-suid; do
-  for APPLET in $("${BASE}/${BINARY}" --list); do
-    ln -s "${BINARY}" "${BASE}/bin/${APPLET}"
+  for APPLET in $($BASE/$BINARY --list); do
+    ln -s $BINARY $BASE/bin/$APPLET
   done
 done
 
@@ -117,68 +117,74 @@ done
 echo "mkinitramfs: installing dynamically linked binaries"
 
 add_binary() {
-  FILE="$(readlink -f "$1")"
+  FILE=$(readlink -f $1)
 
-  if [ ! -e "${BASE}/${FILE}" ]; then
-    install -D "${FILE}" "${BASE}/${FILE}"
+  if [ ! -e $BASE/$FILE ]; then
+    install -D $FILE $BASE/$FILE
   fi
 
-  if [ "${FILE}" != "$1" ]; then
-    if [ ! -L "${BASE}/$1" ]; then
-      ln -s "${FILE}" "${BASE}/$1"
+  if [ $FILE != $1 ]; then
+    if [ ! -L $BASE/$1 ]; then
+      ln -s $FILE $BASE/$1
     fi
   fi
 }
 
 add_binaries() {
-  add_binary "$1"
+  add_binary $1
 
-  for BINARY in $(/usr/bin/ldd "$1" | grep -v "linux-vdso.so.1" | awk '{print $(NF-1)}'); do
-    add_binary "${BINARY}"
+  for BINARY in $(/usr/bin/ldd $1 | grep -v 'linux-vdso.so.1' | awk '{print $(NF-1)}'); do
+    add_binary $BINARY
   done
 }
 
 for FILESYSTEM in ext2 ext3 ext4 fat vfat msdos; do
-  add_binaries /usr/bin/fsck."${FILESYSTEM}"
+  add_binaries /usr/bin/fsck.$FILESYSTEM
 done
 
-/usr/bin/ldconfig -r "${BASE}" -f /etc/ld.so.conf -C /etc/ld.so.cache
+/usr/bin/ldconfig -r $BASE -f /etc/ld.so.conf -C /etc/ld.so.cache
 
 ################################################################################
 # modules and firmwares ########################################################
 ################################################################################
 
-VERSION="$(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".img | grep -m 1 "usr/lib/modules/" | awk -F / '{print $4}')"
+VERSION=$(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.img | grep -m 1 'usr/lib/modules/' | awk -F / '{print $4}')
 
 echo "mkinitramfs: installing kernel modules and firmwares ($VERSION)"
 
 add_module() {
-  REGEXP="$(basename "$1" | sed 's/[-_]/[\\-_]/g')"
-  MODULES="$(grep "/${REGEXP}.*:" "/usr/lib/modules/${VERSION}/modules.dep" | tr -d ':')"
+  REGEXP=$(basename $1 | sed 's/[-_]/[\\-_]/g')
+  MODULES=$(grep "/${REGEXP}.*:" /usr/lib/modules/$VERSION/modules.dep)
 
   for MODULE in $MODULES; do
-    install -D -m644 "/usr/lib/modules/${VERSION}/${MODULE}" "${BASE}/lib/modules/${VERSION}/${MODULE}"
-    basename "${MODULE}" >> "${BASE}"/etc/modules
+    case $MODULE in
+      *:)
+        MODULE=${MODULE%:}
+        basename $MODULE >> $BASE/etc/modules
+        ;;
+    esac
+
+    install -D -m644 /usr/lib/modules/$VERSION/$MODULE $BASE/lib/modules/$VERSION/$MODULE
   done
 }
 
 add_firmware() {
-  if [ ! -d "$1" ]; then
-    install -D "$1" "${BASE}/$1"
+  if [ ! -d $1 ]; then
+    install -D $1 $BASE/$1
   fi
 }
 
-for FILE in $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".img); do
-  case "${FILE}" in
-    "usr/lib/modules/"*.ko*) add_module "${FILE}" ;;
-    "usr/lib/firmware/"*) add_firmware "${FILE#usr}" ;;
+for FILE in $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.img); do
+  case $FILE in
+    usr/lib/modules/*.ko*) add_module $FILE ;;
+    usr/lib/firmware/*) add_firmware ${FILE#usr} ;;
   esac
 done
 
-depmod -b "${BASE}" "${VERSION}"
+depmod -b $BASE $VERSION
 
 for OPTION in /etc/modprobe.d/*.conf /lib/modprobe.d/*.conf; do
-  install -m644 "${OPTION}" "${BASE}"/etc/modprobe.d
+  install -m644 $OPTION $BASE/etc/modprobe.d
 done
 
 ################################################################################
@@ -187,7 +193,7 @@ done
 
 echo "mkinitramfs: installing initscript"
 
-install -m755 /usr/lib/initramfs/initramfs "${BASE}"/init
+install -m755 /usr/lib/initramfs/initramfs $BASE/init
 
 ################################################################################
 # initramfs ####################################################################
@@ -195,30 +201,30 @@ install -m755 /usr/lib/initramfs/initramfs "${BASE}"/init
 
 echo "mkinitramfs: generating initramfs archive"
 
-cd "${BASE}"
+cd $BASE
 
 umask 077
-find . | cpio -o -H newc | gzip > /tmp/initramfs-"${LINUX}".cpio.gz
+find . | cpio -o -H newc | gzip > /tmp/initramfs-$LINUX.cpio.gz
 umask 022
 
 cd ..
 
 echo "mkinitramfs: installing initramfs archive"
 
-install -m600 /tmp/initramfs-"${LINUX}".cpio.gz /boot/initramfs-"${LINUX}".cpio.gz
+install -m600 /tmp/initramfs-$LINUX.cpio.gz /boot/initramfs-$LINUX.cpio.gz
 
 echo "mkinitramfs: cleaning temporary files"
 
-rm -f /tmp/initramfs-"${LINUX}".cpio.gz
-rm -rf "${BASE}"
+rm -f /tmp/initramfs-$LINUX.cpio.gz
+rm -rf $BASE
 
 echo "mkinitramfs: listing summary of initramfs archive"
 
-echo "configuration files $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E -c '^(etc)')"
-echo "binaries $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E -c '^(bin|sbin|usr/bin|usr/sbin)')"
-echo "libraries $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E '^(lib|lib64|usr/lib|usr/lib64)' | grep -v -E -c '^lib/(firmware|modules)')"
-echo "modules $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E -c '^(lib/modules)')"
-echo "firmwares $(/usr/bin/lsinitramfs /boot/initramfs-"${LINUX}".cpio.gz | grep -E -c '^(lib/firmware)')"
+echo "configuration files $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E -c '^(etc)')"
+echo "binaries $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E -c '^(bin|sbin|usr/bin|usr/sbin)')"
+echo "libraries $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E '^(lib|lib64|usr/lib|usr/lib64)' | grep -v -E -c '^lib/(firmware|modules)')"
+echo "modules $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E -c '^(lib/modules)')"
+echo "firmwares $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E -c '^(lib/firmware)')"
 
 echo ">>> generation done <<<"
 
