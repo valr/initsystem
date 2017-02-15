@@ -230,3 +230,5 @@ echo ">>> generation done <<<"
 
 trap - INT TERM EXIT
 exit 0
+
+# vim: set filetype=sh:

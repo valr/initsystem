@@ -232,3 +232,5 @@ exec env -i /bin/switch_root /newroot $INIT
 echo "initramfs: cannot switch root filesystem and execute init program"
 
 rescue_shell
+
+# vim: set filetype=sh:

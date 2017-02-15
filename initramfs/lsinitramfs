@@ -29,3 +29,5 @@ while [ $# -gt 0 ]; do
   gunzip -c "$1" | cpio -it 2>/dev/null | sort
   shift
 done
+
+# vim: set filetype=sh:
