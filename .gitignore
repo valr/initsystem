@@ -7,3 +7,5 @@
 *.tar.sign
 *.tar.xz
 *.tar.xz.asc
+*.patch
+*.pkg.tar.xz
