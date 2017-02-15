@@ -297,3 +297,5 @@ for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> 
     esac
   done
 done
+
+# vim: set filetype=sh:

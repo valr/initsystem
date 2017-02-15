@@ -197,3 +197,5 @@ esac
 
 echo "error: unexpected shutdown condition, halting now"
 /usr/bin/busybox halt -f
+
+# vim: set filetype=sh:

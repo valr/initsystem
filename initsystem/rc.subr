@@ -70,6 +70,7 @@ pidfile() {
     return 2
   fi
 
+  echo "${PID}"
   return 0
 }
 
@@ -89,3 +90,5 @@ rc_run() {
   echo "usage: $(basename $0) {${1// /|}}"
   return 1
 }
+
+# vim: set filetype=sh:

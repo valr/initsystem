@@ -16,3 +16,5 @@ post_install() {
 post_upgrade() {
   reexec_init
 }
+
+# vim: set filetype=sh:

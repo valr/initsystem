@@ -75,3 +75,5 @@ package() {
 
   install -D -m 644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
+
+# vim: set filetype=sh:

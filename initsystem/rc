@@ -235,3 +235,5 @@ done
 echo "initscript: starting local script"
 
 . /etc/rc.local
+
+# vim: set filetype=sh:

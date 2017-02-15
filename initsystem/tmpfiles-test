@@ -114,3 +114,5 @@ echo 'z /tmp/tmpfiles.d/testz2 0700 - -'                                        
 
 # run test cases
 /tmp/tmpfiles.d/tmpfiles # --remove
+
+# vim: set filetype=sh:

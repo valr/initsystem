@@ -56,3 +56,5 @@ case $(basename "$0") in
 esac
 
 exit 0
+
+# vim: set filetype=sh:
