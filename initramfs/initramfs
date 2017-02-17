@@ -118,6 +118,10 @@ for COMMAND in $(cat /proc/cmdline); do
   esac
 done
 
+if [ -z $BREAK ]; then
+  BREAK="nobreak"
+fi
+
 if [ -z $INIT ]; then
   echo "initramfs: using default init=/sbin/init"
   INIT=/sbin/init
