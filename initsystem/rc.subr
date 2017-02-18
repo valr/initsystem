@@ -32,9 +32,13 @@ pwait() {
 
 pidwait() {
   for i in $(seq $2); do
-    kill -CONT "$1" 1>/dev/null 2>/dev/null
+    STATUS=0
 
-    if [ $? -ne 0 ]; then
+    for PID in $1; do
+      kill -CONT $PID 1>/dev/null 2>/dev/null && STATUS=1
+    done
+
+    if [ STATUS -eq 0 ]; then
       return 0
     fi
 
