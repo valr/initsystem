@@ -232,7 +232,7 @@ done
 # local script #################################################################
 ################################################################################
 
-echo "initscript: starting local script"
+echo "initscript: running local script"
 
 . /etc/rc.local
 

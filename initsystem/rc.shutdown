@@ -62,7 +62,7 @@ fi
 # local script #################################################################
 ################################################################################
 
-echo "shutdown: starting local shutdown script"
+echo "shutdown: running local shutdown script"
 
 . /etc/rc.shutdown.local
 
