@@ -34,12 +34,12 @@ fi
 # shutdown #####################################################################
 ################################################################################
 
-case $(basename "$0") in
+case $(basename $0) in
   halt)     kill -USR2 1 ;;
   poweroff) kill -TERM 1 ;;
   reboot)   kill -USR1 1 ;;
   shutdown)
-    case "$1" in
+    case $1 in
       -h) kill -USR2 1 ;;
       -p) kill -TERM 1 ;;
       -r) kill -USR1 1 ;;
@@ -54,7 +54,6 @@ case $(basename "$0") in
     exit 1
     ;;
 esac
-
 exit 0
 
 # vim: set filetype=sh:

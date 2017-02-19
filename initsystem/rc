@@ -56,8 +56,8 @@ mount -t tmpfs -o nosuid,nodev shm /dev/shm
 
 echo "initscript: setting hostname"
 
-if [ "${HOSTNAME}" ]; then
-  hostname "${HOSTNAME}"
+if [ $HOSTNAME ]; then
+  hostname $HOSTNAME
 fi
 
 ################################################################################
@@ -98,17 +98,17 @@ fi
 
 echo "initscript: loading modules"
 
-DIR1="/etc/modules-load.d"
-DIR2="/usr/lib/modules-load.d"
+DIR1=/etc/modules-load.d
+DIR2=/usr/lib/modules-load.d
 
-for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
+for FILE in $(find $DIR1 $DIR2 -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
 
-  [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
-  [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
+  [ -r $DIR2/$FILE ] && IFILE=$DIR2/$FILE
+  [ -r $DIR1/$FILE ] && IFILE=$DIR1/$FILE
 
-  grep -v '^[[:space:]]*$' "${IFILE}" | grep -E -v "^[[:space:]]*(#|;)" | \
-  while read -r MOD; do
-    modprobe "${MOD}"
+  grep -v '^[[:space:]]*$' $IFILE | grep -E -v '^[[:space:]]*(#|;)' | \
+  while read -r MODULE; do
+    modprobe $MODULE
   done
 done
 
@@ -118,13 +118,13 @@ done
 
 echo "initscript: setting console keymap and font"
 
-if [ "${CONSOLE_KEYMAP}" ]; then
-  /usr/bin/loadkeys "${CONSOLE_KEYMAP}"
+if [ $CONSOLE_KEYMAP ]; then
+  /usr/bin/loadkeys $CONSOLE_KEYMAP
 fi
 
-if [ "${CONSOLE_FONT}" ]; then
+if [ $CONSOLE_FONT ]; then
   for TTY in /dev/tty[0-9]*; do
-    /usr/bin/setfont "${CONSOLE_FONT}" -C "${TTY}" 1>/dev/null 2>/dev/null
+    /usr/bin/setfont $CONSOLE_FONT -C $TTY 1>/dev/null 2>/dev/null
   done
 fi
 
@@ -159,23 +159,23 @@ echo "initscript: initializing random number generator"
 
 RANDOM_SEED=/var/lib/misc/random-seed
 
-if [ -f "${RANDOM_SEED}" ]; then
-  cat "${RANDOM_SEED}" > /dev/urandom
+if [ -r $RANDOM_SEED ]; then
+  cat $RANDOM_SEED > /dev/urandom
 else
-  touch "${RANDOM_SEED}"
+  touch $RANDOM_SEED
 fi
 
-chmod 600 "${RANDOM_SEED}"
+chmod 600 $RANDOM_SEED
 
 POOL_FILE=/proc/sys/kernel/random/poolsize
 
-if [ -r "${POOL_FILE}" ]; then
-  POOL_SIZE=$(cat "${POOL_FILE}")
+if [ -r $POOL_FILE ]; then
+  POOL_SIZE=$(cat $POOL_FILE)
 else
   POOL_SIZE=512
 fi
 
-dd if=/dev/urandom of="${RANDOM_SEED}" count=1 bs="${POOL_SIZE}" 1>/dev/null 2>/dev/null
+dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
 
 ################################################################################
 # volatile and temporary files #################################################
@@ -197,15 +197,15 @@ rm -f /run/nologin
 
 echo "initscript: setting kernel parameters"
 
-DIR1="/etc/sysctl.d"
-DIR2="/usr/lib/sysctl.d"
+DIR1=/etc/sysctl.d
+DIR2=/usr/lib/sysctl.d
 
-for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
+for FILE in $(find $DIR1 $DIR2 -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
 
-  [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
-  [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
+  [ -r $DIR2/$FILE ] && IFILE=$DIR2/$FILE
+  [ -r $DIR1/$FILE ] && IFILE=$DIR1/$FILE
 
-  sysctl -q -p "${IFILE}"
+  sysctl -q -p $IFILE
 done
 
 ################################################################################
@@ -224,8 +224,8 @@ umask 022
 
 echo "initscript: starting services"
 
-for SERVICE in ${SERVICES}; do
-  /etc/rc.d/"${SERVICE}" start
+for SERVICE in $SERVICES; do
+  /etc/rc.d/$SERVICE start
 done
 
 ################################################################################
