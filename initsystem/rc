@@ -102,7 +102,7 @@ DIR1=/etc/modules-load.d
 DIR2=/run/modules-load.d
 DIR3=/usr/lib/modules-load.d
 
-for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
+for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/dev/null | sort -u); do
 
   [ -r $DIR3/$FILE ] && IFILE=$DIR3/$FILE
   [ -r $DIR2/$FILE ] && IFILE=$DIR2/$FILE
@@ -203,7 +203,7 @@ DIR1=/etc/sysctl.d
 DIR2=/run/sysctl.d
 DIR3=/usr/lib/sysctl.d
 
-for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
+for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/dev/null | sort -u); do
 
   [ -r $DIR3/$FILE ] && IFILE=$DIR3/$FILE
   [ -r $DIR2/$FILE ] && IFILE=$DIR2/$FILE

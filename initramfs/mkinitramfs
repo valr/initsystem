@@ -187,7 +187,7 @@ DIR1=/etc/modprobe.d
 DIR2=/run/modprobe.d
 DIR3=/lib/modprobe.d
 
-for OPTION in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -print 2> /dev/null); do
+for OPTION in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -print 2>/dev/null); do
   install -m644 $OPTION $BASE/etc/modprobe.d
 done
 
