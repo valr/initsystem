@@ -83,13 +83,15 @@ set_permissions_recursively() {
 # process tmpfiles #############################################################
 ################################################################################
 
-DIR1="/usr/lib/tmpfiles.d"
-DIR2="/etc/tmpfiles.d"
+DIR1="/etc/tmpfiles.d"
+DIR2="/run/tmpfiles.d"
+DIR3="/usr/lib/tmpfiles.d"
 
-for FILE in $(find "${DIR1}" "${DIR2}" -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
+for FILE in $(find "${DIR1}" "${DIR2}" "${DIR3}" -name '*.conf' -exec basename '{}' \; 2> /dev/null | sort -u); do
 
-  [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
+  [ -r "${DIR3}/${FILE}" ] && IFILE="${DIR3}/${FILE}"
   [ -r "${DIR2}/${FILE}" ] && IFILE="${DIR2}/${FILE}"
+  [ -r "${DIR1}/${FILE}" ] && IFILE="${DIR1}/${FILE}"
 
   grep -v '^[[:blank:]]*#' "${IFILE}" | while read LINE; do
 
