@@ -2,28 +2,28 @@
 
 _udev_ver=220
 pkgname=eudev
-pkgver=3.2
+pkgver=3.2.2
 pkgrel=1
-pkgdesc='userspace device manager'
+pkgdesc='device manager in userspace'
 url='https://wiki.gentoo.org/wiki/Project:Eudev'
-license=('GPL')
+license=('GPL2')
 arch=('i686' 'x86_64')
 backup=('etc/udev/udev.conf')
-depends=('glib2' 'btrfs-progs' 'kmod' 'util-linux')
+depends=('glib2' 'kmod' 'util-linux')
+optdepends=('btrfs-progs: btrfs utilities for eudev rules')
 makedepends=('gobject-introspection' 'gperf')
 provides=('systemd' 'libsystemd' "udev=${_udev_ver}" "libudev=${_udev_ver}" 'libudev.so')
 conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
-options=(!makeflags !libtool)
 source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
         'initcpio_hooks'
         'initcpio_install'
         'udev-hwdb.hook')
-md5sums=('7e42d9b9ed8162021665139520676367'
+md5sums=('41e19b70462692fefd072a3f38818b6e'
          'SKIP'
          'e7bbe35b79cddd7c82bf201f6297722d'
-         '46f3f81bbd7b9ab6638dc84e188eb06f'
+         'a0c0f1ed7e0daa95a04690b396f4b260'
          '7fce0d7c0ecace6c34e44fe6e24470ee')
 
 build() {
@@ -36,8 +36,6 @@ build() {
     --libdir=/usr/lib \
     --enable-split-usr \
     --enable-introspection \
-    --enable-manpages \
-    --enable-kmod \
     --enable-hwdb \
     --with-rootprefix=/usr
 
