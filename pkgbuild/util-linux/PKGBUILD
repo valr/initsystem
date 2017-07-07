@@ -1,4 +1,4 @@
-# $Id: PKGBUILD 287860 2017-01-31 15:47:40Z dreisner $
+# $Id$
 # Maintainer: Tom Gundersen <teg@jklm.no>
 # Maintainer: Dave Reisner <dreisner@archlinux.org>
 # Contributor: judd <jvinet@zeroflux.org>
@@ -6,8 +6,8 @@
 pkgbase=util-linux
 pkgname=(util-linux libutil-linux)
 _pkgmajor=2.29
-pkgver=${_pkgmajor}.1
-pkgrel=1
+pkgver=${_pkgmajor}.2
+pkgrel=2
 pkgdesc="Miscellaneous system utilities for Linux"
 url="https://www.kernel.org/pub/linux/utils/util-linux/"
 arch=('i686' 'x86_64')
@@ -17,12 +17,14 @@ options=('strip' 'debug')
 validpgpkeys=('B0C64D14301CC6EFAEDF60E4E4B71D5EEC39C284')  # Karel Zak
 source=("https://www.kernel.org/pub/linux/utils/util-linux/v$_pkgmajor/$pkgbase-$pkgver.tar."{xz,sign}
         pam-{login,common,su}
+        'util-linux.sysusers'
         '0001-sfdisk-support-empty-label-use-case.patch')
-md5sums=('0cbb6d16ab9c5736e5649ef1264bee6e'
+md5sums=('63c40c2068fcbb7e1d5c1d281115d973'
          'SKIP'
          '4368b3f98abd8a32662e094c54e7f9b1'
          'a31374fef2cba0ca34dfc7078e2969e4'
          'fa85e5cce5d723275b14365ba71a8aad'
+         'dfc9904f67ebc54bb347ca3cc430ef2b'
          '6d2e3915124938577f0ff18ef701c87f')
 
 prepare() {
@@ -78,6 +80,9 @@ package_util-linux() {
   install -m644 "$srcdir/pam-su" "$pkgdir/etc/pam.d/su"
   install -m644 "$srcdir/pam-su" "$pkgdir/etc/pam.d/su-l"
 
+  # TODO(dreisner): offer this upstream?
+  # sed -i '/ListenStream/ aRuntimeDirectory=uuidd' "$pkgdir/usr/lib/systemd/system/uuidd.socket"
+
   # adjust for usrmove
   # TODO(dreisner): fix configure.ac upstream so that this isn't needed
   cd "$pkgdir"
@@ -92,6 +97,10 @@ package_util-linux() {
     "$pkgdir"/usr/bin/tailf \
     "$pkgdir"/usr/share/bash-completion/completions/tailf \
     "$pkgdir"/usr/share/man/man1/tailf.1
+
+  ### install systemd-sysusers
+  install -Dm644 "$srcdir/util-linux.sysusers" \
+    "$pkgdir/usr/lib/sysusers.d/util-linux.conf"
 }
 
 package_libutil-linux() {
