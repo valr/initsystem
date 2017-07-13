@@ -1,0 +1,20 @@
+# Maintainer: valr <valere dot monseur at ymail dot com>
+
+pkgname=opentmpfiles
+pkgver=0.1.3
+pkgrel=1
+pkgdesc='a standalone utility for handling systemd-style tmpfiles.d settings'
+url='https://github.com/OpenRC/opentmpfiles'
+license=('BSD')
+groups=('initsystem')
+arch=('any')
+depends=('bash')
+source=("${pkgname}-${pkgver}::https://github.com/OpenRC/${pkgname}/archive/${pkgver}.tar.gz")
+md5sums=('7e49d14fb3398303e4b62da3916f4693')
+
+package() {
+  cd "${pkgname}-${pkgver}"
+
+  make bindir=/usr/bin DESTDIR="${pkgdir}" install
+  install -D -m644 "${srcdir}/${pkgname}-${pkgver}/license" "${pkgdir}"/usr/share/licenses/"${pkgname}"/license
+}

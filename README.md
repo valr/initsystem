@@ -9,6 +9,7 @@ Installation
 Build and install the following packages:
 
 - busybox
+- opentmpfiles
 - initramfs
 - initsystem
 - eudev (optional: removes systemd & libsystemd and replaces udev components from systemd)
