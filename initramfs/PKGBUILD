@@ -22,11 +22,11 @@ md5sums=('e3fbb7be1fcebefdf8a5ba4f73556fa2'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
-  install -D -m 755 "$srcdir"/lsinitramfs    "$pkgdir"/usr/bin/lsinitramfs
-  install -D -m 755 "$srcdir"/mkinitramfs    "$pkgdir"/usr/bin/mkinitramfs
-  install -D -m 755 "$srcdir"/initramfs      "$pkgdir"/usr/lib/initramfs/initramfs
-  install -D -m 644 "$srcdir"/initramfs.hook "$pkgdir"/usr/share/libalpm/hooks/99-zinitramfs.hook
-  install -D -m 644 "$srcdir"/LICENSE        "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+  install -D -m 755 "${srcdir}"/lsinitramfs    "${pkgdir}"/usr/bin/lsinitramfs
+  install -D -m 755 "${srcdir}"/mkinitramfs    "${pkgdir}"/usr/bin/mkinitramfs
+  install -D -m 755 "${srcdir}"/initramfs      "${pkgdir}"/usr/lib/initramfs/initramfs
+  install -D -m 644 "${srcdir}"/initramfs.hook "${pkgdir}"/usr/share/libalpm/hooks/99-zinitramfs.hook
+  install -D -m 644 "${srcdir}"/LICENSE        "${pkgdir}"/usr/share/licenses/$pkgname/LICENSE
 }
 
 # vim: set filetype=sh:

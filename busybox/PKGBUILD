@@ -8,7 +8,7 @@ url='http://www.busybox.net/'
 license=('GPL')
 arch=('i686' 'x86_64')
 groups=('initsystem')
-source=("$url/downloads/$pkgname-$pkgver.tar.bz2"
+source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
         'config_suid')
         # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch

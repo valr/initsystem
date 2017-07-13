@@ -16,5 +16,7 @@ package() {
   cd "${pkgname}-${pkgver}"
 
   make bindir=/usr/bin DESTDIR="${pkgdir}" install
-  install -D -m644 "${srcdir}/${pkgname}-${pkgver}/license" "${pkgdir}"/usr/share/licenses/"${pkgname}"/license
+  install -D -m644 "${srcdir}/${pkgname}-${pkgver}"/license "${pkgdir}"/usr/share/licenses/"${pkgname}"/license
 }
+
+# vim: set filetype=sh:
