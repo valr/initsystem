@@ -74,10 +74,10 @@ hwclock -t -u
 
 echo "initscript: setting volatile and temporary files"
 
-if [ -x /usr/bin/systemd-tmpfiles ]; then
+if [ -x /usr/bin/tmpfiles ]; then
+  /usr/bin/tmpfiles --prefix=/dev --create --boot
+elif [ -x /usr/bin/systemd-tmpfiles ]; then
   /usr/bin/systemd-tmpfiles --prefix=/dev --create --boot
-elif [ -x /usr/bin/tmpfiles ]; then
-  /usr/bin/tmpfiles --prefix=/dev
 fi
 
 ################################################################################
@@ -185,10 +185,10 @@ dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
 
 echo "initscript: setting volatile and temporary files"
 
-if [ -x /usr/bin/systemd-tmpfiles ]; then
+if [ -x /usr/bin/tmpfiles ]; then
+  /usr/bin/tmpfiles --exclude-prefix=/dev --create --remove --boot
+elif [ -x /usr/bin/systemd-tmpfiles ]; then
   /usr/bin/systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
-elif [ -x /usr/bin/tmpfiles ]; then
-  /usr/bin/tmpfiles --exclude-prefix=/dev
 fi
 
 rm -f /run/nologin

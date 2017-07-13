@@ -10,7 +10,7 @@ install='initsystem.install'
 groups=('initsystem')
 arch=('i686' 'x86_64')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
-depends=('busybox' 'kbd')
+depends=('busybox' 'kbd' 'initramfs' 'opentmpfiles')
 optdepends=('eudev: replaces udev from systemd')
 source=('init-og.c'
         'rc'
@@ -21,10 +21,9 @@ source=('init-og.c'
         'rc.shutdown.local'
         'rc.subr'
         'shutdown'
-        'tmpfiles'
         'LICENSE')
 md5sums=('b3cf734052c09ec4b558a3454e31e571'
-         'ed1faf6c19b0796fcb0aece63fd8bc50'
+         'd39beef8e1d920852d53fedadd936666'
          'f76446b0256c581469f32e1ccf5deeff'
          '1091e654c9d3cb79f6abdd321274ecd2'
          'fe478d0901f955ee8dc155e46c14c1ff'
@@ -32,7 +31,6 @@ md5sums=('b3cf734052c09ec4b558a3454e31e571'
          '112f6e0bd545836f9ca3eb7c9c6d7080'
          'cac47df743976a01d9c5bdcc0080f668'
          'b61a5a4850b11b2b79b0bee8b2b7eba8'
-         'df2b95ca5bf00d88b08a93bce751218d'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {
@@ -45,8 +43,6 @@ package() {
   # directories
 
   install -d -m 755 "${pkgdir}"/etc/rc.d
-  install -d -m 755 "${pkgdir}"/etc/tmpfiles.d
-  install -d -m 755 "${pkgdir}"/usr/lib/tmpfiles.d
 
   # configuration
 
@@ -62,7 +58,6 @@ package() {
   install -D -m 755 "${srcdir}"/rc.shutdown.local "${pkgdir}"/etc/rc.shutdown.local
   install -D -m 755 "${srcdir}"/rc.subr           "${pkgdir}"/etc/rc.subr
   install -D -m 755 "${srcdir}"/shutdown          "${pkgdir}"/usr/bin/shutdown
-  install -D -m 755 "${srcdir}"/tmpfiles          "${pkgdir}"/usr/bin/tmpfiles
 
   # symlinks
 

@@ -9,14 +9,18 @@ license=('BSD')
 groups=('initsystem')
 arch=('any')
 depends=('bash')
-source=("${pkgname}-${pkgver}::https://github.com/OpenRC/${pkgname}/archive/${pkgver}.tar.gz")
+source=(https://github.com/OpenRC/"${pkgname}"/archive/"${pkgver}".tar.gz)
 md5sums=('7e49d14fb3398303e4b62da3916f4693')
 
 package() {
   cd "${pkgname}-${pkgver}"
 
+  install -d -m 755 "${pkgdir}"/etc/tmpfiles.d
+  install -d -m 755 "${pkgdir}"/usr/lib/tmpfiles.d
+
   make bindir=/usr/bin DESTDIR="${pkgdir}" install
-  install -D -m644 "${srcdir}/${pkgname}-${pkgver}"/license "${pkgdir}"/usr/share/licenses/"${pkgname}"/license
+
+  install -D -m 644 "${srcdir}/${pkgname}-${pkgver}"/license "${pkgdir}"/usr/share/licenses/"${pkgname}"/license
 }
 
 # vim: set filetype=sh:
