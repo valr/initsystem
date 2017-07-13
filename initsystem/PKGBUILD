@@ -6,11 +6,12 @@ pkgrel=1
 pkgdesc='an init system'
 url='https://github.com/valr/initsystem'
 license=('GPL')
+install='initsystem.install'
+groups=('initsystem')
 arch=('i686' 'x86_64')
+backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 depends=('busybox' 'kbd')
 optdepends=('eudev: replaces udev from systemd')
-backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
-install='initsystem.install'
 source=('init-og.c'
         'rc'
         'rc.conf'

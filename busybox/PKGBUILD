@@ -4,9 +4,10 @@ pkgname=busybox
 pkgver=1.26.2
 pkgrel=2
 pkgdesc='utilities for rescue and embedded systems'
-arch=('i686' 'x86_64')
 url='http://www.busybox.net/'
 license=('GPL')
+arch=('i686' 'x86_64')
+groups=('initsystem')
 source=("$url/downloads/$pkgname-$pkgver.tar.bz2"
         'config_nosuid'
         'config_suid')
