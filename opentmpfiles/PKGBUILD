@@ -9,17 +9,20 @@ license=('BSD')
 groups=('initsystem')
 arch=('any')
 depends=('bash')
-source=(https://github.com/OpenRC/"${pkgname}"/archive/"${pkgver}".tar.gz)
-md5sums=('7e49d14fb3398303e4b62da3916f4693')
+source=(https://github.com/OpenRC/"${pkgname}"/archive/"${pkgver}".tar.gz
+        tmpfiles.hook)
+md5sums=('7e49d14fb3398303e4b62da3916f4693'
+         '9f7a09bf0773b29a413415e7d7587d35')
 
 package() {
   cd "${pkgname}-${pkgver}"
 
+  make bindir=/usr/bin DESTDIR="${pkgdir}" install
+
   install -d -m 755 "${pkgdir}"/etc/tmpfiles.d
   install -d -m 755 "${pkgdir}"/usr/lib/tmpfiles.d
 
-  make bindir=/usr/bin DESTDIR="${pkgdir}" install
-
+  install -D -m 644 "${srcdir}"/tmpfiles.hook "${pkgdir}"/usr/share/libalpm/hooks/tmpfiles.hook
   install -D -m 644 "${srcdir}/${pkgname}-${pkgver}"/license "${pkgdir}"/usr/share/licenses/"${pkgname}"/license
 }
 
