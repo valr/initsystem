@@ -51,16 +51,6 @@ mkdir -p /dev/shm
 mount -t tmpfs -o nosuid,nodev shm /dev/shm
 
 ################################################################################
-# hostname #####################################################################
-################################################################################
-
-echo "initscript: setting hostname"
-
-if [ $HOSTNAME ]; then
-  hostname $HOSTNAME
-fi
-
-################################################################################
 # hardware clock ###############################################################
 ################################################################################
 
@@ -69,15 +59,13 @@ echo "initscript: setting clock"
 hwclock -t -u
 
 ################################################################################
-# volatile and temporary files #################################################
+# hostname #####################################################################
 ################################################################################
 
-echo "initscript: setting volatile and temporary files"
+echo "initscript: setting hostname"
 
-if [ -x /usr/bin/tmpfiles ]; then
-  /usr/bin/tmpfiles --prefix=/dev --create --boot
-elif [ -x /usr/bin/systemd-tmpfiles ]; then
-  /usr/bin/systemd-tmpfiles --prefix=/dev --create --boot
+if [ $HOSTNAME ]; then
+  hostname $HOSTNAME
 fi
 
 ################################################################################
@@ -115,19 +103,18 @@ for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/de
 done
 
 ################################################################################
-# console ######################################################################
+# static, volatile and temporary devices #######################################
 ################################################################################
 
-echo "initscript: setting console keymap and font"
+echo "initscript: setting static, volatile and temporary devices"
 
-if [ $CONSOLE_KEYMAP ]; then
-  /usr/bin/loadkeys $CONSOLE_KEYMAP
-fi
+mkdir -p /run/tmpfiles.d
+/usr/bin/kmod static-nodes --format=tmpfiles --output=/run/tmpfiles.d/kmod.conf
 
-if [ $CONSOLE_FONT ]; then
-  for TTY in /dev/tty[0-9]*; do
-    /usr/bin/setfont $CONSOLE_FONT -C $TTY 1>/dev/null 2>/dev/null
-  done
+if [ -x /usr/bin/tmpfiles ]; then
+  /usr/bin/tmpfiles --prefix=/dev --create --boot
+elif [ -x /usr/bin/systemd-tmpfiles ]; then
+  /usr/bin/systemd-tmpfiles --prefix=/dev --create --boot
 fi
 
 ################################################################################
@@ -141,6 +128,25 @@ if [ -d /sys/class/net/lo ]; then
 fi
 
 ################################################################################
+# sysctl #######################################################################
+################################################################################
+
+echo "initscript: setting kernel parameters"
+
+DIR1=/etc/sysctl.d
+DIR2=/run/sysctl.d
+DIR3=/usr/lib/sysctl.d
+
+for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/dev/null | sort -u); do
+
+  [ -r $DIR3/$FILE ] && IFILE=$DIR3/$FILE
+  [ -r $DIR2/$FILE ] && IFILE=$DIR2/$FILE
+  [ -r $DIR1/$FILE ] && IFILE=$DIR1/$FILE
+
+  sysctl -q -p $IFILE
+done
+
+################################################################################
 # filesystems ##################################################################
 ################################################################################
 
@@ -152,6 +158,20 @@ mount -a
 echo "initscript: activating swap"
 
 swapon -a
+
+################################################################################
+# volatile and temporary files #################################################
+################################################################################
+
+echo "initscript: setting volatile and temporary files"
+
+if [ -x /usr/bin/tmpfiles ]; then
+  /usr/bin/tmpfiles --exclude-prefix=/dev --create --remove --boot
+elif [ -x /usr/bin/systemd-tmpfiles ]; then
+  /usr/bin/systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
+fi
+
+rm -f /run/nologin
 
 ################################################################################
 # random number generator ######################################################
@@ -180,49 +200,6 @@ fi
 dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
 
 ################################################################################
-# volatile and temporary files #################################################
-################################################################################
-
-echo "initscript: setting volatile and temporary files"
-
-if [ -x /usr/bin/tmpfiles ]; then
-  /usr/bin/tmpfiles --exclude-prefix=/dev --create --remove --boot
-elif [ -x /usr/bin/systemd-tmpfiles ]; then
-  /usr/bin/systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
-fi
-
-rm -f /run/nologin
-
-################################################################################
-# sysctl #######################################################################
-################################################################################
-
-echo "initscript: setting kernel parameters"
-
-DIR1=/etc/sysctl.d
-DIR2=/run/sysctl.d
-DIR3=/usr/lib/sysctl.d
-
-for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/dev/null | sort -u); do
-
-  [ -r $DIR3/$FILE ] && IFILE=$DIR3/$FILE
-  [ -r $DIR2/$FILE ] && IFILE=$DIR2/$FILE
-  [ -r $DIR1/$FILE ] && IFILE=$DIR1/$FILE
-
-  sysctl -q -p $IFILE
-done
-
-################################################################################
-# dmesg ########################################################################
-################################################################################
-
-echo "initscript: saving dmesg"
-
-umask 077
-dmesg > /var/log/dmesg
-umask 022
-
-################################################################################
 # services #####################################################################
 ################################################################################
 
@@ -233,11 +210,37 @@ for SERVICE in $SERVICES; do
 done
 
 ################################################################################
+# console ######################################################################
+################################################################################
+
+echo "initscript: setting console keymap and font"
+
+if [ $CONSOLE_KEYMAP ]; then
+  /usr/bin/loadkeys $CONSOLE_KEYMAP
+fi
+
+if [ $CONSOLE_FONT ]; then
+  for TTY in /dev/tty[0-9]*; do
+    /usr/bin/setfont $CONSOLE_FONT -C $TTY 1>/dev/null 2>/dev/null
+  done
+fi
+
+################################################################################
 # local script #################################################################
 ################################################################################
 
 echo "initscript: running local script"
 
 . /etc/rc.local
+
+################################################################################
+# dmesg ########################################################################
+################################################################################
+
+echo "initscript: saving dmesg"
+
+umask 077
+dmesg > /var/log/dmesg
+umask 022
 
 # vim: set filetype=sh:
