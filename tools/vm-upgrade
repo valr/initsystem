@@ -58,12 +58,12 @@ pacman -U \
   --logfile  "${ROOT}"/var/log/pacman.log \
   --noconfirm \
   --noscriptlet \
-  ../development/busybox/busybox-1.26.2-2-x86_64.pkg.tar.xz \
+  ../development/busybox/busybox-1.27.1-1-x86_64.pkg.tar.xz \
   ../development/initramfs/initramfs-1.2.0-1-any.pkg.tar.xz \
   ../development/initsystem/initsystem-1.2.0-1-x86_64.pkg.tar.xz \
   ../development/opentmpfiles/opentmpfiles-0.1.3-1-any.pkg.tar.xz
 
-cp -f ../development/busybox/busybox-1.26.2-2-x86_64.pkg.tar.xz "${ROOT}"/root
+cp -f ../development/busybox/busybox-1.27.1-1-x86_64.pkg.tar.xz "${ROOT}"/root
 cp -f ../development/eudev/eudev-3.2.2-1-x86_64.pkg.tar.xz "${ROOT}"/root
 cp -f ../development/initramfs/initramfs-1.2.0-1-any.pkg.tar.xz "${ROOT}"/root
 cp -f ../development/initsystem/initsystem-1.2.0-1-x86_64.pkg.tar.xz "${ROOT}"/root
