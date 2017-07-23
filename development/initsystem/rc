@@ -86,10 +86,10 @@ fi
 
 echo "initscript: starting devices manager"
 
-if [ -x /usr/lib/systemd/systemd-udevd ]; then
-  /etc/rc.d/udev start
-elif [ -x /usr/bin/udevd ]; then
+if [ -x /usr/bin/udevd ]; then
   /etc/rc.d/eudev start
+elif [ -x /usr/lib/systemd/systemd-udevd ]; then
+  /etc/rc.d/udev start
 fi
 
 ################################################################################

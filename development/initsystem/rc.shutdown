@@ -88,10 +88,10 @@ done
 
 echo "shutdown: stopping devices manager"
 
-if [ -x /usr/lib/systemd/systemd-udevd ]; then
-  /etc/rc.d/udev stop
-elif [ -x /usr/bin/udevd ]; then
+if [ -x /usr/bin/udevd ]; then
   /etc/rc.d/eudev stop
+elif [ -x /usr/lib/systemd/systemd-udevd ]; then
+  /etc/rc.d/udev stop
 fi
 
 ################################################################################
