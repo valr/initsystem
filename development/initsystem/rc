@@ -103,10 +103,10 @@ for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/de
 done
 
 ################################################################################
-# static, volatile and temporary devices #######################################
+# volatile and temporary devices ###############################################
 ################################################################################
 
-echo "initscript: setting static, volatile and temporary devices"
+echo "initscript: setting volatile and temporary devices"
 
 mkdir -p /run/tmpfiles.d
 /usr/bin/kmod static-nodes --format=tmpfiles --output=/run/tmpfiles.d/kmod.conf
@@ -118,7 +118,7 @@ elif [ -x /usr/bin/systemd-tmpfiles ]; then
 fi
 
 ################################################################################
-# loopback #####################################################################
+# loopback device ##############################################################
 ################################################################################
 
 echo "initscript: setting loopback device"
@@ -160,20 +160,6 @@ echo "initscript: activating swap"
 swapon -a
 
 ################################################################################
-# volatile and temporary files #################################################
-################################################################################
-
-echo "initscript: setting volatile and temporary files"
-
-if [ -x /usr/bin/tmpfiles ]; then
-  /usr/bin/tmpfiles --exclude-prefix=/dev --create --remove --boot
-elif [ -x /usr/bin/systemd-tmpfiles ]; then
-  /usr/bin/systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
-fi
-
-rm -f /run/nologin
-
-################################################################################
 # random number generator ######################################################
 ################################################################################
 
@@ -198,6 +184,20 @@ else
 fi
 
 dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
+
+################################################################################
+# volatile and temporary files #################################################
+################################################################################
+
+echo "initscript: setting volatile and temporary files"
+
+if [ -x /usr/bin/tmpfiles ]; then
+  /usr/bin/tmpfiles --exclude-prefix=/dev --create --remove --boot
+elif [ -x /usr/bin/systemd-tmpfiles ]; then
+  /usr/bin/systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
+fi
+
+rm -f /run/nologin
 
 ################################################################################
 # services #####################################################################
