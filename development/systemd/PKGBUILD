@@ -1,0 +1,61 @@
+# Maintainer: valr <valere dot monseur at ymail dot com>
+
+_repo=http://mir.archlinux.fr/core/os/x86_64
+
+pkgname='systemd'
+pkgver=234.11
+_pkgrel=1
+pkgrel=1
+pkgdesc='system and service manager'
+url='https://www.github.com/systemd/systemd'
+license=('GPL2')
+groups=('initsystem')
+arch=('any')
+depends=('eudev')
+provides=('systemd' 'libsystemd')
+conflicts=('systemd' 'libsystemd')
+replaces=('systemd' 'libsystemd')
+source=("${_repo}/systemd-${pkgver}-${_pkgrel}-x86_64.pkg.tar.xz"
+        "${_repo}/systemd-${pkgver}-${_pkgrel}-x86_64.pkg.tar.xz.sig"
+        'systemd-compare'
+        'systemd-compare-pre.hook'
+        'systemd-compare-post.hook')
+md5sums=('ca14af26738ef7bcb48cd82417a63c15'
+         'SKIP'
+         '82faaec37b6d9aea591c470b1b9a0dd4'
+         'a06c94ec7b1a2802ebb8d7f2b86ecd48'
+         'd4cd8fbed18cf41de43c77d720d81367')
+
+# The idea of this package is to keep required non binary files from the systemd
+# original package to avoid recreating and maintaining them by hand.
+
+package() {
+
+  # directories
+
+  install -d "${pkgdir}"/etc/modules-load.d/
+  install -d "${pkgdir}"/usr/lib/modules-load.d/
+
+  install -d "${pkgdir}"/etc/sysctl.d/
+  install -d "${pkgdir}"/usr/lib/sysctl.d/
+
+  install -d "${pkgdir}"/etc/tmpfiles.d/
+  install -d "${pkgdir}"/usr/lib/tmpfiles.d/
+
+  # files
+
+  mv "${srcdir}"/usr/lib/tmpfiles.d/etc.conf "${pkgdir}"/usr/lib/tmpfiles.d/etc.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/legacy.conf "${pkgdir}"/usr/lib/tmpfiles.d/legacy.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/var.conf "${pkgdir}"/usr/lib/tmpfiles.d/var.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/x11.conf "${pkgdir}"/usr/lib/tmpfiles.d/x11.conf
+
+  # directories that are followed up for changes using systemd-compare
+
+  install -d "${pkgdir}"/usr/lib/systemd/system
+  install -d "${pkgdir}"/usr/lib/systemd/user
+  install -d "${pkgdir}"/usr/lib/sysusers.d
+
+  install -D -m 755 "${srcdir}"/systemd-compare "${pkgdir}"/usr/share/libalpm/scripts/systemd-compare
+  install -D -m 644 "${srcdir}"/systemd-compare-pre.hook "${pkgdir}"/usr/share/libalpm/hooks/aaa-systemd-compare-pre.hook
+  install -D -m 644 "${srcdir}"/systemd-compare-post.hook "${pkgdir}"/usr/share/libalpm/hooks/zzz-systemd-compare-post.hook
+}

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+export LC_ALL=C
+export TMPDIR=/tmp/systemd-compare
+export SYSTEMDDIR="/usr/lib/systemd/system /usr/lib/systemd/user /usr/lib/sysusers.d"
+
+prepare_files() {
+  mkdir -p "$TMPDIR/$1/$2"
+  find "$2" -type f -readable -exec cp --parents '{}' "$TMPDIR/$1" \;
+}
+
+compare_files() {
+  diff -qr "$TMPDIR/$1" "$TMPDIR/$2" | \
+    sed "s|Only in $TMPDIR/$1|Removed  |;
+         s|Only in $TMPDIR/$2|Added    |;
+         s|: |/|;
+         s|Files $TMPDIR/$1|Modified |;
+         s| and .* differ||;"
+
+  return ${PIPESTATUS[0]}
+}
+
+case "$1" in
+  pre)
+    rm -rf "$TMPDIR"
+
+    for DIR in $SYSTEMDDIR; do
+      prepare_files pre "$DIR"
+    done
+    ;;
+  post)
+    for DIR in $SYSTEMDDIR; do
+      prepare_files post "$DIR"
+    done
+
+    compare_files pre post && rm -rf "$TMPDIR"
+    ;;
+  *)
+    echo "usage: $(basename $0) pre|post"
+    ;;
+esac
