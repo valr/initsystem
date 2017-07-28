@@ -54,7 +54,7 @@ pacman -U \
   --cachedir "${ROOT}"/var/cache/pacman/pkg/ \
   --config   "${ROOT}"/etc/pacman.conf \
   --gpgdir   "${ROOT}"/etc/pacman.d/gnupg/ \
-  --hookdir  "${ROOT}"/usr/share/libalpm/hooks/ \
+  --hookdir  "${ROOT}"/var/empty \
   --logfile  "${ROOT}"/var/log/pacman.log \
   --noconfirm \
   --noscriptlet \
