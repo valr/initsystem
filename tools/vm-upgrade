@@ -58,16 +58,13 @@ pacman -U \
   --logfile  "${ROOT}"/var/log/pacman.log \
   --noconfirm \
   --noscriptlet \
-  ../development/busybox/busybox-1.27.1-1-x86_64.pkg.tar.xz \
-  ../development/initramfs/initramfs-1.2.0-1-any.pkg.tar.xz \
-  ../development/initsystem/initsystem-1.2.0-1-x86_64.pkg.tar.xz \
-  ../development/opentmpfiles/opentmpfiles-0.1.3-1-any.pkg.tar.xz
+  ../initsystem/busybox/busybox-1.27.1-1-x86_64.pkg.tar.xz \
+  ../initsystem/initramfs/initramfs-1.2.0-1-any.pkg.tar.xz \
+  ../initsystem/initsystem/initsystem-1.2.0-1-x86_64.pkg.tar.xz
 
-cp -f ../development/busybox/busybox-1.27.1-1-x86_64.pkg.tar.xz "${ROOT}"/root
-cp -f ../development/eudev/eudev-3.2.2-1-x86_64.pkg.tar.xz "${ROOT}"/root
-cp -f ../development/initramfs/initramfs-1.2.0-1-any.pkg.tar.xz "${ROOT}"/root
-cp -f ../development/initsystem/initsystem-1.2.0-1-x86_64.pkg.tar.xz "${ROOT}"/root
-cp -f ../development/opentmpfiles/opentmpfiles-0.1.3-1-any.pkg.tar.xz "${ROOT}"/root
+cp -f ../initsystem/busybox/busybox-1.27.1-1-x86_64.pkg.tar.xz "${ROOT}"/root
+cp -f ../initsystem/initramfs/initramfs-1.2.0-1-any.pkg.tar.xz "${ROOT}"/root
+cp -f ../initsystem/initsystem/initsystem-1.2.0-1-x86_64.pkg.tar.xz "${ROOT}"/root
 
 sync
 
