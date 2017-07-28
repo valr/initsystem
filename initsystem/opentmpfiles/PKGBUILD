@@ -8,7 +8,7 @@ url='https://github.com/OpenRC/opentmpfiles'
 license=('BSD')
 groups=('initsystem')
 arch=('any')
-depends=('bash')
+depends=('bash' 'systemd-initsystem')
 source=(https://github.com/OpenRC/"${pkgname}"/archive/"${pkgver}".tar.gz
         tmpfiles.hook)
 md5sums=('7e49d14fb3398303e4b62da3916f4693'
