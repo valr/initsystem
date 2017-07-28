@@ -1,6 +1,7 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 _udev_ver=220
+
 pkgname=eudev
 pkgver=3.2.2
 pkgrel=1
@@ -14,8 +15,7 @@ depends=('glib2' 'kmod' 'util-linux')
 makedepends=('gobject-introspection' 'gperf')
 optdepends=('btrfs-progs: btrfs utilities for eudev rules')
 conflicts=('systemd' 'libsystemd')
-provides=('systemd' 'libsystemd' "udev=${_udev_ver}" "libudev=${_udev_ver}" 'libudev.so')
-replaces=('systemd' 'libsystemd')
+provides=("udev=${_udev_ver}" "libudev=${_udev_ver}" 'libudev.so')
 source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
         'initcpio_hooks'
