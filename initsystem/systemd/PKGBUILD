@@ -25,34 +25,36 @@ md5sums=('ca14af26738ef7bcb48cd82417a63c15'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
          'd4cd8fbed18cf41de43c77d720d81367')
 
-# The idea of this package is to keep required non binary files from the systemd
-# original package to avoid recreating and maintaining them by hand.
+# The idea of this package is to keep the required non-binary files from 
+# the systemd original package to avoid recreating and maintaining them by hand
 
 package() {
 
-  # directories
+  # directories to keep
 
   install -d "${pkgdir}"/etc/modules-load.d/
-  install -d "${pkgdir}"/usr/lib/modules-load.d/
-
   install -d "${pkgdir}"/etc/sysctl.d/
-  install -d "${pkgdir}"/usr/lib/sysctl.d/
-
   install -d "${pkgdir}"/etc/tmpfiles.d/
+
+  install -d "${pkgdir}"/usr/lib/modules-load.d/
+  install -d "${pkgdir}"/usr/lib/sysctl.d/
   install -d "${pkgdir}"/usr/lib/tmpfiles.d/
 
-  # files
-
-  mv "${srcdir}"/usr/lib/tmpfiles.d/etc.conf "${pkgdir}"/usr/lib/tmpfiles.d/etc.conf
-  mv "${srcdir}"/usr/lib/tmpfiles.d/legacy.conf "${pkgdir}"/usr/lib/tmpfiles.d/legacy.conf
-  mv "${srcdir}"/usr/lib/tmpfiles.d/var.conf "${pkgdir}"/usr/lib/tmpfiles.d/var.conf
-  mv "${srcdir}"/usr/lib/tmpfiles.d/x11.conf "${pkgdir}"/usr/lib/tmpfiles.d/x11.conf
-
-  # directories that are followed up for changes using systemd-compare
+  # directories to follow-up for changes using systemd-compare
 
   install -d "${pkgdir}"/usr/lib/systemd/system
   install -d "${pkgdir}"/usr/lib/systemd/user
   install -d "${pkgdir}"/usr/lib/sysusers.d
+
+  # files to keep
+
+  mv "${srcdir}"/usr/lib/tmpfiles.d/etc.conf "${pkgdir}"/usr/lib/tmpfiles.d/etc.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/etc.conf "${pkgdir}"/usr/lib/tmpfiles.d/home.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/legacy.conf "${pkgdir}"/usr/lib/tmpfiles.d/legacy.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/var.conf "${pkgdir}"/usr/lib/tmpfiles.d/var.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/x11.conf "${pkgdir}"/usr/lib/tmpfiles.d/x11.conf
+
+  # systemd-compare tool
 
   install -D -m 755 "${srcdir}"/systemd-compare "${pkgdir}"/usr/share/libalpm/scripts/systemd-compare
   install -D -m 644 "${srcdir}"/systemd-compare-pre.hook "${pkgdir}"/usr/share/libalpm/hooks/aaa-systemd-compare-pre.hook
