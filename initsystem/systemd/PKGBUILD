@@ -49,7 +49,7 @@ package() {
   # files to keep
 
   mv "${srcdir}"/usr/lib/tmpfiles.d/etc.conf "${pkgdir}"/usr/lib/tmpfiles.d/etc.conf
-  mv "${srcdir}"/usr/lib/tmpfiles.d/etc.conf "${pkgdir}"/usr/lib/tmpfiles.d/home.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/home.conf "${pkgdir}"/usr/lib/tmpfiles.d/home.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/legacy.conf "${pkgdir}"/usr/lib/tmpfiles.d/legacy.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/var.conf "${pkgdir}"/usr/lib/tmpfiles.d/var.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/x11.conf "${pkgdir}"/usr/lib/tmpfiles.d/x11.conf
