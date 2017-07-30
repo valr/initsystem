@@ -2,16 +2,16 @@
 
 _repo=http://mir.archlinux.fr/core/os/x86_64
 
-pkgname='systemd'
+pkgname='systemd-minimal'
 pkgver=234.11
 _pkgrel=1
 pkgrel=1
-pkgdesc='system and service manager'
+pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
 groups=('initsystem')
 arch=('any')
-provides=('systemd' 'libsystemd' 'systemd-minimal')
+provides=('systemd' 'libsystemd')
 conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
 source=("${_repo}/systemd-${pkgver}-${_pkgrel}-x86_64.pkg.tar.xz"

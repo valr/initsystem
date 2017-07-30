@@ -14,11 +14,11 @@ Build and install the main packages from the initsystem directory.
 
 Optionally, build and install the following packages from the initsystem 
 directory to replace udev and tmpfiles from systemd by eudev and opentmpfiles.
-Those packages will require the installation of the systemd stripped package.
+Those packages will require the installation of the systemd minimal package.
 
 - eudev
 - opentmpfiles
-- systemd
+- systemd-minimal
 
 Build and install the packages from the pkgbuild directory to remove 
 the dependencies on systemd libraries.
