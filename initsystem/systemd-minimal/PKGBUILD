@@ -4,24 +4,24 @@ _repo=http://mir.archlinux.fr/core/os/x86_64
 
 pkgname='systemd-minimal'
 pkgver=234.11
-_pkgrel=1
 pkgrel=1
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
 groups=('initsystem')
 arch=('any')
-provides=('systemd' 'libsystemd')
+depends=('eudev' 'opentmpfiles')
+provides=("systemd=${pkgver}" 'libsystemd')
 conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
-source=("${_repo}/systemd-${pkgver}-${_pkgrel}-x86_64.pkg.tar.xz"
-        "${_repo}/systemd-${pkgver}-${_pkgrel}-x86_64.pkg.tar.xz.sig"
+source=("${_repo}/systemd-${pkgver}-${pkgrel}-x86_64.pkg.tar.xz"
+        "${_repo}/systemd-${pkgver}-${pkgrel}-x86_64.pkg.tar.xz.sig"
         'systemd-compare'
         'systemd-compare-pre.hook'
         'systemd-compare-post.hook')
 md5sums=('ca14af26738ef7bcb48cd82417a63c15'
          'SKIP'
-         '82faaec37b6d9aea591c470b1b9a0dd4'
+         '6baae720ebfaec3bd0f9a7f00d1f31ce'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
          'd4cd8fbed18cf41de43c77d720d81367')
 
