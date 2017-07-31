@@ -10,7 +10,7 @@ url='https://www.github.com/systemd/systemd'
 license=('GPL2')
 groups=('initsystem')
 arch=('any')
-depends=('eudev' 'opentmpfiles')
+depends=('bash' 'eudev' 'opentmpfiles')
 provides=("systemd=${pkgver}" 'libsystemd')
 conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
