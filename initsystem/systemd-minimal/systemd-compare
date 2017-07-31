@@ -36,9 +36,12 @@ case "$1" in
       prepare_files post "$DIR"
     done
 
+    RC=$?
     compare_files pre post && rm -rf "$TMPDIR"
+    exit $RC
     ;;
   *)
     echo "usage: $(basename $0) pre|post"
+    exit 1
     ;;
 esac
