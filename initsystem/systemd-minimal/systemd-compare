@@ -10,6 +10,9 @@ prepare_files() {
 }
 
 compare_files() {
+  [ -d "$TMPDIR/$1" ] || return 0
+  [ -d "$TMPDIR/$2" ] || return 0
+
   diff -qr "$TMPDIR/$1" "$TMPDIR/$2" | \
     sed "s|Only in $TMPDIR/$1|Removed  |;
          s|Only in $TMPDIR/$2|Added    |;
