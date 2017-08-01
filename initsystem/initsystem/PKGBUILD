@@ -11,8 +11,6 @@ groups=('initsystem')
 arch=('i686' 'x86_64')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 depends=('busybox' 'kbd' 'kmod' 'initramfs')
-optdepends=('eudev: replaces udev from systemd'
-            'opentmpfiles: replaces tmpfiles from systemd')
 source=('init-og.c'
         'rc'
         'rc.conf'

@@ -9,7 +9,6 @@ license=('GPL')
 groups=('initsystem')
 arch=('any')
 depends=('busybox' 'dosfstools' 'e2fsprogs' 'glibc' 'mkinitcpio')
-
 source=('lsinitramfs'
         'mkinitramfs'
         'initramfs'
