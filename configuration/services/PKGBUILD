@@ -17,7 +17,6 @@ source=('rc'
         'rc.d.dbus'
         'rc.d.dhcpc'
         'rc.d.dnsmasq'
-        'rc.d.eudev'
         'rc.d.fcron'
         'rc.d.havege'
         'rc.d.iptables'
@@ -27,7 +26,6 @@ source=('rc'
         'rc.d.ssh'
         'rc.d.syslog'
         'rc.d.tlp'
-        'rc.d.udev'
         'rc.d.wireless'
         'LICENSE')
 md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
@@ -39,7 +37,6 @@ md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
          'c75dea6f4b129ed5b3095b2e47c053f5'
          'bcb04042739ab61ba514daf8f8c38d45'
          '41d11a26f37bbcfc25cfda490f47eda6'
-         '3370f2ea2c2399add28e9dabf765518f'
          '56100809b41d764631816f7a0943a728'
          'e4e113ddb009588330a5da2c28932700'
          '1b04af0c8dffc81a7033b3bcb1999b6c'
@@ -49,7 +46,6 @@ md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
          '4a964caae0bb6163166488ddb245b51a'
          'c4e1c0e6211477dd616014ab664afe33'
          '9aecc961fb4f83a8a69388057ad634e9'
-         '0fa238196130dbdc2feda329cfb6a55e'
          '62ed9f6734828c389557324e981538c6'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
@@ -69,7 +65,6 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
   install -Dm755 "${srcdir}"/rc.d.dhcpc     "${pkgdir}"/etc/rc.d/dhcpc
   install -Dm755 "${srcdir}"/rc.d.dnsmasq   "${pkgdir}"/etc/rc.d/dnsmasq
-  install -Dm755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
   install -Dm755 "${srcdir}"/rc.d.fcron     "${pkgdir}"/etc/rc.d/fcron
   install -Dm755 "${srcdir}"/rc.d.havege    "${pkgdir}"/etc/rc.d/havege
   install -Dm755 "${srcdir}"/rc.d.iptables  "${pkgdir}"/etc/rc.d/iptables
@@ -79,7 +74,6 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.tlp       "${pkgdir}"/etc/rc.d/tlp
   install -Dm755 "${srcdir}"/rc.d.ssh       "${pkgdir}"/etc/rc.d/ssh
   install -Dm755 "${srcdir}"/rc.d.syslog    "${pkgdir}"/etc/rc.d/syslog
-  install -Dm755 "${srcdir}"/rc.d.udev      "${pkgdir}"/etc/rc.d/udev
   install -Dm755 "${srcdir}"/rc.d.wireless  "${pkgdir}"/etc/rc.d/wireless
 
   # license

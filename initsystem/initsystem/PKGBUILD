@@ -19,16 +19,18 @@ source=('init-og.c'
         'rc.shutdown'
         'rc.shutdown.local'
         'rc.subr'
+        'rc.d.udev'
         'shutdown'
         'LICENSE')
 md5sums=('b3cf734052c09ec4b558a3454e31e571'
-         'b9af4216d46baca1eb0a40f9412105fa'
+         'c849731f095e85407d6cea3b6983d493'
          'f76446b0256c581469f32e1ccf5deeff'
          '1091e654c9d3cb79f6abdd321274ecd2'
          'fe478d0901f955ee8dc155e46c14c1ff'
-         'e3a6f36c4a18ad6b99cef1e6372c1c5e'
+         '86a0dc3333f1e59693ff45a1758210a0'
          '112f6e0bd545836f9ca3eb7c9c6d7080'
-         'cac47df743976a01d9c5bdcc0080f668'
+         '547c42430d63f1a22596d3aa41569860'
+         '032c86bc6bb00661631485bf74b6fd35'
          'b61a5a4850b11b2b79b0bee8b2b7eba8'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
@@ -39,9 +41,6 @@ build() {
 }
 
 package() {
-  # directories
-
-  install -d -m 755 "${pkgdir}"/etc/rc.d
 
   # configuration
 
@@ -56,9 +55,8 @@ package() {
   install -D -m 755 "${srcdir}"/rc.shutdown       "${pkgdir}"/etc/rc.shutdown
   install -D -m 755 "${srcdir}"/rc.shutdown.local "${pkgdir}"/etc/rc.shutdown.local
   install -D -m 755 "${srcdir}"/rc.subr           "${pkgdir}"/etc/rc.subr
+  install -D -m 755 "${srcdir}"/rc.d.udev         "${pkgdir}"/etc/rc.d/udev
   install -D -m 755 "${srcdir}"/shutdown          "${pkgdir}"/usr/bin/shutdown
-
-  # symlinks
 
   cd "${pkgdir}"/usr/bin
 

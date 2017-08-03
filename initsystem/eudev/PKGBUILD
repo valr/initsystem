@@ -19,11 +19,13 @@ conflicts=('udev' 'libudev.so')
 replaces=('udev' 'libudev.so')
 source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
+        'rc.d.eudev'
         'initcpio_hooks'
         'initcpio_install'
         'udev-hwdb.hook')
 md5sums=('41e19b70462692fefd072a3f38818b6e'
          'SKIP'
+         'f73365f16516ade6072dd6c0b34fa95d'
          'e7bbe35b79cddd7c82bf201f6297722d'
          'a0c0f1ed7e0daa95a04690b396f4b260'
          '7fce0d7c0ecace6c34e44fe6e24470ee')
@@ -55,6 +57,7 @@ package() {
                s#GROUP="cdrom"#GROUP="optical"#g' "${RULES}"
   done
 
+  install -D -m 755 "${srcdir}"/rc.d.eudev       "${pkgdir}"/etc/rc.d/eudev
   install -D -m 644 "${srcdir}"/initcpio_hooks   "${pkgdir}"/usr/lib/initcpio/hooks/udev
   install -D -m 644 "${srcdir}"/initcpio_install "${pkgdir}"/usr/lib/initcpio/install/udev
   install -D -m 644 "${srcdir}"/udev-hwdb.hook   "${pkgdir}"/usr/share/libalpm/hooks/udev-hwdb.hook

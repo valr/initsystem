@@ -77,12 +77,11 @@ pidfile() {
 
 rc_run() {
   for CMD in $1; do
-    if [ $CMD = $2 ]; then
-      $2; STATUS=$?
+    if [ "x$CMD" = "x$2" ]; then
+      "$2"; STATUS=$?
 
-      if [ $STATUS -ne 0 -a $2 != 'status' ]; then
-        echo "$(basename $0) failed"
-      fi
+      [ "$2" != "status" ] && [ $STATUS -ne 0 ] && \
+          echo "$(basename $0) failed"
 
       return $STATUS
     fi

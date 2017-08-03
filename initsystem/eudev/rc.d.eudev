@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2017 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,14 +18,16 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH=/opt/busybox
+export PATH=/opt/busybox
+export LC_ALL=C
+
 cd /
 umask 022
 
 . /etc/rc.subr
 
 start() {
-  pgrep -n -x /usr/bin/udevd 1>/dev/null 2>/dev/null && \
+  pgrep -x /usr/bin/udevd 1>/dev/null 2>/dev/null && \
     { echo "udevd is already running"; return 1; }
 
   STATUS=0
@@ -33,13 +35,13 @@ start() {
   /usr/bin/udevd --daemon                                 || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=subsystems || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=devices    || STATUS=1
-  /usr/bin/udevadm settle --timeout=60                    || STATUS=1
+  /usr/bin/udevadm settle --timeout=120                   || STATUS=1
 
   return $STATUS
 }
 
 _start() {
-  pgrep -n -x /usr/bin/udevd 1>/dev/null 2>/dev/null && \
+  pgrep -x /usr/bin/udevd 1>/dev/null 2>/dev/null && \
     { echo "udevd is already running"; return 1; }
 
   /usr/bin/udevd --daemon
@@ -53,20 +55,26 @@ stop() {
 }
 
 restart() {
-  stop
- _start
+  stop && _start
 }
 
 reload() {
-  pgrep -n -x /usr/bin/udevd 1>/dev/null 2>/dev/null || \
+  pgrep -x /usr/bin/udevd 1>/dev/null 2>/dev/null || \
     { echo "udevd is not running"; return 1; }
 
   /usr/bin/udevadm control --reload
 }
 
 status() {
-  echo "udevd is running as pid: "
-  pgrep -x /usr/bin/udevd
+  PID=$(pgrep -x /usr/bin/udevd | tr '\n' ' ')
+
+  if [ -n "$PID" ]; then
+    echo "udevd is running as pid: $PID"; return 0
+  else
+    echo "udevd is not running"; return 1
+  fi
 }
 
 rc_run "start stop restart reload status" $@
+
+# vim: set filetype=sh:
