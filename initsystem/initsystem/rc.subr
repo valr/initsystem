@@ -18,7 +18,7 @@
 
 pwait() {
   for i in $(seq $2); do
-    pgrep -n -x $1 1>/dev/null 2>/dev/null
+    pgrep -x $1 1>/dev/null 2>/dev/null
 
     if [ $? -ne 0 ]; then
       return 0
@@ -63,16 +63,13 @@ pidwait5() {
 }
 
 pidfile() {
-  if [ ! -r $1 ]; then
-    return 1
-  fi
+  [ -e $1 ] || return 1
+  [ -r $1 ] || return 2
 
   PID=0; read -r PID 2>/dev/null < $1
   CMD=$(strings /proc/$PID/cmdline 2>/dev/null | head -n 1)
 
-  if [ $CMD != $2 ]; then
-    return 2
-  fi
+  [ $CMD = $2 ] || return 3
 
   echo $PID
   return 0
