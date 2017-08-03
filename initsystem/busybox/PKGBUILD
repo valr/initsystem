@@ -60,7 +60,7 @@ package() {
 
   # symlinks: install applets in /opt/busybox
 
-  install -d "${pkgdir}"/opt/busybox
+  install -d -m 755 "${pkgdir}"/opt/busybox
   cd "${pkgdir}"/opt/busybox
 
   for APPLET in $("${pkgdir}"/usr/bin/busybox --list); do

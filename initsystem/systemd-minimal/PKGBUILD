@@ -32,19 +32,19 @@ package() {
 
   # directories to keep
 
-  install -d "${pkgdir}"/etc/modules-load.d/
-  install -d "${pkgdir}"/etc/sysctl.d/
-  install -d "${pkgdir}"/etc/tmpfiles.d/
+  install -d -m 755 "${pkgdir}"/etc/modules-load.d/
+  install -d -m 755 "${pkgdir}"/etc/sysctl.d/
+  install -d -m 755 "${pkgdir}"/etc/tmpfiles.d/
 
-  install -d "${pkgdir}"/usr/lib/modules-load.d/
-  install -d "${pkgdir}"/usr/lib/sysctl.d/
-  install -d "${pkgdir}"/usr/lib/tmpfiles.d/
+  install -d -m 755 "${pkgdir}"/usr/lib/modules-load.d/
+  install -d -m 755 "${pkgdir}"/usr/lib/sysctl.d/
+  install -d -m 755 "${pkgdir}"/usr/lib/tmpfiles.d/
 
   # directories to follow-up for changes using systemd-compare
 
-  install -d "${pkgdir}"/usr/lib/systemd/system
-  install -d "${pkgdir}"/usr/lib/systemd/user
-  install -d "${pkgdir}"/usr/lib/sysusers.d
+  install -d -m 755 "${pkgdir}"/usr/lib/systemd/system
+  install -d -m 755 "${pkgdir}"/usr/lib/systemd/user
+  install -d -m 755 "${pkgdir}"/usr/lib/sysusers.d
 
   # files to keep
 

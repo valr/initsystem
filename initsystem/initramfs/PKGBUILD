@@ -14,9 +14,9 @@ source=('lsinitramfs'
         'initramfs'
         'initramfs.hook'
         'LICENSE')
-md5sums=('e3fbb7be1fcebefdf8a5ba4f73556fa2'
-         '8ca177101c7bad0a56a50366901345b1'
-         '2fc1e9a7001d30b7802d04fd27accee3'
+md5sums=('d7924391c09ba88b649473af8ca95ba1'
+         '6e8b7e3b3695a83d45f39cc46f080fb4'
+         '55ea62e36bd462abc10dc8011138e518'
          'd53a42b96b6e1a0e862ea34ccf5bf50a'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
