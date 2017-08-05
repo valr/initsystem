@@ -12,9 +12,7 @@ source=('rc'
         'rc.d.acpi'
         'rc.d.alsa'
         'rc.d.bumblebee'
-        'rc.d.cron'
         'rc.d.cups'
-        'rc.d.dbus'
         'rc.d.dhcpc'
         'rc.d.dnsmasq'
         'rc.d.fcron'
@@ -32,9 +30,7 @@ md5sums=('7f531b1139a9fd51fab7af6e8bb70410'
          'da7d730867c4b9b40e849058cb45f24e'
          '6fd3ad2827b1e7ac09bfe8bfc0d6fa40'
          '5286bac75b9afba0d1ab2553dc47ba1c'
-         '6cbc1f79f059f038e12cd6c2d237e1ac'
          '640891f99aad19b24ac3238565895826'
-         'c75dea6f4b129ed5b3095b2e47c053f5'
          'bcb04042739ab61ba514daf8f8c38d45'
          '41d11a26f37bbcfc25cfda490f47eda6'
          '56100809b41d764631816f7a0943a728'
@@ -60,9 +56,7 @@ package() {
   install -Dm755 "${srcdir}"/rc.d.acpi      "${pkgdir}"/etc/rc.d/acpi
   install -Dm755 "${srcdir}"/rc.d.alsa      "${pkgdir}"/etc/rc.d/alsa
   install -Dm755 "${srcdir}"/rc.d.bumblebee "${pkgdir}"/etc/rc.d/bumblebee
-  install -Dm755 "${srcdir}"/rc.d.cron      "${pkgdir}"/etc/rc.d/cron
   install -Dm755 "${srcdir}"/rc.d.cups      "${pkgdir}"/etc/rc.d/cups
-  install -Dm755 "${srcdir}"/rc.d.dbus      "${pkgdir}"/etc/rc.d/dbus
   install -Dm755 "${srcdir}"/rc.d.dhcpc     "${pkgdir}"/etc/rc.d/dhcpc
   install -Dm755 "${srcdir}"/rc.d.dnsmasq   "${pkgdir}"/etc/rc.d/dnsmasq
   install -Dm755 "${srcdir}"/rc.d.fcron     "${pkgdir}"/etc/rc.d/fcron
