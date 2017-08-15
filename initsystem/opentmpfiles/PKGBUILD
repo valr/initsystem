@@ -12,7 +12,7 @@ depends=('bash')
 source=(https://github.com/OpenRC/"${pkgname}"/archive/"${pkgver}".tar.gz
         tmpfiles.hook)
 md5sums=('7e49d14fb3398303e4b62da3916f4693'
-         '9f7a09bf0773b29a413415e7d7587d35')
+         '8458c5781a5df8d7fce61fecb50cc639')
 
 package() {
   cd "${pkgname}-${pkgver}"
