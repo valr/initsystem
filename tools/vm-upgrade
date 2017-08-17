@@ -22,11 +22,13 @@ PACKAGES_INITSYSTEM="
 ${PACKAGES_SYSTEMD}
 ../initsystem/eudev/eudev-3.2.2-1-x86_64.pkg.tar.xz
 ../initsystem/opentmpfiles/opentmpfiles-0.1.3-1-any.pkg.tar.xz
+../initsystem/services/services-1.0.0-1-any.pkg.tar.xz
 ../initsystem/systemd-minimal/systemd-minimal-234.11-1-any.pkg.tar.xz
-../pkgbuild/core/dbus/dbus-1.10.18-1-x86_64.pkg.tar.xz
+../pkgbuild/core/dbus/dbus-1.10.22-1-x86_64.pkg.tar.xz
 ../pkgbuild/core/procps-ng/procps-ng-3.3.12-1-x86_64.pkg.tar.xz
 ../pkgbuild/core/util-linux/libutil-linux-2.30.1-2-x86_64.pkg.tar.xz
 ../pkgbuild/core/util-linux/util-linux-2.30.1-2-x86_64.pkg.tar.xz
+../pkgbuild/extra/syslog-ng/syslog-ng-3.10.1-2-x86_64.pkg.tar.xz
 "
 
 case "$1" in
@@ -39,7 +41,7 @@ case "$1" in
     PACKAGES="${PACKAGES_SYSTEMD}"
     ;;
   *)
-    echo "usage: $(basename $0) initsystem|systemd"
+    echo "usage: $(basename "$0") initsystem|systemd"
     exit 1
     ;;
 esac
@@ -90,11 +92,11 @@ qemu-nbd -d "${DEVICE}"
 
 exit 0
 
-# sudo qemu-nbd -c /dev/nbd0 "/home/valr/document/system/vbox/archlinux/archlinux.vdi"
-# sudo partx -a /dev/nbd0
-# sudo mount -t ext4 /dev/nbd0p2 /mnt
-# sudo mount -t vfat /dev/nbd0p1 /mnt/boot
-# sudo chroot /mnt /bin/bash
-# sudo umount /mnt/boot
-# sudo umount /mnt
-# sudo qemu-nbd -d /dev/nbd0
+# qemu-nbd -c /dev/nbd0 "/home/valr/document/system/vbox/archlinux-initsystem/archlinux-initsystem.vdi"
+# partx -a /dev/nbd0
+# mount -t ext4 /dev/nbd0p2 /mnt
+# mount -t vfat /dev/nbd0p1 /mnt/boot
+# chroot /mnt /bin/bash
+# umount /mnt/boot
+# umount /mnt
+# qemu-nbd -d /dev/nbd0

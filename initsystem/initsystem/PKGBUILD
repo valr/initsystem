@@ -23,15 +23,15 @@ source=('init-og.c'
         'shutdown'
         'LICENSE')
 md5sums=('b3cf734052c09ec4b558a3454e31e571'
-         'd0bff838624de9e7e230fe8992ba1b7e'
-         '5a3ecdc04eceaf20d4577a8260362956'
+         'e86c236cef447019ce1480128453ee9e'
+         '0829c83671307d3069cb3ef7abd759b9'
          '1deddd37535712bac2ab4bb4f7fa9a43'
          'e29a5c5846c5515cf659255d23094337'
-         'f4510b5be701aad1a9217d79383d50c4'
+         '04639ca4c3a4fafada96952305295c3e'
          '441535fedcec16c2c10767c92c6d3b4a'
-         '5abf5027dff356c9defee3e1e0964cd5'
-         'c1877945b8d975ccfc87705e51d1af3d'
-         'd3a43724d9c7150d8b4448e263f01ae2'
+         '265882dbb749592a83e5ed8a7f5f397d'
+         '34f24af4ef1025ec5c5f00c1c5c5219c'
+         '8205440af7335a04a3e9a6d7c9a914f6'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 build() {

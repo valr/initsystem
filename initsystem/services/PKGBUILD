@@ -1,0 +1,43 @@
+# Maintainer: valr <valere dot monseur at ymail dot com>
+
+pkgname=services
+pkgver=1.0.0
+pkgrel=1
+pkgdesc='services for initsystem'
+url='https://github.com/valr/initsystem'
+license=('GPL')
+groups=('initsystem')
+arch=('any')
+source=('cronie'
+        'dbus'
+        'dbus.conf'
+        'dhcpcd'
+        'syslog-ng'
+        'wpa_supplicant'
+        'LICENSE')
+md5sums=('825577df8ac44a4890f711f131c1fb56'
+         '2b24f1de074d28f209694385b0dccecf'
+         '5b7ed3ec72c36c8d5a4030a61e5e601b'
+         '6cef7ba85848ddc990b3181ad1c8f561'
+         '749ebc11842fc4720884621cb94abc4d'
+         'e4b1deb10642829941d29b3e21db8c38'
+         '4641e94ec96f98fabc56ff9cc48be14b')
+
+package() {
+
+  # services
+
+  install -D -m 755 "${srcdir}"/cronie         "${pkgdir}"/etc/rc.d/cronie
+  install -D -m 755 "${srcdir}"/dbus           "${pkgdir}"/etc/rc.d/dbus
+  install -D -m 755 "${srcdir}"/dhcpcd         "${pkgdir}"/etc/rc.d/dhcpcd
+  install -D -m 755 "${srcdir}"/syslog-ng      "${pkgdir}"/etc/rc.d/syslog-ng
+  install -D -m 755 "${srcdir}"/wpa_supplicant "${pkgdir}"/etc/rc.d/wpa_supplicant
+
+  # tmpfiles
+
+  install -D -m 644 "${srcdir}"/dbus.conf "${pkgdir}"/usr/lib/tmpfiles.d/dbus.conf
+
+  # license
+
+  install -D -m 644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
+}

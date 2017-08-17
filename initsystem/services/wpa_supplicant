@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2017 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,46 +18,21 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH=/opt/busybox
-cd /
-umask 022
+read -r rc_if 2>/dev/null < "/etc/wpa_supplicant/$(basename "$0").interface"
+[ "${rc_if}" ] || { echo "missing or incorrect /etc/wpa_supplicant/$(basename "$0").interface"; exit 1; }
 
-. /etc/rc.subr
+rc_cmd="/usr/bin/wpa_supplicant -B -s -c /etc/wpa_supplicant/$(basename "$0").conf -i ${rc_if} –D nl80211"
+
 . /etc/rc.conf
+. /etc/rc.subr
 
 start() {
-  pgrep -n -x /usr/bin/wpa_supplicant 1>/dev/null 2>/dev/null && \
-    { echo "wpa_supplicant is already running"; return 1; }
+  rc_check_started && return 0
 
-  rm -f /run/wpa_supplicant.pid
+  /usr/bin/ip link set "${rc_if}" down
+  /usr/bin/ip link set "${rc_if}" up
 
-  /usr/bin/ip link set "${WIRELESS}" down
-  /usr/bin/ip link set "${WIRELESS}" up
-  /usr/bin/wpa_supplicant -B –D nl80211 \
-    -P /run/wpa_supplicant.pid -i "${WIRELESS}" \
-    -c /etc/wpa_supplicant/wpa_supplicant-"${WIRELESS}".conf
-}
-
-stop() {
-  pkill -TERM -x /usr/bin/wpa_supplicant
-  pkill -CONT -x /usr/bin/wpa_supplicant
-
-  pwait /usr/bin/wpa_supplicant 20 || \
-    { echo "wpa_supplicant is still running"; return 1; }
-
-  rm -f /run/wpa_supplicant.pid
-
-  /usr/bin/ip link set "${WIRELESS}" down
-}
-
-restart() {
-  stop
-  start
-}
-
-status() {
-  echo "wpa_supplicant is running as pid: "
-  pgrep -x /usr/bin/wpa_supplicant
+  rc_start
 }
 
 rc_run "start stop restart status" $@

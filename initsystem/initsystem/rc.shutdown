@@ -24,8 +24,8 @@ export LC_ALL=C
 cd /
 umask 022
 
-. /etc/rc.subr
 . /etc/rc.conf
+. /etc/rc.subr
 
 ################################################################################
 # sanity check #################################################################
@@ -79,6 +79,7 @@ for SERVICE in $SERVICES; do
 done
 
 for SERVICE in $REVERSE_SERVICES; do
+  echo $SERVICE
   /etc/rc.d/$SERVICE stop
 done
 

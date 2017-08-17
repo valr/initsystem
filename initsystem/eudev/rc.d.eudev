@@ -27,8 +27,7 @@ umask 022
 . /etc/rc.subr
 
 start() {
-  pgrep -x /usr/bin/udevd 1>/dev/null 2>/dev/null && \
-    { echo "udevd is already running"; return 1; }
+  pgrep -fx "/usr/bin/udevd --daemon" 1>/dev/null 2>/dev/null && return 0
 
   STATUS=0
 
@@ -41,37 +40,37 @@ start() {
 }
 
 _start() {
-  pgrep -x /usr/bin/udevd 1>/dev/null 2>/dev/null && \
-    { echo "udevd is already running"; return 1; }
+  pgrep -fx "/usr/bin/udevd --daemon" 1>/dev/null 2>/dev/null && return 0
 
   /usr/bin/udevd --daemon
 }
 
 stop() {
+  pgrep -fx "/usr/bin/udevd --daemon" 1>/dev/null 2>/dev/null || return 0
+
   /usr/bin/udevadm control --exit
 
-  pwait /usr/bin/udevd 20 || \
-    { echo "udevd is still running"; return 1; }
+  pwait "/usr/bin/udevd --daemon" 20
 }
 
 restart() {
-  stop && _start
+  stop
+  _start
 }
 
 reload() {
-  pgrep -x /usr/bin/udevd 1>/dev/null 2>/dev/null || \
-    { echo "udevd is not running"; return 1; }
+  pgrep -fx "/usr/bin/udevd --daemon" 1>/dev/null 2>/dev/null || return 1
 
   /usr/bin/udevadm control --reload
 }
 
 status() {
-  PID=$(pgrep -x /usr/bin/udevd | tr '\n' ' ')
+  PID=$(pgrep -fx "/usr/bin/udevd --daemon" 2>/dev/null | tr '\n' ' ')
 
-  if [ -n "$PID" ]; then
-    echo "udevd is running as pid: $PID"; return 0
+  if [ "$PID" ]; then
+    echo "eudev is started as pid: $PID"; return 0
   else
-    echo "udevd is not running"; return 1
+    echo "eudev is stopped"; return 1
   fi
 }
 

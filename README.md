@@ -6,25 +6,25 @@ An init system (what a surprise!)
 Installation
 ============
 
-Build and install the main packages from the initsystem directory.
+Build all the packages in the _initsystem_ and _pkgbuild_ directories.
 
-- busybox
-- initramfs
-- initsystem
 
-Optionally, build and install the following packages from the initsystem 
-directory to replace udev and tmpfiles from systemd by eudev and opentmpfiles.
-Those packages will require the installation of the systemd minimal package.
+Install _busybox_, _initramfs_, _initsystem_ and _services_ packages.
+Configure your hostname, keymap, font and services in /etc/rc.conf.
+Configure your bootloader to use init=/sbin/init-og.
 
-- eudev
-- opentmpfiles
-- systemd-minimal
 
-Build and install the packages from the pkgbuild directory to remove 
-the dependencies on systemd libraries.
+Reboot into your new initsystem.
 
-Todo:
 
-- review pkgbuild in extra directory
-- cronjobs
-- services
+Install _eudev_, _opentmpfiles_ and _systemd-minimal_ packages. This will replace systemd and libsystemd.
+Install all the packages from the _pkgbuild/core_ directory.
+
+
+Additionally, you should add 'initsystem' in the IgnoreGroup entry of /etc/pacman.conf to avoid unneeded upgrade from the official repositories.
+All packages from the _pkgbuild_ directory should be added to the IgnorePkg entry for the same reason.
+
+Work in progress:
+
+- review/rework/clean the configuration directory
+- review pkgbuild/extra directory

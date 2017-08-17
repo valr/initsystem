@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2015 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2017 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,41 +18,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH=/opt/busybox
-cd /
-umask 022
+read -r rc_if 2>/dev/null < "/etc/$(basename "$0").interface"
+[ "${rc_if}" ] || { echo "missing or incorrect /etc/$(basename "$0").interface"; exit 1; }
 
-dhcpcd_FLAGS=""
+rc_cmd="/usr/bin/dhcpcd -q -w ${rc_if}"
+rc_stop_cmd="/usr/bin/dhcpcd -q -x ${rc_if}"
 
-. /etc/rc.subr
 . /etc/rc.conf
-
-start() {
-  pgrep -n -x /usr/bin/dhcpcd 1>/dev/null 2>/dev/null && \
-    { echo "dhcpcd is already running"; return 1; }
-
-  rm -f /run/dhcpcd.pid
-
-  eval /usr/bin/dhcpcd -q -b "${dhcpcd_FLAGS}"
-}
-
-stop() {
-  /usr/bin/dhcpcd -q -x
-
-  pwait /usr/bin/dhcpcd 20 || \
-    { echo "dhcpcd is still running"; return 1; }
-
-  rm -f /run/dhcpcd.pid
-}
-
-restart() {
-  stop
-  start
-}
-
-status() {
-  echo "dhcpcd is running as pid: "
-  pgrep -x /usr/bin/dhcpcd
-}
+. /etc/rc.subr
 
 rc_run "start stop restart status" $@

@@ -10,7 +10,7 @@ case "$1" in
     vboxmanage startvm archlinux-"$1"
     ;;
   *)
-    echo "usage: $(basename $0) initsystem|systemd"
+    echo "usage: $(basename "$0") initsystem|systemd"
     exit 1
     ;;
 esac

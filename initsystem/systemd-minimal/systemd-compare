@@ -41,7 +41,7 @@ case "$1" in
     exit $RC
     ;;
   *)
-    echo "usage: $(basename $0) pre|post"
+    echo "usage: $(basename "$0") pre|post"
     exit 1
     ;;
 esac

@@ -204,6 +204,7 @@ dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
 echo "initscript: starting services"
 
 for SERVICE in $SERVICES; do
+  echo $SERVICE
   /etc/rc.d/$SERVICE start
 done
 

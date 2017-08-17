@@ -38,7 +38,7 @@ case $# in
     searchfile "$1" "$2"
     ;;
   *)
-    echo "usage: `basename $0` identifier <file>"
+    echo "usage: $(basename "$0") identifier <file>"
     exit 1
     ;;
 esac

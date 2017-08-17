@@ -1,6 +1,8 @@
+#!/bin/ash
+
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2017 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2017 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,19 +18,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-# who am I
-HOSTNAME=
+rc_cmd="/usr/bin/syslog-ng"
 
-# keyboard translation table: /usr/share/kbd/keymaps
-CONSOLE_KEYMAP=
+. /etc/rc.conf
+. /etc/rc.subr
 
-# console screen font: /usr/share/kbd/consolefonts
-CONSOLE_FONT=
-
-# list of services: /etc/rc.d
-SERVICES=
-
-# services user commands
-#cronie_cmd="/usr/bin/crond -m off -s"
-
-# vim: set filetype=sh:
+rc_run "start stop restart reload status" $@
