@@ -46,6 +46,11 @@ case "$1" in
     ;;
 esac
 
+if ps ax | grep [a]rchlinux-"$1" &>/dev/null; then
+  echo "error: the virtual machine is running"
+  exit 1
+fi
+
 if [ ! -e "${IMAGE}" ]; then
   echo "error: the image ${IMAGE} does not exist"
   exit 1
