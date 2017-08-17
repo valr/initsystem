@@ -97,13 +97,16 @@ rc_check_started() {
   pgrep -fx "${rc_cmd}" 1>/dev/null 2>/dev/null
 }
 
+rc_check_stopped() {
+  pwait "${rc_cmd}" 20
+}
+
 rc_start() {
   ash -c "${rc_env} ${rc_cmd}"
 }
 
 rc_stop() {
   ash -c "${rc_stop_env} ${rc_stop_cmd}"
-  pwait "${rc_cmd}" 20
 }
 
 rc_reload() {
@@ -127,11 +130,12 @@ start() {
 stop() {
   rc_check_started || return 0
   rc_stop
+  rc_check_stopped
 }
 
 restart() {
-  rc_stop
-  rc_start
+  stop
+  start
 }
 
 reload() {

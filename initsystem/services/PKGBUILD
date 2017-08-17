@@ -20,7 +20,7 @@ md5sums=('825577df8ac44a4890f711f131c1fb56'
          '5b7ed3ec72c36c8d5a4030a61e5e601b'
          '6cef7ba85848ddc990b3181ad1c8f561'
          '749ebc11842fc4720884621cb94abc4d'
-         'e4b1deb10642829941d29b3e21db8c38'
+         'cf85d6994d6c615c27c4e3aead91351d'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {
