@@ -21,7 +21,7 @@
 read -r rc_if 2>/dev/null < "/etc/wpa_supplicant/$(basename "$0").interface"
 [ "${rc_if}" ] || { echo "missing or incorrect /etc/wpa_supplicant/$(basename "$0").interface"; exit 1; }
 
-rc_cmd="/usr/bin/wpa_supplicant -B -c /etc/wpa_supplicant/$(basename "$0").conf -i ${rc_if}"
+rc_cmd="/usr/bin/wpa_supplicant -q -B -c /etc/wpa_supplicant/$(basename "$0").conf -i ${rc_if}"
 
 . /etc/rc.conf
 . /etc/rc.subr
