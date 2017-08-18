@@ -18,9 +18,9 @@ source=('cronie'
 md5sums=('825577df8ac44a4890f711f131c1fb56'
          '2b24f1de074d28f209694385b0dccecf'
          '5b7ed3ec72c36c8d5a4030a61e5e601b'
-         '6cef7ba85848ddc990b3181ad1c8f561'
+         '561b9d472710b42e6d800151f1751c95'
          '749ebc11842fc4720884621cb94abc4d'
-         '6ebb2fcd2ba62cc8c44e766996b564a9'
+         '77125eb6c6d233698edae7f657918bb2'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {

@@ -21,7 +21,7 @@
 read -r rc_if 2>/dev/null < "/etc/$(basename "$0").interface"
 [ "${rc_if}" ] || { echo "missing or incorrect /etc/$(basename "$0").interface"; exit 1; }
 
-rc_cmd="/usr/bin/dhcpcd -q -w ${rc_if}"
+rc_cmd="/usr/bin/dhcpcd -q -b ${rc_if}"
 rc_stop_cmd="/usr/bin/dhcpcd -q -x ${rc_if}"
 
 . /etc/rc.conf
