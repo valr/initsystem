@@ -9,7 +9,7 @@ arch=('i686' 'x86_64')
 url="http://www.balabit.com/network-security/syslog-ng/"
 license=('GPL2' 'LGPL2.1')
 depends=('awk' 'eventlog' 'systemd' 'glib2' 'libdbi')
-makedepends=('python2' 'libxslt' 'json-c' 'libmongoc')
+makedepends=('python2' 'libxslt' 'json-c' 'libmongoc' 'snappy')
 optdepends=('logrotate: for rotating log files'
 	    'json-c: for json-plugin'
             'curl: for the HTTP module'
@@ -33,7 +33,7 @@ build() {
   ./configure --prefix=/usr --sysconfdir=/etc/syslog-ng --libexecdir=/usr/lib \
     --sbindir=/usr/bin --localstatedir=/var/lib/syslog-ng --datadir=/usr/share \
     --with-pidfile-dir=/run --disable-spoof-source --enable-ipv6 --enable-sql \
-    --disable-systemd \
+    --enable-systemd=no \
     --enable-manpages --with-jsonc=system --with-mongoc=system
   make
 }
