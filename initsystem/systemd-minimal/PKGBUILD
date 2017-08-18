@@ -4,7 +4,7 @@ _repo=http://mir.archlinux.fr/core/os/x86_64
 
 pkgname='systemd-minimal'
 pkgver=234.11
-pkgrel=1
+pkgrel=8
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
@@ -19,7 +19,7 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-x86_64.pkg.tar.xz"
         'systemd-compare'
         'systemd-compare-pre.hook'
         'systemd-compare-post.hook')
-md5sums=('ca14af26738ef7bcb48cd82417a63c15'
+md5sums=('53467579976681c2e8e9ef4e455bff1a'
          'SKIP'
          '85bd9e85ff61f849e305656d7fb22793'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
