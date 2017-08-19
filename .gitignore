@@ -8,5 +8,4 @@
 *.tar.xz
 *.tar.xz.asc
 *.tar.xz.sig
-*.patch
 *.pkg.tar.xz
