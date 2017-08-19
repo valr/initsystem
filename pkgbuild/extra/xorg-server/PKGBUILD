@@ -85,6 +85,7 @@ build() {
       --enable-kdrive-kbd \
       --enable-kdrive-mouse \
       --enable-config-udev \
+      --without-systemd-daemon \
       --disable-systemd-logind \
       --enable-suid-wrapper \
       --disable-install-setuid \
@@ -98,8 +99,7 @@ build() {
       --with-xkb-path=/usr/share/X11/xkb \
       --with-xkb-output=/var/lib/xkb \
       --with-fontrootdir=/usr/share/fonts \
-      --with-sha1=libgcrypt \
-      --without-systemd-daemon
+      --with-sha1=libgcrypt
       
 #      --without-dtrace \
 #      --disable-linux-acpi --disable-linux-apm \
@@ -161,6 +161,17 @@ package_xorg-server() {
   rm -rf "${pkgdir}/usr/lib/pkgconfig"
   rm -rf "${pkgdir}/usr/include"
   rm -rf "${pkgdir}/usr/share/aclocal"
+
+  # rootless X (based on https://wiki.gentoo.org/wiki/Non_root_Xorg)
+  # 1. eudev provides the rule setting the 'input' group to /dev/input
+  #    SUBSYSTEM=="input", ACTION=="add", GROUP="input"
+  # 2. the Xorg wrapper is not needed
+  rm -rf "${pkgdir}/usr/lib/xorg-server/Xorg.wrap"
+  # 3. adapt the ownership and permissions of the Xorg executable
+  chown :input "${pkgdir}/usr/lib/xorg-server/Xorg"
+  chmod g+s "${pkgdir}/usr/lib/xorg-server/Xorg"
+  # 4. ensure your user is in the video group
+  #    usermod -a -G video user
 }
 
 package_xorg-server-xephyr() {
