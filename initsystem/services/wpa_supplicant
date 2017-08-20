@@ -38,8 +38,7 @@ start() {
 stop() {
   rc_check_started || return 0
   rc_stop
-  rc_check_stopped && \
-    /usr/bin/ip link set "${rc_if}" down
+  rc_check_stopped && /usr/bin/ip link set "${rc_if}" down
 }
 
 rc_run "start stop restart status" $@
