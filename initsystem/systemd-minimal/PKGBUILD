@@ -21,7 +21,7 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-x86_64.pkg.tar.xz"
         'systemd-compare-post.hook')
 md5sums=('53467579976681c2e8e9ef4e455bff1a'
          'SKIP'
-         '85bd9e85ff61f849e305656d7fb22793'
+         '26d002e78277eec2b8615d8c4a9c40c7'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
          'd4cd8fbed18cf41de43c77d720d81367')
 
@@ -60,3 +60,5 @@ package() {
   install -D -m 644 "${srcdir}"/systemd-compare-pre.hook "${pkgdir}"/usr/share/libalpm/hooks/aaa-systemd-compare-pre.hook
   install -D -m 644 "${srcdir}"/systemd-compare-post.hook "${pkgdir}"/usr/share/libalpm/hooks/zzz-systemd-compare-post.hook
 }
+
+# vim: set filetype=sh:

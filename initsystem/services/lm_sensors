@@ -38,3 +38,5 @@ display() {
 }
 
 rc_run "start stop display" $@
+
+# vim: set filetype=sh:

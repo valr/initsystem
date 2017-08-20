@@ -24,3 +24,5 @@ rc_cmd="/usr/bin/dbus-daemon --system --fork"
 . /etc/rc.subr
 
 rc_run "start stop restart reload status" $@
+
+# vim: set filetype=sh:

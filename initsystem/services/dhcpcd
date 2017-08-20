@@ -28,3 +28,5 @@ rc_stop_cmd="/usr/bin/dhcpcd -q -x ${rc_if}"
 . /etc/rc.subr
 
 rc_run "start stop restart status" $@
+
+# vim: set filetype=sh:

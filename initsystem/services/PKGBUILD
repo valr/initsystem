@@ -16,13 +16,13 @@ source=('cronie'
         'syslog-ng'
         'wpa_supplicant'
         'LICENSE')
-md5sums=('825577df8ac44a4890f711f131c1fb56'
-         '2b24f1de074d28f209694385b0dccecf'
+md5sums=('20d7e5781f514f25dacb0dcac4356db9'
+         '8dfc8275dc7adb05697e953113605096'
          '5b7ed3ec72c36c8d5a4030a61e5e601b'
-         '561b9d472710b42e6d800151f1751c95'
-         'ca92d829e9e9cd2da42d5ac413d66695'
-         '749ebc11842fc4720884621cb94abc4d'
-         '6a56a07997a5488b3450a1f7692011a6'
+         '9c5e186af003de764675f601253ac6a7'
+         '6cdb9735d482a5d6f7c319bfe8fd1402'
+         'd6c1272f17027fc143d03226a5975304'
+         'd615496c6709e7d74abe874a613afbbe'
          '4641e94ec96f98fabc56ff9cc48be14b')
 
 package() {

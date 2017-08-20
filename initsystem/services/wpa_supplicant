@@ -43,3 +43,5 @@ stop() {
 }
 
 rc_run "start stop restart status" $@
+
+# vim: set filetype=sh:

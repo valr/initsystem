@@ -24,3 +24,5 @@ modules for your root device. It is also required for firmware loading in
 initramfs. It is recommended to use this hook.
 HELPEOF
 }
+
+# vim: set filetype=sh:
