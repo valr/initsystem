@@ -12,6 +12,7 @@ source=('cronie'
         'dbus'
         'dbus.conf'
         'dhcpcd'
+        'lm_sensors'
         'syslog-ng'
         'wpa_supplicant'
         'LICENSE')
@@ -19,6 +20,7 @@ md5sums=('825577df8ac44a4890f711f131c1fb56'
          '2b24f1de074d28f209694385b0dccecf'
          '5b7ed3ec72c36c8d5a4030a61e5e601b'
          '561b9d472710b42e6d800151f1751c95'
+         'ca92d829e9e9cd2da42d5ac413d66695'
          '749ebc11842fc4720884621cb94abc4d'
          '6a56a07997a5488b3450a1f7692011a6'
          '4641e94ec96f98fabc56ff9cc48be14b')
@@ -30,6 +32,7 @@ package() {
   install -D -m 755 "${srcdir}"/cronie         "${pkgdir}"/etc/rc.d/cronie
   install -D -m 755 "${srcdir}"/dbus           "${pkgdir}"/etc/rc.d/dbus
   install -D -m 755 "${srcdir}"/dhcpcd         "${pkgdir}"/etc/rc.d/dhcpcd
+  install -D -m 755 "${srcdir}"/lm_sensors     "${pkgdir}"/etc/rc.d/lm_sensors
   install -D -m 755 "${srcdir}"/syslog-ng      "${pkgdir}"/etc/rc.d/syslog-ng
   install -D -m 755 "${srcdir}"/wpa_supplicant "${pkgdir}"/etc/rc.d/wpa_supplicant
 
@@ -41,3 +44,5 @@ package() {
 
   install -D -m 644 "${srcdir}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
+
+# vim: set filetype=sh:

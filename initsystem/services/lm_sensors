@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2015 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2015-2017 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,12 +18,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PATH=/opt/busybox
-cd /
-umask 022
-
-. /etc/rc.subr
+[ -f /etc/conf.d/lm_sensors ] || { echo "missing /etc/conf.d/lm_sensors"; exit 1; }
 . /etc/conf.d/lm_sensors
+
+. /etc/rc.conf
+. /etc/rc.subr
 
 start() {
   /usr/bin/modprobe -a -b -s "${BUS_MODULES}" "${HWMON_MODULES}"
@@ -31,8 +30,7 @@ start() {
 }
 
 stop() {
-  /usr/bin/modprobe -a -b -s -r "${BUS_MODULES}" "${HWMON_MODULES}"
-  return 0
+  /usr/bin/modprobe -a -b -s -r "${BUS_MODULES}" "${HWMON_MODULES}" || return 0
 }
 
 display() {
