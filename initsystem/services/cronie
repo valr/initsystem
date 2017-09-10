@@ -18,9 +18,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-rc_cmd="/usr/bin/crond -m off -s"
+rc_start_cmd="/usr/bin/crond -m off -s"
 
-. /etc/rc.conf
 . /etc/rc.subr
 
 rc_run "start stop restart reload status" $@

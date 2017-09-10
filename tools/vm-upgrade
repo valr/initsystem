@@ -23,7 +23,7 @@ ${PACKAGES_SYSTEMD}
 ../initsystem/eudev/eudev-3.2.2-1-x86_64.pkg.tar.xz
 ../initsystem/opentmpfiles/opentmpfiles-0.1.3-1-any.pkg.tar.xz
 ../initsystem/services/services-1.0.0-1-any.pkg.tar.xz
-../initsystem/systemd-minimal/systemd-minimal-234.11-1-any.pkg.tar.xz
+../initsystem/systemd-minimal/systemd-minimal-234.11-8-any.pkg.tar.xz
 ../pkgbuild/core/dbus/dbus-1.10.22-1-x86_64.pkg.tar.xz
 ../pkgbuild/core/procps-ng/procps-ng-3.3.12-1-x86_64.pkg.tar.xz
 ../pkgbuild/core/util-linux/libutil-linux-2.30.1-2-x86_64.pkg.tar.xz

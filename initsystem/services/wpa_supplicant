@@ -18,27 +18,19 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-read -r rc_if 2>/dev/null < "/etc/wpa_supplicant/$(basename "$0").interface"
-[ "${rc_if}" ] || { echo "missing or incorrect /etc/wpa_supplicant/$(basename "$0").interface"; exit 1; }
+read -r INTERFACE < "/etc/wpa_supplicant/$(basename "$0").interface"
 
-rc_cmd="/usr/bin/wpa_supplicant -q -B -c /etc/wpa_supplicant/$(basename "$0").conf -i ${rc_if}"
+rc_start_cmd="/usr/bin/wpa_supplicant -q -B -c /etc/wpa_supplicant/$(basename "$0").conf -i ${INTERFACE}"
 
-. /etc/rc.conf
 . /etc/rc.subr
 
-start() {
-  rc_check_started && return 0
-
-  /usr/bin/ip link set "${rc_if}" down
-  /usr/bin/ip link set "${rc_if}" up
-
-  rc_start
+rc_pre_start() {
+  /usr/bin/ip link set "${INTERFACE}" down
+  /usr/bin/ip link set "${INTERFACE}" up
 }
 
-stop() {
-  rc_check_started || return 0
-  rc_stop
-  rc_check_stopped && /usr/bin/ip link set "${rc_if}" down
+rc_post_stop() {
+  /usr/bin/ip link set "${INTERFACE}" down
 }
 
 rc_run "start stop restart status" $@

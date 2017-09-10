@@ -16,6 +16,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+. /etc/rc.conf
+
 pwait() {
   for i in $(seq $2); do
     pgrep -fx "$1" 1>/dev/null 2>/dev/null
@@ -62,75 +64,42 @@ pidwait5() {
   return 1
 }
 
-pidfile() {
-  [ -e "$1" ] || return 1
-  [ -f "$1" ] || { echo "the pid file is not a regular file"; exit 1; }
-  [ -r "$1" ] || { echo "the pid file is not readable"; exit 1; }
-
-  PID=0; read -r PID 2>/dev/null < "$1"
-  CMD=$(strings /proc/$PID/cmdline 2>/dev/null | head -n 1)
-
-  [ "x$CMD" = "x$2" ] || return 1
-
-  echo $PID
-  return 0
-}
-
-# /etc/rc, /etc/rc.respawn, /etc/rc.shutdown will stop here
-
+# /etc/rc, /etc/rc.respawn and /etc/rc.shutdown will stop here
 [ $PPID = 1 ] && return 0
 
-# script for services
+# variables from /etc/rc.conf can override the default service variables
+SRV="$(basename "$0" | tr '-' '_')"
+for CMD in start stop reload display; do
+  eval "rc_${CMD}_cmd=\${${SRV}_${CMD}_cmd:-\${rc_${CMD}_cmd}}"
+done
 
-eval rc_new_cmd="\${$(basename "$0" | tr '-' '_')_cmd}"
-eval rc_new_stop_cmd="\${$(basename "$0" | tr '-' '_')_stop_cmd}"
-eval rc_new_reload_cmd="\${$(basename "$0" | tr '-' '_')_reload_cmd}"
-
-[ "${rc_new_cmd}" ] && rc_cmd="${rc_new_cmd}"
-[ "${rc_new_stop_cmd}" ] && rc_stop_cmd="${rc_new_stop_cmd}"
-[ "${rc_new_reload_cmd}" ] && rc_reload_cmd="${rc_new_reload_cmd}"
-
-[ "${rc_stop_cmd}" ] || rc_stop_cmd="pkill -TERM -fx \"${rc_cmd}\""
-[ "${rc_reload_cmd}" ] || rc_reload_cmd="pkill -HUP -fx \"${rc_cmd}\""
+# default stop and reload commands
+[ "${rc_stop_cmd}" ] || rc_stop_cmd="pkill -TERM -fx \"${rc_start_cmd}\""
+[ "${rc_reload_cmd}" ] || rc_reload_cmd="pkill -HUP -fx \"${rc_start_cmd}\""
 
 rc_check_started() {
-  pgrep -fx "${rc_cmd}" 1>/dev/null 2>/dev/null
-}
-
-rc_check_stopped() {
-  pwait "${rc_cmd}" 20
-}
-
-rc_start() {
-  ash -c "${rc_env} ${rc_cmd}"
-}
-
-rc_stop() {
-  ash -c "${rc_stop_env} ${rc_stop_cmd}"
-}
-
-rc_reload() {
-  ash -c "${rc_reload_env} ${rc_reload_cmd}"
-}
-
-rc_status() {
-  PID=$(pgrep -fx "${rc_cmd}" 2>/dev/null | tr '\n' ' ')
-  if [ "$PID" ]; then
-    echo "$(basename "$0") is started as pid: $PID"; return 0
-  else
-    echo "$(basename "$0") is stopped"; return 1
-  fi
+  pgrep -fx "${rc_start_cmd}" 1>/dev/null 2>/dev/null
 }
 
 start() {
   rc_check_started && return 0
-  rc_start
+
+  type rc_pre_start 1>/dev/null && { rc_pre_start || return; }
+  ash -c "${rc_env} ${rc_start_cmd}" || return
+  type rc_post_start 1>/dev/null && { rc_post_start || return; }
+
+  return 0
 }
 
 stop() {
   rc_check_started || return 0
-  rc_stop
-  rc_check_stopped
+
+  type rc_pre_stop 1>/dev/null && { rc_pre_stop || return; }
+  ash -c "${rc_env} ${rc_stop_cmd}"
+  pwait "${rc_start_cmd}" 20 || return
+  type rc_post_stop 1>/dev/null && { rc_post_stop || return; }
+
+  return 0
 }
 
 restart() {
@@ -140,11 +109,22 @@ restart() {
 
 reload() {
   rc_check_started || return 1
-  rc_reload
+
+  ash -c "${rc_env} ${rc_reload_cmd}"
+}
+
+display() {
+  ash -c "${rc_env} ${rc_display_cmd}"
 }
 
 status() {
-  rc_status
+  PID=$(pgrep -fx "${rc_start_cmd}" 2>/dev/null | tr '\n' ' ')
+
+  if [ "${PID}" ]; then
+    echo "$(basename "$0") is started as pid: ${PID}"; return 0
+  else
+    echo "$(basename "$0") is stopped"; return 1
+  fi
 }
 
 rc_run() {
@@ -153,7 +133,7 @@ rc_run() {
   cd / ; umask 022
 
   for CMD in $1; do
-    if [ "x$CMD" = "x$2" ]; then
+    if [ "x${CMD}" = "x$2" ]; then
       "$2"; STATUS=$?
 
       [ "$2" != "status" ] && [ $STATUS -ne 0 ] && \

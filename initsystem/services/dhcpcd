@@ -18,13 +18,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-read -r rc_if 2>/dev/null < "/etc/$(basename "$0").interface"
-[ "${rc_if}" ] || { echo "missing or incorrect /etc/$(basename "$0").interface"; exit 1; }
+read -r INTERFACE < "/etc/$(basename "$0").interface"
 
-rc_cmd="/usr/bin/dhcpcd -q -b ${rc_if}"
-rc_stop_cmd="/usr/bin/dhcpcd -q -x ${rc_if}"
+rc_start_cmd="/usr/bin/dhcpcd -q -b ${INTERFACE}"
+rc_stop_cmd="/usr/bin/dhcpcd -q -x ${INTERFACE}"
 
-. /etc/rc.conf
 . /etc/rc.subr
 
 rc_run "start stop restart status" $@
