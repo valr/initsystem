@@ -23,7 +23,7 @@ source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz
         'udev-hwdb.hook')
 md5sums=('41e19b70462692fefd072a3f38818b6e'
          'SKIP'
-         'd29b35a1d38a7f7686e016d8a1daec54'
+         'c3a8a02e2a981025084d40a5725e0eb6'
          '7fce0d7c0ecace6c34e44fe6e24470ee')
 
 build() {
@@ -37,7 +37,8 @@ build() {
     --enable-split-usr \
     --enable-introspection \
     --enable-hwdb \
-    --with-rootprefix=/usr
+    --with-rootprefix=/usr \
+    --enable-manpages
 
     make
 }
