@@ -3,7 +3,7 @@
 _pkgver=234.11
 
 pkgname=eudev
-pkgver=3.2.2
+pkgver=3.2.4
 pkgrel=1
 pkgdesc='device manager in userspace'
 url='https://wiki.gentoo.org/wiki/Project:Eudev'
@@ -21,7 +21,7 @@ source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
         'rc.d.eudev'
         'udev-hwdb.hook')
-md5sums=('41e19b70462692fefd072a3f38818b6e'
+md5sums=('66acef4c6094aab4aced7ae83b74b0d2'
          'SKIP'
          '7fe2f1e9e13f1cc0b02e92e873e67bd7'
          '7fce0d7c0ecace6c34e44fe6e24470ee')
