@@ -13,7 +13,7 @@ PARTITION_BOOT="/dev/nbd0p1"
 ROOT="/mnt"
 
 PACKAGES_SYSTEMD="
-../initsystem/busybox/busybox-1.27.1-1-x86_64.pkg.tar.xz
+../initsystem/busybox/busybox-1.27.2-1-x86_64.pkg.tar.xz
 ../initsystem/initramfs/initramfs-1.2.0-1-any.pkg.tar.xz
 ../initsystem/initsystem/initsystem-1.2.0-1-x86_64.pkg.tar.xz
 "
