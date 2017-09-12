@@ -20,14 +20,10 @@ replaces=('udev' 'libudev.so')
 source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
         'rc.d.eudev'
-        'initcpio_hooks'
-        'initcpio_install'
         'udev-hwdb.hook')
 md5sums=('41e19b70462692fefd072a3f38818b6e'
          'SKIP'
          'd29b35a1d38a7f7686e016d8a1daec54'
-         'fccfb30c927640b2cf50f97c6566562a'
-         '99c642e36a6da3ef1591a119eb0b4e7a'
          '7fce0d7c0ecace6c34e44fe6e24470ee')
 
 build() {
@@ -57,10 +53,8 @@ package() {
                s#GROUP="cdrom"#GROUP="optical"#g' "${RULES}"
   done
 
-  install -D -m 755 "${srcdir}"/rc.d.eudev       "${pkgdir}"/etc/rc.d/eudev
-  install -D -m 644 "${srcdir}"/initcpio_hooks   "${pkgdir}"/usr/lib/initcpio/hooks/udev
-  install -D -m 644 "${srcdir}"/initcpio_install "${pkgdir}"/usr/lib/initcpio/install/udev
-  install -D -m 644 "${srcdir}"/udev-hwdb.hook   "${pkgdir}"/usr/share/libalpm/hooks/udev-hwdb.hook
+  install -D -m 755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
+  install -D -m 644 "${srcdir}"/udev-hwdb.hook "${pkgdir}"/usr/share/libalpm/hooks/udev-hwdb.hook
 
   install -D -m 644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
