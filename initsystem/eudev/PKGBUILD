@@ -23,7 +23,7 @@ source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz
         'udev-hwdb.hook')
 md5sums=('41e19b70462692fefd072a3f38818b6e'
          'SKIP'
-         'c3a8a02e2a981025084d40a5725e0eb6'
+         '7fe2f1e9e13f1cc0b02e92e873e67bd7'
          '7fce0d7c0ecace6c34e44fe6e24470ee')
 
 build() {

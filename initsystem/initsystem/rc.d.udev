@@ -18,62 +18,22 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-export PATH=/opt/busybox
-export LC_ALL=C
-
-cd /
-umask 022
+rc_start_cmd="/usr/lib/systemd/systemd-udevd --daemon"
+rc_stop_cmd="/usr/bin/udevadm control --exit"
+rc_reload_cmd="/usr/bin/udevadm control --reload"
 
 . /etc/rc.subr
 
-start() {
-  pgrep -fx "/usr/lib/systemd/systemd-udevd --daemon" 1>/dev/null 2>/dev/null && return 0
-
+init() { # run by /etc/rc at startup time _after_ start
   STATUS=0
 
-  /usr/lib/systemd/systemd-udevd --daemon                 || STATUS=1
   /usr/bin/udevadm trigger --action=add --type=subsystems || STATUS=1
-  /usr/bin/udevadm trigger --action=add --type=devices    || STATUS=1
-  /usr/bin/udevadm settle --timeout=120                   || STATUS=1
+  /usr/bin/udevadm trigger --action=add --type=devices || STATUS=1
+  /usr/bin/udevadm settle || STATUS=1
 
   return $STATUS
 }
 
-_start() {
-  pgrep -fx "/usr/lib/systemd/systemd-udevd --daemon" 1>/dev/null 2>/dev/null && return 0
-
-  /usr/lib/systemd/systemd-udevd --daemon
-}
-
-stop() {
-  pgrep -fx "/usr/lib/systemd/systemd-udevd --daemon" 1>/dev/null 2>/dev/null || return 0
-
-  /usr/bin/udevadm control --exit
-
-  pwait "/usr/lib/systemd/systemd-udevd --daemon" 20
-}
-
-restart() {
-  stop
-  _start
-}
-
-reload() {
-  pgrep -fx "/usr/lib/systemd/systemd-udevd --daemon" 1>/dev/null 2>/dev/null || return 1
-
-  /usr/bin/udevadm control --reload
-}
-
-status() {
-  PID=$(pgrep -fx "/usr/lib/systemd/systemd-udevd --daemon" 2>/dev/null | tr '\n' ' ')
-
-  if [ "$PID" ]; then
-    echo "udev is started as pid: $PID"; return 0
-  else
-    echo "udev is stopped"; return 1
-  fi
-}
-
-rc_run "start stop restart reload status" $@
+rc_run "init start stop restart reload status" $@
 
 # vim: set filetype=sh:
