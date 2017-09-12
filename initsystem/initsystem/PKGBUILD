@@ -23,7 +23,7 @@ source=('init-og.c'
         'shutdown'
         'LICENSE')
 md5sums=('b3cf734052c09ec4b558a3454e31e571'
-         'e21801140329751e9c90859c46d48a32'
+         '68721a7c03150fcb7121bd7f98bb5963'
          '8e3a9f55141c20031e8546be9c096cc7'
          '1deddd37535712bac2ab4bb4f7fa9a43'
          'e29a5c5846c5515cf659255d23094337'

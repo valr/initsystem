@@ -75,9 +75,9 @@ fi
 echo "initscript: starting devices manager"
 
 if [ -x /etc/rc.d/eudev ]; then
-  /etc/rc.d/eudev start; /etc/rc.d/eudev init
+  /etc/rc.d/eudev start && /etc/rc.d/eudev init
 elif [ -x /etc/rc.d/udev ]; then
-  /etc/rc.d/udev start; /etc/rc.d/udev init
+  /etc/rc.d/udev start && /etc/rc.d/udev init
 fi
 
 ################################################################################
