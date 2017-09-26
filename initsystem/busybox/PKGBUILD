@@ -13,8 +13,8 @@ source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_suid')
         # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch
 md5sums=('476186f4bab81781dab2369bfd42734e'
-         'b266800c67850dcd0e9b5f92dd41b390'
-         'c35cf751778b57aefbab1280150b380e')
+         'c0624f9156430fdcc19208cc2bb1a634'
+         '50cb2db3501688a8c8e0a570e1ea3ed4')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -23,7 +23,9 @@ prepare() {
 #   patch -p1 <${PATCH}
 # done
 
-  sed -i '1,1i#include <sys/resource.h>' include/libbb.h
+  # temporary fix to avoid binutils ld segfault
+  # https://sourceware.org/bugzilla/show_bug.cgi?id=22199
+  sed -i 's/-Wl,-Map,$EXE.map//' scripts/trylink
 
   cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/nosuid
   cp "${srcdir}"/config_nosuid "${srcdir}"/nosuid/.config
@@ -34,10 +36,10 @@ prepare() {
 
 build() {
   cd "${srcdir}"/nosuid
-  make CFLAGS='-static -O -Wno-unused-result'
+  make
 
   cd "${srcdir}"/suid
-  make CFLAGS='-static -O -Wno-unused-result'
+  make
 }
 
 package() {
@@ -77,6 +79,8 @@ package() {
     ln -s /usr/bin/busybox-suid "${APPLET}"
   done
 
-  install -D -m 644 "${srcdir}"/nosuid/README  "${pkgdir}"/usr/share/doc/"${pkgname}"/README
+  install -D -m 644 "${srcdir}"/nosuid/README "${pkgdir}"/usr/share/doc/"${pkgname}"/README
   install -D -m 644 "${srcdir}"/nosuid/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
+
+# vim: set filetype=sh:
