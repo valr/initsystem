@@ -1,0 +1,12 @@
+#!/bin/sh
+
+rm -f initsystem.tar.gz
+
+( cd ..; make clean; make dist; mv initsystem.tar.gz archlinux; )
+
+updpkgsums
+makepkg -f
+
+rm -f initsystem.tar.gz
+
+# vim: set filetype=sh:

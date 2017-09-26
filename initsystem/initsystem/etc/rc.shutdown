@@ -39,6 +39,7 @@ fi
 # terminal settings ############################################################
 ################################################################################
 
+chvt 1
 stty sane < /dev/console
 echo ""
 
@@ -196,7 +197,7 @@ case $1 in
     ;;
 esac
 
-echo "error: unexpected shutdown condition, halting now"
+echo "error: unexpected shutdown option, halting now"
 /usr/bin/busybox halt -f
 
 # vim: set filetype=sh:

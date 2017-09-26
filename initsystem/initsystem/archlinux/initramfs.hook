@@ -12,7 +12,7 @@ Type = Package
 Target = busybox
 Target = dosfstools
 Target = e2fsprogs
-Target = initramfs
+Target = initsystem
 Target = mkinitcpio
 
 [Action]

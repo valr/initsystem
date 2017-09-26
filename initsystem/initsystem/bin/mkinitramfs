@@ -197,7 +197,7 @@ done
 
 echo "mkinitramfs: installing initscript"
 
-install -m755 /usr/lib/initramfs/initramfs $BASE/init
+install -m755 /usr/lib/initsystem/initramfs $BASE/init
 
 ################################################################################
 # initramfs ####################################################################

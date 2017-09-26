@@ -19,11 +19,9 @@ conflicts=('udev' 'libudev.so')
 replaces=('udev' 'libudev.so')
 source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
-        'rc.d.eudev'
         'udev-hwdb.hook')
 md5sums=('66acef4c6094aab4aced7ae83b74b0d2'
          'SKIP'
-         '7fe2f1e9e13f1cc0b02e92e873e67bd7'
          '7fce0d7c0ecace6c34e44fe6e24470ee')
 
 build() {
@@ -54,9 +52,7 @@ package() {
                s#GROUP="cdrom"#GROUP="optical"#g' "${RULES}"
   done
 
-  install -D -m 755 "${srcdir}"/rc.d.eudev     "${pkgdir}"/etc/rc.d/eudev
   install -D -m 644 "${srcdir}"/udev-hwdb.hook "${pkgdir}"/usr/share/libalpm/hooks/udev-hwdb.hook
-
   install -D -m 644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
 

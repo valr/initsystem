@@ -168,7 +168,7 @@ echo "initscript: setting volatile files and directories"
 if [ -x /usr/bin/tmpfiles ]; then
   /usr/bin/tmpfiles --exclude-prefix=/dev --create --remove --boot
 elif [ -x /usr/bin/systemd-tmpfiles ]; then
-  /usr/bin/systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
+  /usr/bin/systemd-tmpfiles --exclude-prefix=/dev --create --remove --boot
 fi
 
 ################################################################################
