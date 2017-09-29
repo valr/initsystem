@@ -133,7 +133,7 @@ add_binary() {
 add_binaries() {
   add_binary $1
 
-  for BINARY in $(/usr/bin/ldd $1 | grep -v 'linux-vdso.so.1' | awk '{print $(NF-1)}'); do
+  for BINARY in $(/usr/bin/ldd $1 | grep -o '/[^ ]\+'); do
     add_binary $BINARY
   done
 }
