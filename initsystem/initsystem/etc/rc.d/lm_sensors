@@ -26,11 +26,11 @@ rc_display_cmd="/usr/bin/sensors"
 . /etc/rc.subr
 
 rc_pre_start() {
-  /usr/bin/modprobe -a -b -s "${BUS_MODULES}" "${HWMON_MODULES}"
+  /usr/bin/modprobe -a -b -s ${BUS_MODULES} ${HWMON_MODULES}
 }
 
 rc_post_stop() {
-  /usr/bin/modprobe -a -b -s -r "${BUS_MODULES}" "${HWMON_MODULES}" || return 0
+  /usr/bin/modprobe -a -b -s -r ${BUS_MODULES} ${HWMON_MODULES} || return 0
 }
 
 rc_run "start stop display" $@
