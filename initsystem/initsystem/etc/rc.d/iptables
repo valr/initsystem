@@ -1,0 +1,14 @@
+#!/bin/ash
+
+rc_type="nodaemon"
+
+rc_start_cmd="/usr/bin/iptables-restore /etc/iptables/iptables.rules"
+rc_reload_cmd="/usr/bin/iptables-restore /etc/iptables/iptables.rules"
+rc_stop_cmd="/usr/lib/systemd/scripts/iptables-flush"
+rc_display_cmd="/usr/bin/iptables -L -v -n --line-numbers"
+
+. /etc/rc.d/rc.subr
+
+rc_run "start stop restart reload display" $@
+
+# vim: set filetype=sh:

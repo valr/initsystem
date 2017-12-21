@@ -169,10 +169,10 @@ int main (int argc, char **argv)
     if (getpid () != 1)
         return EXIT_FAILURE;
 
+    setsid ();
     reboot (RB_DISABLE_CAD);
     putenv ("PATH=/bin:/sbin:/usr/bin:/usr/sbin");
-    setsid ();
-    umask (S_IRWXG|S_IRWXO);
+    umask (S_IWGRP | S_IWOTH);
     chdir ("/");
 
     sigfillset (&signal_set);

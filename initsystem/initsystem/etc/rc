@@ -18,13 +18,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+. /etc/rc.conf
+
 export PATH=/opt/busybox
-export LC_ALL=C
-
-cd /
-umask 022
-
-. /etc/rc.subr
 
 ################################################################################
 # sanity check #################################################################
@@ -44,6 +40,7 @@ echo "initscript: mounting in-memory filesystems"
 mount -t proc -o nosuid,nodev,noexec proc /proc
 mount -t sysfs -o nosuid,nodev,noexec sys /sys
 mount -t tmpfs -o nosuid,nodev,mode=0755 run /run
+mkdir -p /run/tmpfiles.d
 mount -t devtmpfs -o nosuid,mode=0755 dev /dev
 mkdir -p /dev/pts
 mount -t devpts -o nosuid,noexec,gid=5,mode=0620,ptmxmode=0 pts /dev/pts
@@ -74,9 +71,9 @@ fi
 
 echo "initscript: starting devices manager"
 
-if [ -x /etc/rc.d/eudev ]; then
+if [ -x /usr/bin/udevd ]; then
   /etc/rc.d/eudev start && /etc/rc.d/eudev init
-elif [ -x /etc/rc.d/udev ]; then
+else
   /etc/rc.d/udev start && /etc/rc.d/udev init
 fi
 
@@ -108,12 +105,11 @@ done
 
 echo "initscript: setting static devices"
 
-mkdir -p /run/tmpfiles.d
 /usr/bin/kmod static-nodes --format=tmpfiles --output=/run/tmpfiles.d/kmod.conf
 
 if [ -x /usr/bin/tmpfiles ]; then
   /usr/bin/tmpfiles --prefix=/dev --create --boot
-elif [ -x /usr/bin/systemd-tmpfiles ]; then
+else
   /usr/bin/systemd-tmpfiles --prefix=/dev --create --boot
 fi
 
@@ -167,7 +163,7 @@ echo "initscript: setting volatile files and directories"
 
 if [ -x /usr/bin/tmpfiles ]; then
   /usr/bin/tmpfiles --exclude-prefix=/dev --create --remove --boot
-elif [ -x /usr/bin/systemd-tmpfiles ]; then
+else
   /usr/bin/systemd-tmpfiles --exclude-prefix=/dev --create --remove --boot
 fi
 
@@ -204,8 +200,7 @@ dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
 echo "initscript: starting services"
 
 for SERVICE in $SERVICES; do
-  echo $SERVICE
-  /etc/rc.d/$SERVICE start
+  /etc/rc.d/$SERVICE has start && /etc/rc.d/$SERVICE start
 done
 
 ################################################################################
@@ -230,7 +225,7 @@ fi
 
 echo "initscript: running local script"
 
-. /etc/rc.local
+/etc/rc.local
 
 ################################################################################
 # dmesg ########################################################################

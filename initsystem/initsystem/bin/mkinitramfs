@@ -68,7 +68,7 @@ trap 'rm -rf $BASE; echo "mkinitramfs: an error has occurred, aborting!"; exit 1
 # directory structure ##########################################################
 ################################################################################
 
-echo "mkinitramfs: installing directory structure"
+echo "mkinitramfs: creating directory structure"
 
 for DIRECTORY in bin dev etc etc/modprobe.d lib lib64 mnt newroot proc root \
                  run sbin sys tmp usr usr/bin usr/lib usr/lib64 usr/sbin var; do
@@ -79,7 +79,7 @@ done
 # configuration files ##########################################################
 ################################################################################
 
-echo "mkinitramfs: installing configuration files"
+echo "mkinitramfs: copying configuration files"
 
 echo "root:x:0:0:root:/root:/bin/ash" > $BASE/etc/passwd
 
@@ -99,7 +99,7 @@ install -m644 /etc/localtime $BASE/etc/localtime
 # statically linked binaries ###################################################
 ################################################################################
 
-echo "mkinitramfs: installing statically linked binaries"
+echo "mkinitramfs: copying statically linked binaries"
 
 install -m755 /usr/bin/busybox $BASE/usr/bin/busybox
 install -m4755 /usr/bin/busybox-suid $BASE/usr/bin/busybox-suid
@@ -114,7 +114,7 @@ done
 # dynamically linked binaries ##################################################
 ################################################################################
 
-echo "mkinitramfs: installing dynamically linked binaries"
+echo "mkinitramfs: copying dynamically linked binaries"
 
 add_binary() {
   FILE=$(readlink -f $1)
@@ -150,7 +150,7 @@ done
 
 VERSION=$(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.img | grep -m 1 'usr/lib/modules/' | awk -F / '{print $4}')
 
-echo "mkinitramfs: installing kernel modules and firmwares ($VERSION)"
+echo "mkinitramfs: copying kernel modules and firmwares ($VERSION)"
 
 add_module() {
   REGEXP=$(basename $1 | sed 's/[-_]/[\\-_]/g')
@@ -195,7 +195,7 @@ done
 # initscript ###################################################################
 ################################################################################
 
-echo "mkinitramfs: installing initscript"
+echo "mkinitramfs: copying initscript"
 
 install -m755 /usr/lib/initsystem/initramfs $BASE/init
 

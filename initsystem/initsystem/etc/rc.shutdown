@@ -18,13 +18,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+. /etc/rc.conf
+
 export PATH=/opt/busybox
-export LC_ALL=C
-
-cd /
-umask 022
-
-. /etc/rc.subr
 
 ################################################################################
 # sanity check #################################################################
@@ -34,6 +30,42 @@ if [ $PPID != 1 ]; then
   echo "shutdown: this script should have ppid 1"
   exit 1
 fi
+
+################################################################################
+# functions ####################################################################
+################################################################################
+
+pidwait() {
+  for i in $(seq $2); do
+    STATUS=0
+
+    for PID in $1; do
+      kill -CONT $PID 1>/dev/null 2>/dev/null && STATUS=1
+    done
+
+    if [ $STATUS -eq 0 ]; then
+      return 0
+    fi
+
+    sleep .25
+  done
+
+  return 1
+}
+
+pidwait5() {
+  for i in $(seq $1); do
+    killall5 -CONT 1>/dev/null 2>/dev/null
+
+    if [ $? -eq 2 ]; then
+      return 0
+    fi
+
+    sleep .25
+  done
+
+  return 1
+}
 
 ################################################################################
 # terminal settings ############################################################
@@ -64,7 +96,7 @@ fi
 
 echo "shutdown: running local shutdown script"
 
-. /etc/rc.shutdown.local
+/etc/rc.shutdown.local
 
 ################################################################################
 # services #####################################################################
@@ -79,19 +111,18 @@ for SERVICE in $SERVICES; do
 done
 
 for SERVICE in $REVERSE_SERVICES; do
-  echo $SERVICE
-  /etc/rc.d/$SERVICE stop
+  /etc/rc.d/$SERVICE has stop && /etc/rc.d/$SERVICE stop
 done
 
 ################################################################################
 # devices ######################################################################
 ################################################################################
 
-echo "shutdown: stopping devices manager"
+# echo "shutdown: stopping devices manager"
 
-if [ -x /etc/rc.d/eudev ]; then
+if [ -x /usr/bin/udevd ]; then
   /etc/rc.d/eudev stop
-elif [ -x /etc/rc.d/udev ]; then
+else
   /etc/rc.d/udev stop
 fi
 

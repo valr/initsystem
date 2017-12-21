@@ -19,10 +19,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin
-export LC_ALL=C
-
-cd /
-umask 022
 
 ################################################################################
 # sanity check #################################################################

@@ -1,15 +1,15 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_pkgver=234.11
+_pkgver=236.0
 
 pkgname=eudev
-pkgver=3.2.4
+pkgver=3.2.5
 pkgrel=1
 pkgdesc='device manager in userspace'
 url='https://wiki.gentoo.org/wiki/Project:Eudev'
 license=('GPL2')
 groups=('initsystem')
-arch=('i686' 'x86_64')
+arch=('x86_64')
 backup=('etc/udev/udev.conf')
 depends=('glib2' 'kmod' 'util-linux')
 makedepends=('gobject-introspection' 'gperf')
@@ -20,7 +20,7 @@ replaces=('udev' 'libudev.so')
 source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
         'udev-hwdb.hook')
-md5sums=('66acef4c6094aab4aced7ae83b74b0d2'
+md5sums=('6ca08c0e14380f87df8e8aceac123671'
          'SKIP'
          '7fce0d7c0ecace6c34e44fe6e24470ee')
 

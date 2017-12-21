@@ -6,7 +6,7 @@ pkgrel=1
 pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
-arch=('i686' 'x86_64')
+arch=('x86_64')
 groups=('initsystem')
 source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
@@ -22,10 +22,6 @@ prepare() {
 # for PATCH in "${srcdir}"/*.patch; do
 #   patch -p1 <${PATCH}
 # done
-
-  # temporary fix to avoid binutils ld segfault
-  # https://sourceware.org/bugzilla/show_bug.cgi?id=22199
-  sed -i 's/-Wl,-Map,$EXE.map//' scripts/trylink
 
   cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/nosuid
   cp "${srcdir}"/config_nosuid "${srcdir}"/nosuid/.config
