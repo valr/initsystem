@@ -9,19 +9,19 @@ Installation
 Build all the packages in the _initsystem_ and _pkgbuild_ directories.
 
 
-Install the _busybox_ and _initsystem_ packages.
-Configure your hostname, keymap, font and services in /etc/rc.conf.
-Configure your bootloader to use init=/sbin/init-og.
+Install the _busybox_ and _initsystem_ packages.  
+Configure your hostname, keymap, font and services in /etc/rc.conf.  
+Configure your bootloader to use init=/sbin/init-og console=tty1.
 
 
 Reboot into your new initsystem.
 
 
-Install _eudev_, _opentmpfiles_ and _systemd-minimal_ packages. This will replace systemd and libsystemd.
+Install _eudev_, _opentmpfiles_ and _systemd-minimal_ packages. This will replace systemd and libsystemd.  
 Install all the packages from the _pkgbuild/core_ directory.
 
 
-Additionally, you should add 'initsystem' in the IgnoreGroup entry of /etc/pacman.conf to avoid unneeded upgrade of the packages.
+Additionally, you should add 'initsystem' in the IgnoreGroup entry of /etc/pacman.conf to avoid unneeded upgrade of the packages.  
 All packages from the _pkgbuild_ directory should be added to the IgnorePkg entry for the same reason.
 
 Work in progress:
