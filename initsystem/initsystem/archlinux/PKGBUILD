@@ -13,7 +13,7 @@ backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 depends=('busybox' 'dosfstools' 'e2fsprogs' 'kbd' 'kmod' 'mkinitcpio')
 source=('initsystem.tar.gz'
         'initramfs.hook')
-md5sums=('c06dec9b7570e1720be816b57f77d502'
+md5sums=('e72533d5a932b55fc0359bf3fc17f43b'
          '99bddb8bbebf8cde84a44ba7b775fb6b')
 
 build() {

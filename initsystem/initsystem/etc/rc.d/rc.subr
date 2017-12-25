@@ -51,7 +51,9 @@ start() {
   fi
 
   type rc_pre_start 1>/dev/null && { rc_pre_start || return; }
+
   ash -c "${rc_env} ${rc_start_cmd}" || return
+
   type rc_post_start 1>/dev/null && { rc_post_start || return; }
 
   return 0
@@ -67,7 +69,13 @@ stop() {
   fi
 
   type rc_pre_stop 1>/dev/null && { rc_pre_stop || return; }
-  ash -c "${rc_env} ${rc_stop_cmd}"; pwait "${rc_start_cmd}" 20 || return
+
+  ash -c "${rc_env} ${rc_stop_cmd}"
+
+  if [ "${rc_type:-daemon}" = "daemon" ]; then
+    pwait "${rc_start_cmd}" 20 || return
+  fi
+
   type rc_post_stop 1>/dev/null && { rc_post_stop || return; }
 
   return 0
