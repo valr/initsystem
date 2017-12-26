@@ -4,8 +4,7 @@ rm -f initsystem.tar.gz
 
 ( cd ..; make clean; make dist; mv initsystem.tar.gz archlinux; )
 
-updpkgsums
-makepkg -f
+makepkg -f --skipchecksums
 
 rm -f initsystem.tar.gz
 
