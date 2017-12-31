@@ -47,10 +47,10 @@ build() {
   ninja -C build
 }
 
-#check() {
-#  cd build
-#  meson test
-#}
+check() {
+  cd build
+  meson test
+}
 
 package() {
   DESTDIR="$pkgdir" ninja -C build install
