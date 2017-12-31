@@ -1,0 +1,61 @@
+# $Id$
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Contributor: Ionut Biru <ibiru@archlinux.org>
+
+pkgname=colord
+pkgver=1.4.1+6+gf08c25d
+pkgrel=1
+pkgdesc="System daemon for managing color devices"
+arch=(x86_64)
+url="https://www.freedesktop.org/software/colord"
+license=(GPL2)
+depends=(lcms2 libgusb polkit sqlite systemd dconf dbus libgudev shared-mime-info)
+makedepends=(gobject-introspection vala sane bash-completion argyllcms git docbook-utils
+             docbook-sgml perl-sgmls meson gtk-doc)
+optdepends=('sane: scanner support'
+            'argyllcms: color profiling')
+replaces=(shared-color-profiles)
+options=(!emptydirs)
+_commit=f08c25ddd93ad3fa691172119a038465cd178420  # master
+source=("git+https://github.com/hughsie/colord#commit=$_commit"
+        0001-Make-cd_color_get_blackbody_rgb_full-safer.patch
+        0002-Avoid-buffer-overflow-when-reading-profile_id.patch)
+sha256sums=('SKIP'
+            'b804aa00631040fff7032af12c2c92c1b6de42b7adfd8d05671257071ef348ce'
+            'db50941a8f35f819123f4dac55269acf6e1916287c69087e69d506499c0ee974')
+validpgpkeys=('163EB50119225DB3DF8F49EA17ACBA8DFA970E17')
+
+pkgver() {
+  cd $pkgname
+  git describe --tags | sed 's/-/+/g'
+}
+
+prepare() {
+  cd $pkgname
+  patch -Np1 -i ../0001-Make-cd_color_get_blackbody_rgb_full-safer.patch
+  patch -Np1 -i ../0002-Avoid-buffer-overflow-when-reading-profile_id.patch
+}
+
+build() {
+  arch-meson $pkgname build \
+    -Denable-systemd=false \
+    -Denable-libcolordcompat=true \
+    -Denable-sane=true \
+    -Denable-vala=true \
+    -Denable-print-profiles=true \
+    -Dwith-daemon-user=colord
+  ninja -C build
+}
+
+#check() {
+#  cd build
+#  meson test
+#}
+
+package() {
+  DESTDIR="$pkgdir" ninja -C build install
+  echo 'u colord - "Color management daemon" /var/lib/colord' |
+    install -Dm644 /dev/stdin "$pkgdir/usr/lib/sysusers.d/$pkgname.conf"
+}
+
+# vim:set ts=2 sw=2 et:
