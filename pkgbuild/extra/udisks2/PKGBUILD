@@ -26,6 +26,7 @@ prepare() {
 
 build() {
   cd udisks-udisks-$pkgver
+  export PYTHONPATH="/usr/share/glib-2.0"
   ./autogen.sh --prefix=/usr --sysconfdir=/etc \
       --sbindir=/usr/bin --libexecdir=/usr/lib \
       --with-systemdsystemunitdir=/usr/lib/systemd/system \
