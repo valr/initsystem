@@ -32,6 +32,7 @@ pkgver() {
 
 build() {
   cd $pkgbase
+  export PYTHONPATH="/usr/share/glib-2.0"
   ./configure --prefix=/usr --sysconfdir=/etc \
       --localstatedir=/var --disable-static \
       --libexecdir=/usr/lib/gvfs \
