@@ -28,4 +28,3 @@ All packages from the _pkgbuild_ directory should be added to the IgnorePkg entr
 Work in progress:
 
 - review/rework/clean the configuration directory
-- review pkgbuild/extra directory
