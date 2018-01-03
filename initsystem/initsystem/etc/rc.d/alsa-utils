@@ -1,0 +1,12 @@
+#!/bin/ash
+
+rc_type="nodaemon"
+
+rc_start_cmd="/usr/bin/alsactl restore"
+rc_stop_cmd="/usr/bin/alsactl store"
+
+. /etc/rc.d/rc.subr
+
+rc_run "start stop restart" $@
+
+# vim: set filetype=sh:
