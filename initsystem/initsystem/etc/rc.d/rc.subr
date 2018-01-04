@@ -123,7 +123,7 @@ _rc_run() {
 
   "$1"; STATUS=$?
 
-  if [ "$1" != "status" ]; then
+  if [ "$1" != "display" -a "$1" != "status" ]; then
     if [ $STATUS -eq 0 ]; then
       echo "$(basename "$0") ($1) ok"
     else
