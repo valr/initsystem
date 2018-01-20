@@ -3,8 +3,8 @@
 _repo=http://mir.archlinux.fr/core/os/x86_64
 
 pkgname='systemd-minimal'
-pkgver=236.0 # don't forget to update eudev _pkgver
-pkgrel=2
+pkgver=236.81 # don't forget to update eudev _pkgver
+pkgrel=1
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
@@ -19,7 +19,7 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-x86_64.pkg.tar.xz"
         'systemd-compare'
         'systemd-compare-pre.hook'
         'systemd-compare-post.hook')
-md5sums=('456f3f680c34f883da87a4d410f08c21'
+md5sums=('687a8482e1a4b8bca0d7fb83f6aa4f88'
          'SKIP'
          '26d002e78277eec2b8615d8c4a9c40c7'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
