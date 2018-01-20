@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/usr/bin/mkdir -p /var/cache/man
+[ -x /usr/bin/mandb ] && /usr/bin/mandb 2>&1 | /usr/bin/logger -t mandb
