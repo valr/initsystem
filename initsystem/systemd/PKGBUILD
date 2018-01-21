@@ -2,7 +2,7 @@
 
 _repo=http://mir.archlinux.fr/core/os/x86_64
 
-pkgname='systemd-minimal'
+pkgname='systemd'
 pkgver=236.81 # don't forget to update eudev _pkgver
 pkgrel=1
 pkgdesc='minimal configuration from systemd'
@@ -26,7 +26,7 @@ md5sums=('687a8482e1a4b8bca0d7fb83f6aa4f88'
          'd4cd8fbed18cf41de43c77d720d81367')
 
 # The idea of this package is to keep the required non-binary files from 
-# the systemd original package to avoid recreating and maintaining them by hand
+# the systemd original package to avoid recreating and maintaining them manually
 
 package() {
 
