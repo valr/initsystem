@@ -143,33 +143,23 @@ umask 022
 # filesystems ##################################################################
 ################################################################################
 
-echo "shutdown: syncing filesystems"
-
-sync; sleep 1
-
-echo "shutdown: unmounting swap-backed filesystems"
-
-cat /proc/self/mounts | cut -d ' ' -f 2,3 | sort -r -k1,1 | \
-while read -r MOUNT TYPE; do
-  case $MOUNT in
-    /|/proc|/sys|/run|/dev|/dev/pts) ;;
-    *) [ $TYPE = 'tmpfs' ] && umount -r $MOUNT ;;
-  esac
-done
-
 echo "shutdown: deactivating swap"
 
 swapoff -a
+sync
 
 echo "shutdown: unmounting filesystems"
 
 cat /proc/self/mounts | cut -d ' ' -f 2 | sort -r | \
 while read -r MOUNT; do
-  case $MOUNT in
+  case "$MOUNT" in
     /|/proc|/sys|/run|/dev|/dev/pts) ;;
-    *) umount -r $MOUNT ;;
+    *) echo "unmounting $MOUNT"
+       umount -r "$MOUNT" || { sleep 10; umount -l "$MOUNT"; sleep 10; }
+       ;;
   esac
 done
+sync
 
 echo "shutdown: remounting root filesystem read-only"
 
