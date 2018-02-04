@@ -1,0 +1,9 @@
+#!/bin/ash
+
+rc_start_cmd="/usr/bin/ntpd -g -p /run/ntpd.pid -u ntp:ntp"
+
+. /etc/rc.d/rc.subr
+
+rc_run "start stop restart status" $@
+
+# vim: set filetype=sh:
