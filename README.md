@@ -17,7 +17,7 @@ Configure your bootloader to use init=/sbin/init-og.
 Reboot into your new initsystem.
 
 
-Install _eudev_, _opentmpfiles_ and _systemd-minimal_ packages. This will replace systemd and libsystemd.  
+Install _eudev_, _opentmpfiles_ and _systemd_ (minimal) packages. This will replace systemd and libsystemd.  
 Install all the packages from the _pkgbuild/core_ directory.  
 If needed, build and install the packages in the _pkgbuild/extra_ directory (follow the dependencies).
 
