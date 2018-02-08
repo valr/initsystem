@@ -1,10 +1,13 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_repo=http://mir.archlinux.fr/core/os/x86_64
+case "${CARCH}" in
+  x86_64) _repo=http://mir.archlinux.fr/core/os/x86_64 ;;
+  aarch64) _repo=http://fr.mirror.archlinuxarm.org/aarch64/core ;;
+esac
 
 pkgname='systemd'
-pkgver=236.81 # don't forget to update eudev _pkgver
-pkgrel=1
+pkgver=237.0 # don't forget to update eudev _pkgver
+pkgrel=2
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
@@ -14,12 +17,12 @@ depends=('bash')
 provides=("systemd=${pkgver}" 'libsystemd')
 conflicts=('systemd' 'libsystemd')
 replaces=('systemd' 'libsystemd')
-source=("${_repo}/systemd-${pkgver}-${pkgrel}-x86_64.pkg.tar.xz"
-        "${_repo}/systemd-${pkgver}-${pkgrel}-x86_64.pkg.tar.xz.sig"
+source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
+        "${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz.sig"
         'systemd-compare'
         'systemd-compare-pre.hook'
         'systemd-compare-post.hook')
-md5sums=('687a8482e1a4b8bca0d7fb83f6aa4f88'
+md5sums=('f4629e3689586e7208776f1ba27c7787'
          'SKIP'
          '26d002e78277eec2b8615d8c4a9c40c7'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'

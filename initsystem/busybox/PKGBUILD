@@ -6,7 +6,7 @@ pkgrel=1
 pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
-arch=('x86_64')
+arch=('x86_64' 'aarch64')
 groups=('initsystem')
 source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'

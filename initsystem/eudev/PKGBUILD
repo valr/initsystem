@@ -1,6 +1,6 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_pkgver=236.81
+_pkgver=237.0
 
 pkgname=eudev
 pkgver=3.2.5
@@ -9,7 +9,7 @@ pkgdesc='device manager in userspace'
 url='https://wiki.gentoo.org/wiki/Project:Eudev'
 license=('GPL2')
 groups=('initsystem')
-arch=('x86_64')
+arch=('x86_64' 'aarch64')
 backup=('etc/udev/udev.conf')
 depends=('glib2' 'kmod' 'util-linux')
 makedepends=('gobject-introspection' 'gperf')
