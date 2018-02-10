@@ -18,4 +18,4 @@ Target = mkinitcpio
 [Action]
 Description = Rebuilding initramfs
 When = PostTransaction
-Exec = /bin/bash -c 'for PRESET in /etc/mkinitcpio.d/*.preset; do mkinitramfs $(basename "${PRESET}" .preset); done'
+Exec = /usr/share/libalpm/scripts/99-initramfs

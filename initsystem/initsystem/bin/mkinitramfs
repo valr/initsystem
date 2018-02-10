@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2017 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2018 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 # Howto extract the initramfs content:
-# gunzip initramfs-linux.cpio.gz
-# busybox cpio -i -d -H newc -F initramfs-linux.cpio
+# gunzip initramfs-linux.img.cpio.gz
+# busybox cpio -i -d -H newc -F initramfs-linux.img.cpio
 
 export PATH=/opt/busybox
 export LC_ALL=C
@@ -40,14 +40,14 @@ fi
 # parameters ###################################################################
 ################################################################################
 
-LINUX=$1
+IMAGE=$1
 
-if [ ! -e /etc/mkinitcpio.d/$LINUX.preset ]; then
-  echo "mkinitramfs: $LINUX is not a .preset file in /etc/mkinitcpio.d"
+if [ ! -e $IMAGE ]; then
+  echo "mkinitramfs: $IMAGE does not exist"
   exit 1
 fi
 
-echo ">>> generating /boot/initramfs-$LINUX.cpio.gz <<<"
+echo ">>> generating $IMAGE.cpio.gz <<<"
 
 ################################################################################
 # base directory ###############################################################
@@ -148,7 +148,7 @@ done
 # modules and firmwares ########################################################
 ################################################################################
 
-VERSION=$(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.img | grep -m 1 'usr/lib/modules/' | awk -F / '{print $4}')
+VERSION=$(/usr/bin/lsinitramfs $IMAGE | grep -m 1 'usr/lib/modules/' | awk -F / '{print $4}')
 
 echo "mkinitramfs: copying kernel modules and firmwares ($VERSION)"
 
@@ -174,7 +174,7 @@ add_firmware() {
   fi
 }
 
-for FILE in $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.img); do
+for FILE in $(/usr/bin/lsinitramfs $IMAGE); do
   case $FILE in
     usr/lib/modules/*.ko*) add_module $FILE ;;
     usr/lib/firmware/*) add_firmware ${FILE#usr} ;;
@@ -208,27 +208,22 @@ echo "mkinitramfs: generating initramfs archive"
 cd $BASE
 
 umask 077
-find . | cpio -o -H newc | gzip > /tmp/initramfs-$LINUX.cpio.gz
+find . | cpio -o -H newc | gzip > $IMAGE.cpio.gz
 umask 022
 
 cd ..
 
-echo "mkinitramfs: installing initramfs archive"
-
-install -m600 /tmp/initramfs-$LINUX.cpio.gz /boot/initramfs-$LINUX.cpio.gz
-
 echo "mkinitramfs: cleaning temporary files"
 
-rm -f /tmp/initramfs-$LINUX.cpio.gz
 rm -rf $BASE
 
 echo "mkinitramfs: listing summary of initramfs archive"
 
-echo "configuration files $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E -c '^(etc)')"
-echo "binaries $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E -c '^(bin|sbin|usr/bin|usr/sbin)')"
-echo "libraries $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E '^(lib|lib64|usr/lib|usr/lib64)' | grep -v -E -c '^lib/(firmware|modules)')"
-echo "modules $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E -c '^(lib/modules)')"
-echo "firmwares $(/usr/bin/lsinitramfs /boot/initramfs-$LINUX.cpio.gz | grep -E -c '^(lib/firmware)')"
+echo "configuration files $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E -c '^(etc)')"
+echo "binaries $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E -c '^(bin|sbin|usr/bin|usr/sbin)')"
+echo "libraries $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E '^(lib|lib64|usr/lib|usr/lib64)' | grep -v -E -c '^lib/(firmware|modules)')"
+echo "modules $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E -c '^(lib/modules)')"
+echo "firmwares $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E -c '^(lib/firmware)')"
 
 echo ">>> generation done <<<"
 

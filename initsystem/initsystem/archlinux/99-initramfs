@@ -1,0 +1,13 @@
+#!/bin/bash
+
+for FILE in /etc/mkinitcpio.d/*.preset; do
+
+  . "${FILE}"
+
+  for PRESET in "${PRESETS[@]}"; do
+    eval IMAGE="\${${PRESET}_image}"
+    mkinitramfs "${IMAGE}"
+  done
+done
+
+# vim: set filetype=sh:
