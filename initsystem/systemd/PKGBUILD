@@ -22,7 +22,7 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
         'systemd-compare'
         'systemd-compare-pre.hook'
         'systemd-compare-post.hook')
-md5sums=('f4629e3689586e7208776f1ba27c7787'
+md5sums=('031656076f88646cb2c36898a4ae3bca'
          'SKIP'
          '26d002e78277eec2b8615d8c4a9c40c7'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
