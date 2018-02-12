@@ -12,8 +12,8 @@ arch=('x86_64' 'aarch64')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 depends=('busybox' 'dosfstools' 'e2fsprogs' 'kbd' 'kmod' 'mkinitcpio')
 source=('initsystem.tar.gz'
-        '99-initramfs.hook'
-        '99-initramfs')
+        'zz-initramfs.hook'
+        'zz-initramfs')
 md5sums=('f7034ffb86641ab6c3460b9c99a1733e'
          '39683887ba00051a8aab753b62f3f73a'
          'fb944467dc23a750b051f09284a02dd1')
@@ -25,8 +25,8 @@ build() {
 package() {
   make bindir=/usr/bin sbindir=/usr/bin DESTDIR="${pkgdir}" install
 
-  install -D -m 644 99-initramfs.hook "${pkgdir}"/usr/share/libalpm/hooks/99-initramfs.hook
-  install -D -m 755 99-initramfs "${pkgdir}"/usr/share/libalpm/scripts/99-initramfs
+  install -D -m 644 zz-initramfs.hook "${pkgdir}"/usr/share/libalpm/hooks/zz-initramfs.hook
+  install -D -m 755 zz-initramfs "${pkgdir}"/usr/share/libalpm/scripts/zz-initramfs
   install -D -m 644 LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
 

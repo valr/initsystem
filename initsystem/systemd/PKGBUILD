@@ -20,8 +20,8 @@ replaces=('systemd' 'libsystemd')
 source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
         "${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz.sig"
         'systemd-compare'
-        'systemd-compare-pre.hook'
-        'systemd-compare-post.hook')
+        'aa-systemd-compare-pre.hook'
+        'zz-systemd-compare-post.hook')
 md5sums=('83f719d46cf68600984da540cdf174af'
          'SKIP'
          '26d002e78277eec2b8615d8c4a9c40c7'
@@ -60,8 +60,8 @@ package() {
   # systemd-compare tool
 
   install -D -m 755 "${srcdir}"/systemd-compare "${pkgdir}"/usr/share/libalpm/scripts/systemd-compare
-  install -D -m 644 "${srcdir}"/systemd-compare-pre.hook "${pkgdir}"/usr/share/libalpm/hooks/aaa-systemd-compare-pre.hook
-  install -D -m 644 "${srcdir}"/systemd-compare-post.hook "${pkgdir}"/usr/share/libalpm/hooks/zzz-systemd-compare-post.hook
+  install -D -m 644 "${srcdir}"/aa-systemd-compare-pre.hook "${pkgdir}"/usr/share/libalpm/hooks/aa-systemd-compare-pre.hook
+  install -D -m 644 "${srcdir}"/zz-systemd-compare-post.hook "${pkgdir}"/usr/share/libalpm/hooks/zz-systemd-compare-post.hook
 }
 
 # vim: set filetype=sh:
