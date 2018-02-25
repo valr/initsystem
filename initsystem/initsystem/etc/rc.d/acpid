@@ -1,0 +1,9 @@
+#!/bin/ash
+
+rc_start_cmd="/usr/bin/acpid -n"
+
+. /etc/rc.d/rc.subr
+
+rc_run "start stop restart reload status" $@
+
+# vim: set filetype=sh:
