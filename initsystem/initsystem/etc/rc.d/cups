@@ -1,0 +1,14 @@
+#!/bin/ash
+
+rc_start_cmd="/usr/bin/cupsd -C /etc/cups/cupsd.conf -s /etc/cups/cups-files.conf"
+
+rc_pre_start() {
+  # cupsd re-executes itself at startup time replacing option -c with -C
+  rc_start_cmd="${rc_start_cmd/\-C/-c}"
+}
+
+. /etc/rc.d/rc.subr
+
+rc_run "start stop restart status" $@
+
+# vim: set filetype=sh:
