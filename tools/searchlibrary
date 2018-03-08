@@ -8,39 +8,32 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 searchfile() {
-  LIBRARY=$(readelf -d "$2" 2>/dev/null | grep library | grep "$1" | cut -d ':' -f 2 | tr -d '[]' | tr -d ' ')
+  LIBRARY=$(readelf -d "$1" 2>/dev/null | grep library | grep "$2" | cut -d ':' -f 2 | tr -d '[]' | tr -d ' ')
 
   if [ "${LIBRARY}" -a "${LIBRARY}" != "" ]; then
-    PACKAGE=$(pkgfile "$2")
-    echo "library ${LIBRARY} used by file $2 contained in package ${PACKAGE}"
+    PACKAGE=$(pkgfile "$1")
+    echo "library ${LIBRARY} used by file $1 contained in package ${PACKAGE}"
   fi
 }
 
 searchdirectory() {
   for FILE in $(find "$1" -type f); do
-    searchfile "$2" "${FILE}"
+    searchfile "${FILE}" "$2"
   done
 }
 
 case $# in
   1)
-    echo ""
-    echo "scanning for $1 in /usr/bin"
-    echo ""
-    searchdirectory "/usr/bin" "$1" | sort -k2 | column -t -o ' '
+    for DIRECTORY in /usr/bin /usr/lib /usr/lib32; do
+      echo ""
+      echo "scanning for $1 in ${DIRECTORY}"
+      echo ""
 
-    echo ""
-    echo "scanning for $1 in /usr/lib"
-    echo ""
-    searchdirectory "/usr/lib" "$1" | sort -k2 | column -t -o ' '
-
-    echo ""
-    echo "scanning for $1 in /usr/lib32"
-    echo ""
-    searchdirectory "/usr/lib32" "$1" | sort -k2 | column -t -o ' '
+      searchdirectory "${DIRECTORY}" "$1" | sort -k2 | column -t -o ' '
+    done
     ;;
   2)
-    searchfile "$1" "$2"
+    searchfile "$2" "$1"
     ;;
   *)
     echo "usage: $(basename "$0") identifier <file>"
