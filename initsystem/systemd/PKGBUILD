@@ -24,7 +24,7 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
         'zz-systemd-compare-post.hook')
 md5sums=('f57a15ebd0a4294897175b7615181a62'
          'SKIP'
-         '26d002e78277eec2b8615d8c4a9c40c7'
+         '2dc705c1094e262d536e6a6d1921fe26'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
          'd4cd8fbed18cf41de43c77d720d81367')
 

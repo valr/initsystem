@@ -5,39 +5,39 @@ export TMPDIR=/tmp/systemd-compare
 export SYSTEMDDIR="/usr/lib/systemd/system /usr/lib/systemd/user /usr/lib/sysusers.d"
 
 prepare_files() {
-  mkdir -p "$TMPDIR/$1/$2"
-  find "$2" -type f -readable -exec cp --parents '{}' "$TMPDIR/$1" \;
+  mkdir -p "${TMPDIR}/$1/$2"
+  find "$2" -type f -readable -exec cp --parents '{}' "${TMPDIR}/$1" \;
 }
 
 compare_files() {
-  [ -d "$TMPDIR/$1" ] || return 0
-  [ -d "$TMPDIR/$2" ] || return 0
+  [ -d "${TMPDIR}/$1" ] || return 0
+  [ -d "${TMPDIR}/$2" ] || return 0
 
-  diff -qr "$TMPDIR/$1" "$TMPDIR/$2" | \
-    sed "s|Only in $TMPDIR/$1|Removed  |;
-         s|Only in $TMPDIR/$2|Added    |;
-         s|: |/|;
-         s|Files $TMPDIR/$1|Modified |;
-         s| and .* differ||;"
+  diff -qr "${TMPDIR}/$1" "${TMPDIR}/$2" | \
+  sed "s|Only in ${TMPDIR}/$1|Removed  |;
+       s|Only in ${TMPDIR}/$2|Added    |;
+       s|: |/|;
+       s|Files ${TMPDIR}/$1|Modified |;
+       s| and .* differ||;"
 
   return ${PIPESTATUS[0]}
 }
 
 case "$1" in
   pre)
-    rm -rf "$TMPDIR"
+    rm -rf "${TMPDIR}"
 
-    for DIR in $SYSTEMDDIR; do
-      prepare_files pre "$DIR"
+    for DIR in ${SYSTEMDDIR}; do
+      prepare_files pre "${DIR}"
     done
     ;;
   post)
-    for DIR in $SYSTEMDDIR; do
-      prepare_files post "$DIR"
+    for DIR in ${SYSTEMDDIR}; do
+      prepare_files post "${DIR}"
     done
 
     RC=$?
-    compare_files pre post && rm -rf "$TMPDIR"
+    compare_files pre post && rm -rf "${TMPDIR}"
     exit $RC
     ;;
   *)
