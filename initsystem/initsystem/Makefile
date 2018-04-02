@@ -1,11 +1,10 @@
-
 bindir ?= /bin
 sysconfdir = /etc # required by init-og and initscripts
 libexecdir = /usr/lib/initsystem # required by mkinitramfs
 sbindir ?= /sbin
 
 CC ?= gcc
-CFLAGS ?= -Wall -static
+CFLAGS ?= -O2 -Wall -static
 
 all: sbin/init-og
 
