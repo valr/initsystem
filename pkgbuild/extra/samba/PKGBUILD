@@ -10,8 +10,8 @@
 
 pkgbase=samba
 pkgname=('libwbclient' 'smbclient' 'samba')
-pkgver=4.8.0
-pkgrel=2
+pkgver=4.8.1
+pkgrel=1
 arch=(x86_64)
 url="http://www.samba.org"
 license=('GPL3')
@@ -23,19 +23,14 @@ source=(http://us1.samba.org/samba/ftp/stable/${pkgbase}-${pkgver}.tar.gz
         http://us1.samba.org/samba/ftp/stable/${pkgbase}-${pkgver}.tar.asc
         samba.logrotate
         samba.pam
-        samba.service
-        samba.conf.d
-        smbd.service
-        smbd.socket
-        nmbd.service
-        smbd@.service
-        winbindd.service
-        samba.conf)
+        samba.conf
+        bug13335.patch)
 validpgpkeys=('52FBC0B86D954B0843324CDC6F33915B6568B7EA') #Samba Distribution Verification Key <samba-bugs@samba.org>
 ### UNINSTALL dmapi package before building!!!
 
 prepare() {
   cd samba-${pkgver}
+  patch -p1 -i ../bug13335.patch
 }
 
 build() {
@@ -79,13 +74,13 @@ _samba4_auth_modules=auth_unix,auth_wbc,auth_server,auth_netlogond,auth_script,a
               --with-ldap \
               --with-winbind \
               --with-acl-support \
+              --without-systemd \
               --enable-gnutls \
               --with-pam \
               --with-pammodulesdir=/usr/lib/security \
               --bundled-libraries=!tdb,!talloc,!pytalloc-util,!tevent,!popt,!ldb,!pyldb-util \
               --with-shared-modules=${_samba4_idmap_modules},${_samba4_pdb_modules},${_samba4_auth_modules} \
-              --disable-rpath-install \
-              --without-systemd
+              --disable-rpath-install
 
               # Add this to the options once it's working...
                #--with-system-mitkrb5 /opt/heimdal
@@ -238,15 +233,9 @@ sys.path.insert(0, '/usr/lib/python${_pyver}/site-packages')" \
   # copy ldap example
   install -D -m644 ${srcdir}/samba-${pkgver}/examples/LDAP/samba.schema ${pkgdir}/usr/share/doc/samba/examples/LDAP/samba.schema
 }
-md5sums=('3724c1d3d1befe12ecf7bb86ed7e3463'
+md5sums=('3cdb976a892bc036bfb61eeb97f68450'
          'SKIP'
          '995621522c6ec9b68c1b858ceed627ed'
          '96f82c38f3f540b53f3e5144900acf17'
-         'ee4763a656cf00d92bfda31b6bb2c5cb'
-         '6c447748a064d631435dbef0a3dcf32f'
-         'e4ae6a3cac080602120aa151918c4a36'
-         'a78b9aa93eb14b0ac445897395693225'
-         'df6380c73cb73163968eabc8650f7358'
-         '70afd2db60a2e8eff7615dbdecd887ac'
-         'd5f56f43e1280bba20f6bbd88d16fa41'
-         '49abd7b719e3713a3f75a8a50958e381')
+         '49abd7b719e3713a3f75a8a50958e381'
+         '86db2a3247a79d195341759da4c27454')
