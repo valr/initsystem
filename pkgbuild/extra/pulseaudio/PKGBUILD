@@ -18,8 +18,10 @@ makedepends=(libasyncns libcap attr libxtst libsm libsndfile libtool rtkit libso
              check autoconf-archive git)
 options=(!emptydirs)
 _commit=f93e372b0b2cb960df04de3f0a8fbea683bb8229  # tags/v11.1^0
-source=("git+https://anongit.freedesktop.org/git/pulseaudio/pulseaudio#commit=$_commit")
-sha256sums=('SKIP')
+source=("git+https://anongit.freedesktop.org/git/pulseaudio/pulseaudio#commit=$_commit"
+        0001-memfd-wrappers-only-define-memfd_create-if-not-alrea.patch)
+sha256sums=('SKIP'
+            'c7e75566cf198ecf09c01b606eb9618ff06528d3a2b3980615684db30f7e5a06')
 
 pkgver() {
   cd pulseaudio
@@ -28,6 +30,7 @@ pkgver() {
 
 prepare() {
   cd pulseaudio
+  patch -Np1 -i ../0001-memfd-wrappers-only-define-memfd_create-if-not-alrea.patch
   NOCONFIGURE=1 ./bootstrap.sh
 }
 
