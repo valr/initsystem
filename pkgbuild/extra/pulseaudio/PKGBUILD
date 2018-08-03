@@ -5,23 +5,21 @@
 # Contributor: William Rea <sillywilly@gmail.com>
 
 pkgbase=pulseaudio
-pkgname=(pulseaudio libpulse pulseaudio-{gconf,zeroconf,lirc,jack,bluetooth,equalizer})
+pkgname=(pulseaudio libpulse pulseaudio-{zeroconf,lirc,jack,bluetooth,equalizer})
 pkgdesc="A featureful, general-purpose sound server"
-pkgver=11.1
-pkgrel=1
-arch=(i686 x86_64)
+pkgver=12.2
+pkgrel=2
+arch=(x86_64)
 url="https://www.freedesktop.org/wiki/Software/PulseAudio/"
 license=(GPL)
 makedepends=(libasyncns libcap attr libxtst libsm libsndfile libtool rtkit libsoxr
-             speexdsp tdb systemd dbus avahi bluez bluez-libs gconf intltool jack2-dbus sbc
+             speexdsp tdb systemd dbus avahi bluez bluez-libs intltool jack2-dbus sbc
              lirc openssl fftw orc gtk3 webrtc-audio-processing
              check autoconf-archive git)
 options=(!emptydirs)
-_commit=f93e372b0b2cb960df04de3f0a8fbea683bb8229  # tags/v11.1^0
-source=("git+https://anongit.freedesktop.org/git/pulseaudio/pulseaudio#commit=$_commit"
-        0001-memfd-wrappers-only-define-memfd_create-if-not-alrea.patch)
-sha256sums=('SKIP'
-            'c7e75566cf198ecf09c01b606eb9618ff06528d3a2b3980615684db30f7e5a06')
+_commit=ee910cf6daa5120ab534eb2e6c573d94b9b182e7  # tags/v12.2^0
+source=("git+https://anongit.freedesktop.org/git/pulseaudio/pulseaudio#commit=$_commit")
+sha256sums=('SKIP')
 
 pkgver() {
   cd pulseaudio
@@ -30,7 +28,6 @@ pkgver() {
 
 prepare() {
   cd pulseaudio
-  patch -Np1 -i ../0001-memfd-wrappers-only-define-memfd_create-if-not-alrea.patch
   NOCONFIGURE=1 ./bootstrap.sh
 }
 
@@ -66,7 +63,7 @@ package_pulseaudio() {
   optdepends=('pulseaudio-alsa: ALSA configuration (recommended)')
   backup=(etc/pulse/{daemon.conf,default.pa,system.pa})
   install=pulseaudio.install
-  replaces=('pulseaudio-xen<=9.0')
+  replaces=('pulseaudio-xen<=9.0' 'pulseaudio-gconf<=11.1')
 
   cd pulseaudio
 
@@ -97,6 +94,10 @@ package_pulseaudio() {
   # when there's a Skype call incoming
   sed -e 's|/usr/bin/pactl load-module module-x11-cork-request|#&|' \
       -i usr/bin/start-pulseaudio-x11
+
+  # Required by qpaeq
+  sed -e '/Load several protocols/aload-module module-dbus-protocol' \
+      -i etc/pulse/default.pa
 
   rm etc/dbus-1/system.d/pulseaudio-system.conf
 
@@ -131,13 +132,8 @@ package_pulseaudio() {
 
 ### Split modules
 
-  mkdir -p "$srcdir"/{gconf,zeroconf,lirc,jack,bluetooth,equalizer}/usr/lib/pulse-$_pulsever/modules \
-           "$srcdir"/{gconf/usr/lib/pulse,equalizer/usr/bin}
-
-  mv usr/lib/pulse-$_pulsever/modules/module-gconf.so \
-     "$srcdir/gconf/usr/lib/pulse-$_pulsever/modules"
-  mv usr/lib/pulse/gconf-helper \
-     "$srcdir/gconf/usr/lib/pulse"
+  mkdir -p "$srcdir"/{zeroconf,lirc,jack,bluetooth,equalizer}/usr/lib/pulse-$_pulsever/modules \
+           "$srcdir"/equalizer/usr/bin
 
   mv usr/lib/pulse-$_pulsever/modules/{libavahi-wrap,module-{zeroconf-{publish,discover},raop-discover}}.so \
      "$srcdir/zeroconf/usr/lib/pulse-$_pulsever/modules"
@@ -164,13 +160,6 @@ package_libpulse() {
   backup=(etc/pulse/client.conf)
 
   mv "$srcdir"/libpulse/* "$pkgdir"
-}
-
-package_pulseaudio-gconf(){
-  pkgdesc="GConf support for PulseAudio"
-  depends=("pulseaudio=$pkgver-$pkgrel" gconf)
-
-  mv "$srcdir"/gconf/* "$pkgdir"
 }
 
 package_pulseaudio-zeroconf(){
@@ -203,8 +192,7 @@ package_pulseaudio-bluetooth(){
 
 package_pulseaudio-equalizer(){
   pkgdesc="Equalizer for PulseAudio"
-  depends=("pulseaudio=$pkgver-$pkgrel" python-pyqt4 fftw)
-  license=(AGPL3)
+  depends=("pulseaudio=$pkgver-$pkgrel" python-{pyqt5,dbus,sip} fftw)
 
   mv "$srcdir"/equalizer/* "$pkgdir"
 }

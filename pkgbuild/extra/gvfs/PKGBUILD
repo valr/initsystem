@@ -3,8 +3,8 @@
 
 pkgbase=gvfs
 pkgname=(gvfs gvfs-{smb,afc,gphoto2,goa,mtp,nfs,google})
-pkgver=1.36.1
-pkgrel=1
+pkgver=1.36.2
+pkgrel=3
 pkgdesc="Virtual filesystem implementation for GIO"
 url="https://wiki.gnome.org/Projects/gvfs"
 arch=(x86_64)
@@ -14,14 +14,18 @@ depends=(avahi dconf fuse libarchive libcdio-paranoia libsoup udisks2 libsecret
 makedepends=(dbus libgphoto2 libimobiledevice smbclient docbook-xsl gtk3 libmtp
              gnome-online-accounts libnfs libgdata git gtk-doc python meson openssh)
 groups=(gnome)
-_commit=1ed5c7a25d91d1e3039764e2c6eac089379df79c  # tags/1.36.1^0
+_commit=eb283f2ff47432cc66976c0ad66e267b9b0c8305  # tags/1.36.2^0
 source=("git+https://git.gnome.org/browse/gvfs#commit=$_commit"
+        udisks2-fix-crashes-caused-by-missing-source-tag.patch
         gvfsd.hook)
 sha256sums=('SKIP'
+            '5a7a1e2aa3d8a73fe7c692ac18c837d26286a49c493983af733790a69a4b6398'
             '478b9cf7b4c242959fc640dbf0cd4935f16c59b81f5828a3af102d608d7a9d72')
 
 prepare() {
   cd $pkgbase
+  # https://gitlab.gnome.org/GNOME/gvfs/issues/1
+  patch -Np1 -i ../udisks2-fix-crashes-caused-by-missing-source-tag.patch
 }
 
 pkgver() {
@@ -30,8 +34,7 @@ pkgver() {
 }
 
 build() {
-  arch-meson $pkgbase build -D man=true -D deprecated_programs=true \
-    -D systemduserunitdir=no -D tmpfilesdir=/usr/lib/tmpfiles.d -D logind=false
+  arch-meson $pkgbase build -D man=true -D deprecated_programs=true
   ninja -C build
 }
 
