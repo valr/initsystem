@@ -1,0 +1,41 @@
+# Maintainer: valr <valere dot monseur at ymail dot com>
+
+pkgname=opensysusers
+pkgver=0.4.8
+pkgrel=1
+pkgdesc='a standalone utility for handling systemd-style users and groups'
+url='https://github.com/artix-linux/opensysusers'
+license=('BSD')
+groups=('initsystem')
+arch=('any')
+depends=('glibc' 'shadow' 'util-linux')
+makedepends=('docbook-xsl')
+source=("${pkgname}-${pkgver}".tar.gz::https://github.com/artix-linux/"${pkgname}"/archive/"${pkgver}".tar.gz
+		sysusers.hook
+		sysusers-hook)
+sha256sums=('4d1bf4657e8a2420d8dcf8da63f86809e3f023603a0940b86e4d10d0f42a0720'
+            '7d08a26bfaff4f3c63580495a6afdc4ebf2afaf4c2e6d50a118529f035c6d115'
+            '6a23fa4fbd57a14e0d9c0d4c6e93fd18de41b1429245278873dff5103651f4dd')
+
+build() {
+  cd "${pkgbase}-${pkgver}"
+
+  make PREFIX=/usr
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+
+  make PREFIX=/usr DESTDIR="${pkgdir}" install install-man
+  ln -s "/usr/bin/sysusers" "${pkgdir}/usr/bin/systemd-sysusers"
+
+  install -d -m 755 "${pkgdir}"/etc/sysusers.d
+  install -d -m 755 "${pkgdir}"/usr/lib/sysusers.d
+
+  install -D -m 644 "${srcdir}"/sysusers.hook "${pkgdir}"/usr/share/libalpm/hooks/sysusers.hook
+  install -D -m 755 "${srcdir}"/sysusers-hook "${pkgdir}"/usr/share/libalpm/scripts/sysusers-hook
+
+  install -D -m 644 LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
+}
+
+# vim: set filetype=sh:
