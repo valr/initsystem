@@ -10,15 +10,26 @@ groups=('initsystem')
 arch=('any')
 depends=('glibc' 'shadow' 'util-linux')
 makedepends=('docbook-xsl')
-source=("${pkgname}-${pkgver}".tar.gz::https://github.com/artix-linux/"${pkgname}"/archive/"${pkgver}".tar.gz
+#source=("${pkgname}-${pkgver}".tar.gz::https://github.com/artix-linux/"${pkgname}"/archive/"${pkgver}".tar.gz
+#        sysusers.hook
+#        sysusers-hook)
+#sha256sums=('4d1bf4657e8a2420d8dcf8da63f86809e3f023603a0940b86e4d10d0f42a0720'
+#            '7d08a26bfaff4f3c63580495a6afdc4ebf2afaf4c2e6d50a118529f035c6d115'
+#            '6a23fa4fbd57a14e0d9c0d4c6e93fd18de41b1429245278873dff5103651f4dd')
+
+source=("${pkgname}-${pkgver}"::'git+https://github.com/valr/opensysusers.git'
         sysusers.hook
         sysusers-hook)
-sha256sums=('4d1bf4657e8a2420d8dcf8da63f86809e3f023603a0940b86e4d10d0f42a0720'
+sha256sums=('SKIP'
             '7d08a26bfaff4f3c63580495a6afdc4ebf2afaf4c2e6d50a118529f035c6d115'
             '6a23fa4fbd57a14e0d9c0d4c6e93fd18de41b1429245278873dff5103651f4dd')
 
+pkgver() {
+  printf "${pkgver}"
+}
+
 build() {
-  cd "${pkgbase}-${pkgver}"
+  cd "${pkgname}-${pkgver}"
 
   make PREFIX=/usr
 }
