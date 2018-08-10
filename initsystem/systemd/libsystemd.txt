@@ -1,0 +1,72 @@
+
+build:
+    gcc -Wall -fPIC -shared -o libsystemd.so.0.23.0 \
+        -Wl,--version-script=libsystemd.sym libsystemd.c
+
+install:
+    ln -s libsystemd.so.0.23.0 libsystemd.so.0
+    ln -s libsystemd.so.0.23.0 libsystemd.so
+
+test:
+    export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
+
+--------------------------------------------------------------------------------
+
+package:
+    core/procps-ng
+
+test:
+    ps ax -opid,comm,ouid,seat,slice,unit,uunit,lsession,machine
+
+function:
+    sd_pid_get_owner_uid
+    sd_pid_get_session
+    sd_session_get_seat
+    sd_pid_get_unit
+    sd_pid_get_user_unit
+    sd_pid_get_machine_name
+    sd_pid_get_slice
+
+--------------------------------------------------------------------------------
+
+package:
+    core/util-linux
+    core/libutil-linux
+
+test:
+    lslogins -u valr
+
+    logger --journald <<end
+    MESSAGE=test
+    end
+
+    uuidd
+
+function:
+    sd_journal_sendv
+    sd_journal_open
+    sd_journal_close
+    sd_journal_next
+    sd_journal_previous_skip
+    sd_journal_get_realtime_usec
+    sd_journal_get_data
+    sd_journal_add_match
+    sd_journal_flush_matches
+    sd_journal_seek_tail
+    sd_journal_open_directory
+    sd_booted
+    sd_listen_fds
+
+--------------------------------------------------------------------------------
+
+package:
+    core/dbus
+
+test:
+    dbus
+
+function:
+    sd_journal_stream_fd
+    sd_is_socket
+    sd_listen_fds
+    sd_uid_get_seats
