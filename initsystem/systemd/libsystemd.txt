@@ -1,14 +1,3 @@
-drwxr-xr-x 2 valr users 4096 2018-08-01 22:22 colord        ---> done
-drwxr-xr-x 2 valr users 4096 2018-08-01 22:25 cups          ---> done
-drwxr-xr-x 2 valr users 4096 2018-08-01 22:28 gvfs          ---> done
-drwxr-xr-x 2 valr users 4096 2018-08-01 22:31 polkit        ---> probably not possible
-drwxr-xr-x 2 valr users 4096 2018-08-01 22:43 pulseaudio
-drwxr-xr-x 2 valr users 4096 2018-08-02 22:15 qt5-base
-drwxr-xr-x 2 valr users 4096 2018-08-02 22:39 samba
-drwxr-xr-x 2 valr users 4096 2018-08-02 22:56 sane
-drwxr-xr-x 2 valr users 4096 2018-08-02 22:59 syslog-ng
-drwxr-xr-x 2 valr users 4096 2018-08-02 23:05 udisks2
-drwxr-xr-x 2 valr users 4096 2018-08-02 23:30 xorg-server
 
 build:
     gcc -Wall -fPIC -shared -o libsystemd.so.0.23.0 \
@@ -20,12 +9,14 @@ install:
 
 test:
     export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
-    run command
 
 --------------------------------------------------------------------------------
 
 package:
     core/procps-ng
+
+test:
+    ps ax -opid,comm,ouid,seat,slice,unit,uunit,lsession,machine
 
 function:
     sd_pid_get_owner_uid
@@ -41,6 +32,15 @@ function:
 package:
     core/util-linux
     core/libutil-linux
+
+test:
+    lslogins -u valr
+
+    logger --journald <<end
+    MESSAGE=test
+    end
+
+    uuidd
 
 function:
     sd_journal_sendv
@@ -62,37 +62,11 @@ function:
 package:
     core/dbus
 
+test:
+    dbus
+
 function:
     sd_journal_stream_fd
     sd_is_socket
     sd_listen_fds
     sd_uid_get_seats
-
---------------------------------------------------------------------------------
-
-package:
-    extra/colord
-
-function:
-    sd_pid_get_session
-    sd_session_get_seat
-
---------------------------------------------------------------------------------
-
-package:
-    extra/cups
-
-function:
-    sd_journal_print
-    sd_journal_printv
-    sd_journal_send
-    sd_listen_fds
-
---------------------------------------------------------------------------------
-
-package:
-    extra/gvfs
-
-function:
-    sd_pid_get_session
-    sd_session_get_seat
