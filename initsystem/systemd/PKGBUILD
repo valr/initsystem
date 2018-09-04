@@ -1,23 +1,18 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_systemd_version=239.0 # don't forget to update eudev _pkgver
-_libsystemd_major=0
-_libsystemd_minor=23
-_libsystemd_patch=0
-
 case "${CARCH}" in
   x86_64) _repo=http://mir.archlinux.fr/core/os/x86_64 ;;
   aarch64) _repo=http://fr.mirror.archlinuxarm.org/aarch64/core ;;
 esac
 
 pkgname='systemd'
-pkgver="${_systemd_version}"
+pkgver=239.0 # don't forget to update eudev _pkgver
 pkgrel=2
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
 groups=('initsystem')
-arch=('x86_64' 'aarch64')
+arch=('any')
 depends=('bash')
 provides=("systemd=${pkgver}" 'libsystemd')
 conflicts=('systemd' 'libsystemd')
@@ -26,21 +21,15 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
         "${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz.sig"
         'systemd-compare'
         'aa-systemd-compare-pre.hook'
-        'zz-systemd-compare-post.hook'
-        'libsystemd.c'
-        'libsystemd.sym')
+        'zz-systemd-compare-post.hook')
 md5sums=('e6e12d8492929fd1bba0dca0c086a345'
          'SKIP'
          '2dc705c1094e262d536e6a6d1921fe26'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
-         'd4cd8fbed18cf41de43c77d720d81367'
-         'ecada4aba0d299ada7c1753fa9ffddab'
-         'ea4080e7fd67ea501ef886c12c21737e')
+         'd4cd8fbed18cf41de43c77d720d81367')
 
-# There are 3 parts in this package:
-# - keep the required non-binary files from the systemd original package to avoid recreating and maintaining them manually
-# - provide a comparison tool to track changes in systemd services and configuration
-# - create a stub for libsystemd to avoid recompiling the archlinux packages in no-systemd mode
+# The idea of this package is to keep the required non-binary files from 
+# the systemd original package to avoid recreating and maintaining them manually
 
 package() {
 
@@ -73,14 +62,6 @@ package() {
   install -D -m 755 "${srcdir}"/systemd-compare "${pkgdir}"/usr/share/libalpm/scripts/systemd-compare
   install -D -m 644 "${srcdir}"/aa-systemd-compare-pre.hook "${pkgdir}"/usr/share/libalpm/hooks/aa-systemd-compare-pre.hook
   install -D -m 644 "${srcdir}"/zz-systemd-compare-post.hook "${pkgdir}"/usr/share/libalpm/hooks/zz-systemd-compare-post.hook
-
-  # libsystemd stub library
-  gcc -Wall -fPIC -shared -o "${pkgdir}"/usr/lib/libsystemd.so."${_libsystemd_major}"."${_libsystemd_minor}"."${_libsystemd_patch}" \
-      -Wl,--version-script="${srcdir}"/libsystemd.sym "${srcdir}"/libsystemd.c
-
-  cd "${pkgdir}"/usr/lib
-  ln -s libsystemd.so."${_libsystemd_major}"."${_libsystemd_minor}"."${_libsystemd_patch}" libsystemd.so."${_libsystemd_major}"
-  ln -s libsystemd.so."${_libsystemd_major}"."${_libsystemd_minor}"."${_libsystemd_patch}" libsystemd.so
 }
 
 # vim: set filetype=sh:
