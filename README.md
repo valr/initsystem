@@ -6,9 +6,10 @@ An init system (what a surprise!)
 Installation
 ============
 
-Build all the packages in the _initsystem_ directory.  
-Install the _busybox_ and _initsystem_ packages.
+Build all the packages in the _initsystem_ and _pkgbuild/core_ directories.
 
+
+Install the _busybox_ and _initsystem_ packages.  
 Configure your hostname, keymap, font and services in /etc/rc.conf.  
 Configure your bootloader to use init=/sbin/init-og.
 
@@ -16,7 +17,8 @@ Configure your bootloader to use init=/sbin/init-og.
 Reboot into your new initsystem.
 
 
-Install _eudev_, _opentmpfiles_ and _systemd_ (minimal) packages. This will replace the official systemd and libsystemd packages.
+Install _eudev_, _opentmpfiles_ and _systemd_ (minimal) packages. This will replace the official systemd and libsystemd packages.  
+Install all the packages in the _pkgbuild/core_ directory.  
 
 
 If needed, build and install the packages in the _pkgbuild/extra_ directory (follow the dependencies).
