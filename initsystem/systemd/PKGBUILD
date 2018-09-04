@@ -29,13 +29,13 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
         'zz-systemd-compare-post.hook'
         'libsystemd.c'
         'libsystemd.sym')
-md5sums=('e6e12d8492929fd1bba0dca0c086a345'
+md5sums=('d2afc99749d0c43826114ffdb8d2834f'
          'SKIP'
          '2dc705c1094e262d536e6a6d1921fe26'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
          'd4cd8fbed18cf41de43c77d720d81367'
-         'ecada4aba0d299ada7c1753fa9ffddab'
-         'ea4080e7fd67ea501ef886c12c21737e')
+         'a299d754c68ab88f8ed397c6a75b8272'
+         '00d529774a11b98eec1fee763916d43e')
 
 # There are 3 parts in this package:
 # - keep the required non-binary files from the systemd original package to avoid recreating and maintaining them manually

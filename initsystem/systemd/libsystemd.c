@@ -2,11 +2,30 @@
 #include <errno.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <stdarg.h>
+#include <syslog.h>
 #include <sys/uio.h>
 
 typedef char sd_journal;
 
 /* sd-journal */
+
+extern int __attribute__ ((format (printf, 2, 3))) sd_journal_print(int priority, const char *format, ...) {
+    va_list ap;
+    va_start(ap, format);
+    vsyslog(priority, format, ap);
+    va_end(ap);
+    return 0;
+}
+
+extern int __attribute__ ((format (printf, 2, 0))) sd_journal_printv(int priority, const char *format, va_list ap) {
+    vsyslog(priority, format, ap);
+    return 0;
+}
+
+extern int __attribute__ ((format (printf, 1, 0))) __attribute__((sentinel)) sd_journal_send(const char *format, ...) {
+    return 0;
+}
 
 extern int sd_journal_sendv(const struct iovec *iov, int n) {
     return 0;
