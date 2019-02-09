@@ -1,7 +1,7 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=opentmpfiles
-pkgver=0.1.3
+pkgver=0.2
 pkgrel=1
 pkgdesc='a standalone utility for handling systemd-style tmpfiles.d settings'
 url='https://github.com/OpenRC/opentmpfiles'
@@ -11,7 +11,7 @@ arch=('any')
 depends=('bash')
 source=(https://github.com/OpenRC/"${pkgname}"/archive/"${pkgver}".tar.gz
         tmpfiles.hook)
-md5sums=('7e49d14fb3398303e4b62da3916f4693'
+md5sums=('5197fcae0f2fb2ed223e92dae96497cc'
          '8458c5781a5df8d7fce61fecb50cc639')
 
 package() {

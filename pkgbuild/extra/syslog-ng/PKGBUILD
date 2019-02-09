@@ -1,21 +1,23 @@
-# $Id$
 # Maintainer: Eric Bélanger <eric@archlinux.org>
 
 pkgname=syslog-ng
-pkgver=3.15.1
-pkgrel=3
+pkgver=3.19.1
+pkgrel=1
 pkgdesc="Next-generation syslogd with advanced networking and filtering capabilities"
 arch=('x86_64')
-url="http://www.balabit.com/network-security/syslog-ng/"
+url="https://www.syslog-ng.com/products/open-source-log-management/"
 license=('GPL2' 'LGPL2.1')
-depends=('awk' 'systemd' 'glib2' 'libdbi' 'libnsl')
-makedepends=('libxslt' 'json-c' 'python' 'libesmtp')
-checkdepends=('python-nose' 'python-ply')
+depends=('awk' 'libsystemd' 'glib2' 'libdbi' 'libnsl')
+makedepends=('libxslt' 'json-c' 'mongo-c-driver' 'librabbitmq-c' 'python' 'libesmtp' 'hiredis')
+checkdepends=('python-nose' 'python-ply' 'python2')
 optdepends=('logrotate: for rotating log files'
 	    'json-c: for json-plugin'
             'curl: for the HTTP module'
+            'librabbitmq-c: for the AMQP plugin'            
+            'mongo-c-driver: for the MongoDB plugin'
             'python: for the Python plugin'
-            'libesmtp: for the SMTP plugin')
+            'libesmtp: for the SMTP plugin'
+            'hiredis: fir the redis plugin')
 conflicts=('eventlog')
 replaces=('eventlog')
 backup=('etc/syslog-ng/scl.conf'
@@ -24,8 +26,8 @@ backup=('etc/syslog-ng/scl.conf'
         'etc/default/syslog-ng@default')
 source=(https://github.com/balabit/syslog-ng/releases/download/syslog-ng-$pkgver/$pkgname-$pkgver.tar.gz
         syslog-ng.conf syslog-ng.logrotate)
-sha256sums=('a2dabd28674e2b558e4fb92484ad111d77bf7150070aa28556827130b479f9ef'
-            '893a2db9e4d56c740cfa9de64a153dccb590049cc93750bd2cdea68be14486a9'
+sha256sums=('5cf931a9d7bead0e6d9a2c65eee8f6005a005878f59aa280f3c4294257ed5178'
+            '31cee11ae3c897c51ea01982e1ea838aa8ac730d56661a17e66bd9de5bede1c7'
             '93c935eca56854011ea9e353b7a1da662ad40b2e8452954c5b4b5a1d5b2d5317')
 
 prepare() {
@@ -38,9 +40,9 @@ build() {
   cd $pkgname-$pkgver
   ./configure --prefix=/usr --sysconfdir=/etc/syslog-ng --libexecdir=/usr/lib \
     --sbindir=/usr/bin --localstatedir=/var/lib/syslog-ng --datadir=/usr/share \
-    --with-pidfile-dir=/run --disable-spoof-source --enable-ipv6 --enable-sql \
-    --enable-systemd=no --enable-mongodb=no --enable-amqp=no \
-    --enable-manpages --with-jsonc=system
+    --with-pidfile-dir=/run --disable-spoof-source --enable-ipv6 --enable-sql --enable-smtp \
+    --enable-systemd=no \
+    --enable-manpages --with-jsonc=system --with-mongoc=system --with-librabbitmq-client=system
   make
 }
 
@@ -56,6 +58,6 @@ package() {
   install -Dm644 "$srcdir/syslog-ng.logrotate" "$pkgdir/etc/logrotate.d/syslog-ng"
   install -Dm644 "$srcdir"/$pkgname-$pkgver/contrib/systemd/syslog-ng@default -t "$pkgdir"/etc/default
 
-# See http://lists.balabit.hu/pipermail/syslog-ng/2016-February/022667.html
+  # See http://lists.balabit.hu/pipermail/syslog-ng/2016-February/022667.html
   rm -r "$pkgdir"/usr/share/syslog-ng/include/scl/cim
 }
