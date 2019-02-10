@@ -47,7 +47,7 @@ build() {
     --with-dbus-user=dbus \
     --enable-user-session \
     --disable-static \
-    --without-x \
+    --with-x \
     --with-systemdsystemunitdir=/usr/lib/systemd/system \
     --enable-systemd=no
   make
