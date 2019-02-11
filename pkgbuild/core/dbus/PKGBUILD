@@ -43,13 +43,15 @@ build() {
     runstatedir=/run \
     --libexecdir=/usr/lib/dbus-1.0 \
     --with-system-socket=/run/dbus/system_bus_socket \
-    --with-dbus-session-bus-connect-address=unix:runtime=yes \
     --with-dbus-user=dbus \
     --enable-user-session \
     --disable-static \
     --with-x \
     --with-systemdsystemunitdir=/usr/lib/systemd/system \
-    --enable-systemd=no
+    --enable-systemd=no \
+    --with-system-pid-file=/run/dbus/pid \
+    --with-console-auth-dir=/run/console/ \
+    --enable-inotify
   make
 }
 
