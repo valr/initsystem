@@ -43,13 +43,13 @@ case $(basename "$0") in
       -p) kill -TERM 1 ;;
       -r) kill -USR1 1 ;;
       *)
-        echo "usage: shutdown {-h|-p|-r}"
+        echo "usage: shutdown -h | -p | -r"
         exit 1
         ;;
     esac
     ;;
   *)
-    echo "usage: {halt|poweroff|reboot|shutdown}"
+    echo "usage: halt | poweroff | reboot | shutdown"
     exit 1
     ;;
 esac
