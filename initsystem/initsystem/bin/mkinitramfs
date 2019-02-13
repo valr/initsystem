@@ -41,7 +41,7 @@ fi
 
 IMAGE=$1
 
-if [ ! -e $IMAGE ]; then
+if [ ! -r $IMAGE ]; then
   echo "mkinitramfs: $IMAGE does not exist"
   exit 1
 fi
@@ -80,7 +80,7 @@ done
 
 echo "mkinitramfs: copying configuration files"
 
-echo "root:x:0:0:root:/root:/bin/ash" > $BASE/etc/passwd
+echo "root:x:0:0::/root:/bin/ash" > $BASE/etc/passwd
 
 echo "root:x:0:root" > $BASE/etc/group
 echo "tty:x:5:" >> $BASE/etc/group
@@ -147,7 +147,7 @@ done
 # modules and firmwares ########################################################
 ################################################################################
 
-VERSION=$(/usr/bin/lsinitramfs $IMAGE | grep -m 1 'usr/lib/modules/' | awk -F / '{print $4}')
+VERSION=$(/usr/bin/lsinitramfs $IMAGE | grep -m 1 '^usr/lib/modules/' | awk -F / '{print $4}')
 
 echo "mkinitramfs: copying kernel modules and firmwares ($VERSION)"
 
