@@ -70,7 +70,6 @@ echo "shutdown: running local shutdown script"
 echo "shutdown: stopping services"
 
 REVERSE_SERVICES=""
-
 for SERVICE in $SERVICES; do
   REVERSE_SERVICES="$SERVICE $REVERSE_SERVICES"
 done
@@ -126,7 +125,7 @@ else
   POOL_SIZE=512
 fi
 
-dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
+dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE status=none
 
 ################################################################################
 # dmesg ########################################################################
@@ -142,7 +141,7 @@ umask 022
 # filesystems ##################################################################
 ################################################################################
 
-echo "shutdown: deactivating swap"
+echo "shutdown: disabling swap"
 
 swapoff -a
 sync
@@ -183,7 +182,7 @@ case $1 in
     ;;
 esac
 
-echo "error: unexpected shutdown option, halting now"
+echo "error: unexpected shutdown option $1, halting now"
 /usr/bin/busybox halt -f
 
 # vim: set filetype=sh:

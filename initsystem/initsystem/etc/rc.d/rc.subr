@@ -17,11 +17,6 @@
 
 . /etc/rc.conf
 
-SRV="$(basename "$0" | tr '-' '_')"
-for CMD in start stop reload display; do
-  eval "rc_${CMD}_cmd=\${${SRV}_${CMD}_cmd:-\${rc_${CMD}_cmd}}"
-done
-
 ################################################################################
 # functions ####################################################################
 ################################################################################
@@ -39,6 +34,26 @@ pwait() {
 
   return 1
 }
+
+################################################################################
+# override commands ############################################################
+################################################################################
+
+# basic commands in service script can be overridden in /etc/rc.conf
+# for example: rc_start_cmd in script /etc/rc.d/foo can be overriden 
+#              in /etc/rc.conf by foo_start_cmd
+
+# available commands and keywords:
+# rc_start, rc_stop, rc_reload, rc_display (can be overridden in /etc/rc.conf)
+# rc_pre_start, rc_post_start: default=none
+# rc_pre_stop, rc_post_stop: default=none
+# rc_env: default=none
+# rc_type: default=daemon
+
+SRV="$(basename "$0" | tr '-' '_')"
+for CMD in start stop reload display; do
+  eval "rc_${CMD}_cmd=\${${SRV}_${CMD}_cmd:-\${rc_${CMD}_cmd}}"
+done
 
 ################################################################################
 # commands #####################################################################
@@ -135,18 +150,19 @@ _rc_run() {
 
 rc_run() {
   if [ "$2" = "has" ]; then
-    CMD_ASKED="$3"
+    RUN_CMD="$3"
   else
-    CMD_ASKED="$2"
+    RUN_CMD="$2"
   fi
 
   for CMD in $1; do
-    if [ "x${CMD}" = "x${CMD_ASKED}" ]; then
-      if [ "$2" != "has" ]; then
-        _rc_run "${CMD}"; return $?
+    if [ "x${CMD}" = "x${RUN_CMD}" ]; then
+      if [ "$2" = "has" ]; then
+        return 0
+      else
+        _rc_run "${CMD}"
+        return $?
       fi
-
-      return 0
     fi
   done
 

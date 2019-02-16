@@ -33,12 +33,11 @@ fi
 ################################################################################
 
 reboot_system() {
-  echo "initramfs: rebooting in 10 seconds"
+  echo "initramfs: rebooting in 15 seconds"
 
   killall5 -TERM; sleep 5
   killall5 -KILL; sleep 5
-
-  umount -a -r
+  umount -a -r; sleep 5
   reboot -f
 }
 
@@ -101,9 +100,11 @@ echo "initramfs: parsing kernel command line"
 for COMMAND in $(cat /proc/cmdline); do
   case $COMMAND in
     break=*)
+      # optional: break=premount or break=postmount
       BREAK=${COMMAND#break=}
       ;;
     init=*)
+      # init=/sbin/init-og
       INIT=${COMMAND#init=}
       ;;
     root=*)

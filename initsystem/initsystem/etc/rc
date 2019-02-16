@@ -150,7 +150,7 @@ echo "initscript: mounting filesystems"
 mount -o remount,rw /
 mount -a
 
-echo "initscript: activating swap"
+echo "initscript: enabling swap"
 
 swapon -a
 
@@ -190,7 +190,7 @@ else
   POOL_SIZE=512
 fi
 
-dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE 1>/dev/null 2>/dev/null
+dd if=/dev/urandom of=$RANDOM_SEED count=1 bs=$POOL_SIZE status=none
 
 ################################################################################
 # services #####################################################################
@@ -214,7 +214,7 @@ fi
 
 if [ $CONSOLE_FONT ]; then
   for TTY in /dev/tty[0-9]*; do
-    /usr/bin/setfont $CONSOLE_FONT -C $TTY 1>/dev/null 2>/dev/null
+    /usr/bin/setfont $CONSOLE_FONT -C $TTY
   done
 fi
 
