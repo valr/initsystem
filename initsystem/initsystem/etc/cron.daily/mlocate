@@ -1,3 +1,0 @@
-#!/bin/sh
-
-[ -x /usr/bin/updatedb ] && /usr/bin/updatedb 2>&1 | /usr/bin/logger -t updatedb

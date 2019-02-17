@@ -1,3 +1,0 @@
-#!/bin/sh
-
-[ -x /usr/bin/fstrim ] && /usr/bin/fstrim -a 2>&1 | /usr/bin/logger -t fstrim
