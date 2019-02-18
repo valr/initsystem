@@ -1,9 +1,11 @@
 #!/bin/ash
 
-rc_start_cmd="/usr/bin/ferm --slow /etc/ferm.conf"
+rc_type="nodaemon"
+
+rc_start_cmd="/usr/bin/ferm /etc/ferm.conf"
 rc_stop_cmd="/usr/bin/ferm --flush /etc/ferm.conf"
 rc_reload_cmd="/usr/bin/ferm /etc/ferm.conf"
-rc_display_cmd="/usr/bin/ferm --lines /etc/ferm.conf"
+rc_display_cmd="/usr/bin/ferm --noexec --lines /etc/ferm.conf"
 
 . /etc/rc.d/rc.subr
 
