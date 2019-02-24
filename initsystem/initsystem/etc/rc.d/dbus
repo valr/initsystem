@@ -3,7 +3,7 @@
 rc_start_cmd="/usr/bin/dbus-daemon --system --fork --nopidfile --syslog-only"
 
 rc_pre_start() {
-  /usr/bin/install -d -m755 -o dbus -g dbus /run/dbus
+  /usr/bin/install -d -m755 -o root -g root /run/dbus
 }
 
 . /etc/rc.d/rc.subr
