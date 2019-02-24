@@ -1,9 +1,10 @@
 #!/bin/ash
 
-rc_start_cmd="/usr/bin/haveged -w 1024 -v 0 2>/dev/null"
+rc_start_cmd="/usr/bin/haveged"
 
 rc_pre_start() {
   /usr/bin/sysctl -q -w kernel.random.write_wakeup_threshold=1024
+  rc_output="2>/dev/null" # avoid annoying output
 }
 
 . /etc/rc.d/rc.subr
