@@ -1,6 +1,6 @@
 #!/bin/ash
 
-rc_start_cmd="/usr/bin/ntpd -g -p /run/ntpd.pid -u ntp:ntp"
+rc_start_cmd="/usr/bin/ntpd -g -u ntp:ntp"
 
 . /etc/rc.d/rc.subr
 
