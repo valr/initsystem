@@ -3,12 +3,12 @@
 rc_type="nodaemon"
 
 rc_start_cmd="/usr/bin/ferm /etc/ferm.conf"
-rc_stop_cmd="/usr/bin/ferm --flush /etc/ferm.conf"
+rc_stop_cmd="/usr/bin/ferm -F /etc/ferm.conf"
 rc_reload_cmd="/usr/bin/ferm /etc/ferm.conf"
-rc_display_cmd="/usr/bin/ferm --noexec --lines /etc/ferm.conf"
+rc_display_cmd="/usr/bin/ferm -n -l /etc/ferm.conf"
 
 . /etc/rc.d/rc.subr
 
-rc_run "start stop restart reload display" $@
+rc_run "start stop reload display" $@
 
 # vim: set filetype=sh:
