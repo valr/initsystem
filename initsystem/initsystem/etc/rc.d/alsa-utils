@@ -7,6 +7,6 @@ rc_stop_cmd="/usr/bin/alsactl store"
 
 . /etc/rc.d/rc.subr
 
-rc_run "start stop restart" $@
+rc_run "start stop" $@
 
 # vim: set filetype=sh:
