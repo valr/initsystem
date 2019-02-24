@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-. /etc/rc.conf
-
 ################################################################################
 # functions ####################################################################
 ################################################################################
@@ -36,13 +34,13 @@ pwait() {
 }
 
 ################################################################################
-# override commands ############################################################
+# override command variables ###################################################
 ################################################################################
 
 # command variables in service script can be overridden in /etc/rc.conf
 # for example: rc_start_cmd in script /etc/rc.d/foo can be overriden 
 #              in /etc/rc.conf by foo_start_cmd
-
+#
 # variables:
 # rc_start_cmd, rc_stop_cmd, rc_reload_cmd, rc_display_cmd (can be overridden in /etc/rc.conf)
 # rc_type: default="daemon"
@@ -52,6 +50,8 @@ pwait() {
 # functions:
 # rc_pre_start, rc_post_start: default=none
 # rc_pre_stop, rc_post_stop: default=none
+
+. /etc/rc.conf
 
 SRV="$(basename "$0" | tr '-' '_')"
 for CMD in start stop reload display; do
