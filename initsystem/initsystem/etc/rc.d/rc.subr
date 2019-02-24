@@ -39,17 +39,19 @@ pwait() {
 # override commands ############################################################
 ################################################################################
 
-# basic commands in service script can be overridden in /etc/rc.conf
+# command variables in service script can be overridden in /etc/rc.conf
 # for example: rc_start_cmd in script /etc/rc.d/foo can be overriden 
 #              in /etc/rc.conf by foo_start_cmd
 
-# available commands and keywords:
-# rc_start, rc_stop, rc_reload, rc_display (can be overridden in /etc/rc.conf)
-# rc_pre_start, rc_post_start: default=none
-# rc_pre_stop, rc_post_stop: default=none
-# rc_type: default=daemon
+# variables:
+# rc_start_cmd, rc_stop_cmd, rc_reload_cmd, rc_display_cmd (can be overridden in /etc/rc.conf)
+# rc_type: default="daemon"
 # rc_env: default=none
 # rc_output: default=none
+#
+# functions:
+# rc_pre_start, rc_post_start: default=none
+# rc_pre_stop, rc_post_stop: default=none
 
 SRV="$(basename "$0" | tr '-' '_')"
 for CMD in start stop reload display; do
