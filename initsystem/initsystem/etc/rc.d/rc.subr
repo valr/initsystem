@@ -47,12 +47,13 @@ pwait() {
 # rc_start, rc_stop, rc_reload, rc_display (can be overridden in /etc/rc.conf)
 # rc_pre_start, rc_post_start: default=none
 # rc_pre_stop, rc_post_stop: default=none
-# rc_env: default=none
 # rc_type: default=daemon
+# rc_env: default=none
+# rc_output: default=none
 
 SRV="$(basename "$0" | tr '-' '_')"
 for CMD in start stop reload display; do
-  eval "rc_${CMD}_cmd=\${${SRV}_${CMD}_cmd:-\${rc_${CMD}_cmd}}"
+  eval rc_${CMD}_cmd=\"$(eval echo "\${${SRV}_${CMD}_cmd:-\${rc_${CMD}_cmd}}")\"
 done
 
 ################################################################################
@@ -66,7 +67,7 @@ start() {
 
   type rc_pre_start 1>/dev/null && { rc_pre_start || return; }
 
-  ash -c "${rc_env} ${rc_start_cmd}" || return
+  ash -c "${rc_env} ${rc_start_cmd} ${rc_output}" || return
 
   type rc_post_start 1>/dev/null && { rc_post_start || return; }
 
@@ -84,7 +85,7 @@ stop() {
 
   type rc_pre_stop 1>/dev/null && { rc_pre_stop || return; }
 
-  ash -c "${rc_env} ${rc_stop_cmd}"
+  ash -c "${rc_env} ${rc_stop_cmd} ${rc_output}"
 
   if [ "${rc_type:-daemon}" = "daemon" ]; then
     pwait "${rc_start_cmd}" 20 || return
@@ -109,7 +110,7 @@ reload() {
     rc_reload_cmd="pkill -HUP -fx \"${rc_start_cmd}\""
   fi
 
-  ash -c "${rc_env} ${rc_reload_cmd}"
+  ash -c "${rc_env} ${rc_reload_cmd} ${rc_output}"
 }
 
 display() {
