@@ -4,6 +4,6 @@ rc_start_cmd="/usr/bin/crond -m off -s"
 
 . /etc/rc.d/rc.subr
 
-rc_run "start stop restart reload status" $@
+rc_run "start stop restart status" $@
 
 # vim: set filetype=sh:
