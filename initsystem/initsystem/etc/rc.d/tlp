@@ -2,9 +2,10 @@
 
 rc_type="nodaemon"
 rc_env="PATH=/usr/bin"
+rc_output="1>/dev/null"
 
-rc_start_cmd="/usr/bin/tlp init start 1>/dev/null"
-rc_stop_cmd="/usr/bin/tlp init stop 1>/dev/null"
+rc_start_cmd="/usr/bin/tlp init start"
+rc_stop_cmd="/usr/bin/tlp init stop"
 rc_display_cmd="/usr/bin/tlp-stat"
 
 . /etc/rc.d/rc.subr
