@@ -3,7 +3,6 @@
 rc_type="nodaemon"
 
 rc_start_cmd="/usr/bin/sensors -s"
-rc_display_cmd="/usr/bin/sensors"
 
 rc_pre_start() {
   . /etc/conf.d/lm_sensors
@@ -12,6 +11,6 @@ rc_pre_start() {
 
 . /etc/rc.d/rc.subr
 
-rc_run "start display" $@
+rc_run "start" $@
 
 # vim: set filetype=sh:
