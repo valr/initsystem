@@ -4,15 +4,6 @@ read -r INTERFACE < "/etc/wpa_supplicant/$(basename "$0").interface"
 
 rc_start_cmd="/usr/bin/wpa_supplicant -q -B -c /etc/wpa_supplicant/$(basename "$0").conf -i ${INTERFACE}"
 
-rc_pre_start() {
-  /usr/bin/ip link set "${INTERFACE}" down
-  /usr/bin/ip link set "${INTERFACE}" up
-}
-
-rc_post_stop() {
-  /usr/bin/ip link set "${INTERFACE}" down
-}
-
 . /etc/rc.d/rc.subr
 
 rc_run "start stop restart status" $@
