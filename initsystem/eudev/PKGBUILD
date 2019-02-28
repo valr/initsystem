@@ -19,10 +19,14 @@ conflicts=('udev' 'libudev.so')
 replaces=('udev' 'libudev.so')
 source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
         "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
-        'udev-hwdb.hook')
+        'udev-hwdb.hook'
+        'udev-initcpio.hook'
+        'udev-initcpio.install')
 md5sums=('c75d99910c1791dd9430d26ab76059c0'
          'SKIP'
-         '7fce0d7c0ecace6c34e44fe6e24470ee')
+         '7fce0d7c0ecace6c34e44fe6e24470ee'
+         'ce83380d8400d9ece7c93ef6bfe78f86'
+         '1fb90e5caf8cb8e96253aeb49ed2dcdf')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -53,6 +57,8 @@ package() {
   done
 
   install -D -m 644 "${srcdir}"/udev-hwdb.hook "${pkgdir}"/usr/share/libalpm/hooks/udev-hwdb.hook
+  install -D -m 644 "${srcdir}"/udev-initcpio.hook "${pkgdir}"/usr/lib/initcpio/hooks/udev
+  install -D -m 644 "${srcdir}"/udev-initcpio.install "${pkgdir}"/usr/lib/initcpio/install/udev
   install -D -m 644 COPYING "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
 
