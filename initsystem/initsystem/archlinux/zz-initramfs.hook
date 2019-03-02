@@ -16,6 +16,6 @@ Target = initsystem
 Target = mkinitcpio
 
 [Action]
-Description = Rebuilding initramfs
+Description = Rebuilding initramfs...
 When = PostTransaction
 Exec = /usr/share/libalpm/scripts/zz-initramfs
