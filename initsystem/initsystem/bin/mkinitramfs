@@ -80,14 +80,10 @@ done
 
 echo "mkinitramfs: copying configuration files"
 
-echo "root:x:0:0::/root:/bin/ash" > $BASE/etc/passwd
-
+echo "root:x:0:0:root:/root:/bin/ash" > $BASE/etc/passwd
+echo "root::::::::" > $BASE/etc/shadow
 echo "root:x:0:root" > $BASE/etc/group
 echo "tty:x:5:" >> $BASE/etc/group
-
-umask 077
-grep '^root:' /etc/shadow > $BASE/etc/shadow
-umask 022
 
 dumpkmap > $BASE/etc/keymap
 
@@ -209,9 +205,7 @@ echo "mkinitramfs: generating initramfs archive"
 
 cd $BASE
 
-umask 077
 find . | cpio -o -H newc | gzip > $IMAGE.cpio.gz
-umask 022
 
 cd ..
 
