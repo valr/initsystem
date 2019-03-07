@@ -87,10 +87,12 @@ stop() {
 
   type rc_pre_stop 1>/dev/null && { rc_pre_stop || return; }
 
-  ash -c "${rc_env} ${rc_stop_cmd} ${rc_output}"
+  ash -c "${rc_env} ${rc_stop_cmd} ${rc_output}"; RC=$?
 
   if [ "${rc_type:-daemon}" = "daemon" ]; then
     pwait "${rc_start_cmd}" 20 || return
+  else
+    [ $RC -eq 0 ] || return
   fi
 
   type rc_post_stop 1>/dev/null && { rc_post_stop || return; }
