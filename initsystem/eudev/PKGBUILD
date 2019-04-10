@@ -1,6 +1,6 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_pkgver=241.7
+_pkgver=241.67
 
 pkgname=eudev
 pkgver=3.2.7

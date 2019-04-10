@@ -6,8 +6,8 @@ case "${CARCH}" in
 esac
 
 pkgname='systemd'
-pkgver=241.7 # don't forget to update eudev _pkgver
-pkgrel=2
+pkgver=241.67 # don't forget to update eudev _pkgver
+pkgrel=1
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
@@ -22,7 +22,7 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
         'systemd-compare'
         'aa-systemd-compare-pre.hook'
         'zz-systemd-compare-post.hook')
-md5sums=('75d9f662bceceb1afbc69995002382f8'
+md5sums=('f924f07be9a14033f235f0a4c22cf8c2'
          'SKIP'
          '2dc705c1094e262d536e6a6d1921fe26'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
