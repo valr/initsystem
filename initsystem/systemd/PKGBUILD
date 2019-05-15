@@ -1,12 +1,12 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 case "${CARCH}" in
-  x86_64) _repo=http://mir.archlinux.fr/core/os/x86_64 ;;
+  x86_64) _repo=https://mirror.f4st.host/archlinux/core/os/x86_64/ ;;
   aarch64) _repo=http://fr.mirror.archlinuxarm.org/aarch64/core ;;
 esac
 
 pkgname='systemd'
-pkgver=241.67 # don't forget to update eudev _pkgver
+pkgver=242.29 # don't forget to update eudev _pkgver
 pkgrel=1
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
@@ -22,7 +22,7 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
         'systemd-compare'
         'aa-systemd-compare-pre.hook'
         'zz-systemd-compare-post.hook')
-md5sums=('f924f07be9a14033f235f0a4c22cf8c2'
+md5sums=('784eaa1a9d0f9e20a6f4918a28b43daa'
          'SKIP'
          '2dc705c1094e262d536e6a6d1921fe26'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
