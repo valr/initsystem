@@ -54,7 +54,7 @@ build() {
     --disable-verbose-mode \
     --disable-asserts \
     --disable-checks \
-    --without-x
+    --with-x
   make
 }
 
