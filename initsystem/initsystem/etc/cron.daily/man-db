@@ -3,4 +3,4 @@
 /usr/bin/install -d -o root -g root -m 0755 /var/cache/man
 /usr/bin/find /var/cache/man -type f -name *.gz -atime +6 -delete
 
-[ -x /usr/bin/mandb ] && /usr/bin/mandb 2>&1 | /usr/bin/logger -t mandb
+[ -x /usr/bin/mandb ] && /usr/bin/mandb --quiet 2>&1 | /usr/bin/logger -t mandb
