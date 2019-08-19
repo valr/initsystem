@@ -4,9 +4,9 @@
 
 pkgbase=util-linux
 pkgname=(util-linux libutil-linux)
-_pkgmajor=2.33
-pkgver=${_pkgmajor}.2
-pkgrel=1
+_pkgmajor=2.34
+pkgver=${_pkgmajor}
+pkgrel=3
 pkgdesc="Miscellaneous system utilities for Linux"
 url='https://github.com/karelzak/util-linux'
 arch=('x86_64')
@@ -15,13 +15,15 @@ license=('GPL2')
 options=('strip' 'debug')
 validpgpkeys=('B0C64D14301CC6EFAEDF60E4E4B71D5EEC39C284')  # Karel Zak
 source=("https://www.kernel.org/pub/linux/utils/util-linux/v$_pkgmajor/$pkgbase-$pkgver.tar."{xz,sign}
+        '0001-lsblk-force-to-print-PKNAME-for-partition.patch'
         pam-{login,common,runuser,su}
         'util-linux.sysusers'
         '60-rfkill.rules'
         'rfkill-unblock_.service'
         'rfkill-block_.service')
-sha256sums=('631be8eac6cf6230ba478de211941d526808dba3cd436380793334496013ce97'
+sha256sums=('743f9d0c7252b6db246b659c1e1ce0bd45d8d4508b4dfa427bbb4a3e9b9f62b5'
             'SKIP'
+            'cfadc020011f88c028dc50c4e6790f5bae385b881417d917a8706c6ff78613d9'
             '993a3096c2b113e6800f2abbd5d4233ebf1a97eef423990d3187d665d3490b92'
             'fc6807842f92e9d3f792d6b64a0d5aad87995a279153ab228b1b2a64d9f32f20'
             '95b7cdc4cba17494d7b87f37f8d0937ec54c55de0e3ce9d9ab05ad5cc76bf935'
@@ -31,8 +33,20 @@ sha256sums=('631be8eac6cf6230ba478de211941d526808dba3cd436380793334496013ce97'
             '8ccec10a22523f6b9d55e0d6cbf91905a39881446710aa083e935e8073323376'
             'a22e0a037e702170c7d88460cc9c9c2ab1d3e5c54a6985cd4a164ea7beff1b36')
 
+prepare() {
+  cd "$pkgbase-$pkgver"
+
+  patch -Np1 < ../0001-lsblk-force-to-print-PKNAME-for-partition.patch
+}
+
 build() {
   cd "$pkgbase-$pkgver"
+
+  # We ship Debian's hardlink in package 'hardlink', Fedora's hardlink was
+  # merged in util-linux. For now we disable the latter, but let's dicuss
+  # the details:
+  # https://bugs.archlinux.org/task/62896
+  # https://github.com/karelzak/util-linux/issues/808
 
   ./configure \
     --prefix=/usr \
@@ -46,6 +60,7 @@ build() {
     --enable-chfn-chsh \
     --enable-write \
     --enable-mesg \
+    --disable-hardlink \
     --with-python=3 \
     --without-systemd
 
