@@ -170,19 +170,19 @@ mount -o remount,ro /
 case $1 in
   halt)
     echo "shutdown: system is halting"
-    /usr/bin/busybox halt -f
+    /usr/bin/busybox halt -f -d 3
     ;;
   poweroff)
     echo "shutdown: system is shutting down"
-    /usr/bin/busybox poweroff -f
+    /usr/bin/busybox poweroff -f -d 3
     ;;
   reboot)
     echo "shutdown: system is rebooting"
-    /usr/bin/busybox reboot -f
+    /usr/bin/busybox reboot -f -d 3
     ;;
 esac
 
 echo "error: unexpected shutdown option $1, halting now"
-/usr/bin/busybox halt -f
+/usr/bin/busybox halt -f -d 3
 
 # vim: set filetype=sh:
