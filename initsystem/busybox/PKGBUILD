@@ -2,7 +2,7 @@
 
 pkgname=busybox
 pkgver=1.30.1
-pkgrel=2
+pkgrel=3
 pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
