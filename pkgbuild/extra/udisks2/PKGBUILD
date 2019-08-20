@@ -2,7 +2,7 @@
 # Contributor: Ionut Biru <ibiru@archlinux.org>
 
 pkgname=udisks2
-pkgver=2.8.2
+pkgver=2.8.4
 pkgrel=1
 pkgdesc="Disk Management Service, version 2"
 arch=('x86_64')
@@ -14,7 +14,7 @@ optdepends=('gptfdisk: GUID partition table support'
             'ntfs-3g: NTFS filesystem management support'
             'dosfstools: VFAT filesystem management support')
 source=("https://github.com/storaged-project/udisks/archive/udisks-$pkgver.tar.gz")
-sha512sums=('6a87c2f0273a51fc6bbee876f08ff6331183b9b27da62b1f934e1a8e1154a3b5dc309ba298c30b54c09b3ac851fcfed91e51f331cdfa53db4de7136314a750c4')
+sha512sums=('6a002f45e9713e891f8944138541db13665b8dad76a84bcd7449a4aa3a966dfb45cf8629812dec1827ce2ea8790b3eafa235cca4a00ceac2430c8cadfa25ec49')
 
 prepare() {
   cd udisks-udisks-$pkgver
