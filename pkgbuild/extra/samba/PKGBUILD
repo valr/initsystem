@@ -10,7 +10,7 @@
 
 pkgbase=samba
 pkgname=('libwbclient' 'smbclient' 'samba')
-pkgver=4.10.4
+pkgver=4.10.6
 pkgrel=1
 arch=(x86_64)
 url="https://www.samba.org"
@@ -179,7 +179,7 @@ sys.path.insert(0, '/usr/lib/python${_pyver}/site-packages')" \
 
   # packaging/wscript_build to use /etc/conf.d
 #  sed -i -e '/^EnvironmentFile/ s/sysconfig/conf.d/' "${pkgdir}"/usr/lib/systemd/system/*.service
-#  install -d -m755  "${pkgdir}"/etc/conf.d
+  install -d -m755  "${pkgdir}"/etc/conf.d
 #  install -m644 "${srcdir}"/samba-${pkgver}/packaging/systemd/samba.sysconfig "${pkgdir}"/etc/conf.d/samba
 
   # create ephemeral dirs via tmpfiles rather than shipping them in package
@@ -202,7 +202,7 @@ sys.path.insert(0, '/usr/lib/python${_pyver}/site-packages')" \
   # copy ldap example
   install -D -m644 ${srcdir}/samba-${pkgver}/examples/LDAP/samba.schema ${pkgdir}/usr/share/doc/samba/examples/LDAP/samba.schema
 }
-md5sums=('ef745b96eba9ca56334f2b5526427acd'
+md5sums=('9782cac8ef06049942be5f5c93b954be'
          'SKIP'
          '995621522c6ec9b68c1b858ceed627ed'
          '96f82c38f3f540b53f3e5144900acf17'
