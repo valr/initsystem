@@ -143,7 +143,7 @@ done
 # modules and firmwares ########################################################
 ################################################################################
 
-VERSION=$(/usr/bin/lsinitramfs $IMAGE | grep -m 1 '^usr/lib/modules/' | awk -F / '{print $4}')
+VERSION=$(/usr/bin/lsinitramfs $IMAGE | grep '^usr/lib/modules/' | awk -F / 'END{print $4}')
 
 echo "mkinitramfs: copying kernel modules and firmwares ($VERSION)"
 
