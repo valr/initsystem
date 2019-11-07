@@ -37,7 +37,13 @@ case "$1" in
     done
 
     RC=$?
-    compare_files pre post && rm -rf "${TMPDIR}"
+
+    if compare_files pre post; then
+      rm -rf "${TMPDIR}"
+    else
+      mv "${TMPDIR}" "${TMPDIR}-$(date +"%F-%T")"
+    fi
+
     exit $RC
     ;;
   *)
