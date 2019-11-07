@@ -1,9 +1,9 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_pkgver=242.84 # systemd pkgver
+_pkgver=243.78 # systemd pkgver
 
 pkgname=eudev
-pkgver=3.2.8
+pkgver=3.2.9
 pkgrel=1
 pkgdesc='device manager in userspace'
 url='https://wiki.gentoo.org/wiki/Project:Eudev'
@@ -22,7 +22,7 @@ source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz
         'udev-hwdb.hook'
         'udev-initcpio.hook'
         'udev-initcpio.install')
-md5sums=('ce166b3fdd910c2a4a840378f48fedaf'
+md5sums=('dedfb1964f6098fe9320de827957331f'
          'SKIP'
          '7fce0d7c0ecace6c34e44fe6e24470ee'
          'ce83380d8400d9ece7c93ef6bfe78f86'
