@@ -14,9 +14,9 @@ license=('GPL2')
 groups=('initsystem')
 arch=('any')
 depends=('bash')
-provides=("systemd=${pkgver}" 'libsystemd' 'systemd-libs')
-conflicts=('systemd' 'libsystemd' 'systemd-libs')
-replaces=('systemd' 'libsystemd' 'systemd-libs')
+provides=("systemd=${pkgver}" 'libsystemd' 'systemd-libs' 'systemd-sysvcompat')
+conflicts=('systemd' 'libsystemd' 'systemd-libs' 'systemd-sysvcompat')
+replaces=('systemd' 'libsystemd' 'systemd-libs' 'systemd-sysvcompat')
 source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz"
         "${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.xz.sig"
         'systemd-compare'
