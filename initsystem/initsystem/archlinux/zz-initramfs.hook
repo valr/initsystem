@@ -2,8 +2,9 @@
 Type = File
 Operation = Install
 Operation = Upgrade
-Target = etc/mkinitcpio.d/*.preset
+Target = usr/lib/initcpio/*
 Target = usr/lib/firmware/*
+Target = usr/lib/modules/*/vmlinuz
 
 [Trigger]
 Operation = Install
@@ -13,7 +14,6 @@ Target = busybox
 Target = dosfstools
 Target = e2fsprogs
 Target = initsystem
-Target = mkinitcpio
 
 [Action]
 Description = Rebuilding initramfs...
