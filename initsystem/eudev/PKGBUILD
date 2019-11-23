@@ -1,6 +1,6 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
-_pkgver=243.78 # systemd pkgver
+_pkgver=243.162 # systemd pkgver
 
 pkgname=eudev
 pkgver=3.2.9
