@@ -1,7 +1,7 @@
 Initsystem
 ==========
 
-An init system (what a surprise!)
+An init system (what a surprise!) for [Arch Linux](https://www.archlinux.org)
 
 Installation
 ============
