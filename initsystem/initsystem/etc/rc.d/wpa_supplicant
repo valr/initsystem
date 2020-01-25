@@ -2,7 +2,7 @@
 
 read -r INTERFACE < "/etc/wpa_supplicant/$(basename "$0").interface"
 
-rc_start_cmd="/usr/bin/wpa_supplicant -q -B -c /etc/wpa_supplicant/$(basename "$0").conf -i ${INTERFACE}"
+rc_start_cmd="/usr/bin/wpa_supplicant -B -q -s -c /etc/wpa_supplicant/$(basename "$0").conf -i ${INTERFACE}"
 
 . /etc/rc.d/rc.subr
 
