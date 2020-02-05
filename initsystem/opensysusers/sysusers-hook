@@ -1,7 +1,0 @@
-#!/bin/sh
-
-while read -r file; do
-  /usr/bin/systemd-sysusers "$(basename "${file}")"
-done
-
-exit 0
