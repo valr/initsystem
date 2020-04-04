@@ -9,4 +9,7 @@
 *.tar.xz
 *.tar.xz.asc
 *.tar.xz.sig
+*.tar.zst
+*.tar.zst.asc
+*.tar.zst.sig
 *.pkg.tar.xz
