@@ -2,7 +2,7 @@
 
 pkgname=busybox
 pkgver=1.31.1
-pkgrel=1
+pkgrel=2
 pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
@@ -10,18 +10,20 @@ arch=('x86_64' 'aarch64')
 groups=('initsystem')
 source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
-        'config_suid')
+        'config_suid'
+        'glibc-2.31.patch')
         # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch
 md5sums=('70913edaf2263a157393af07565c17f0'
          '47f0d40a7c767fbbb46140aac8c6ee90'
-         '2c33d9c11da7be1523cd8c25112272e6')
+         '2c33d9c11da7be1523cd8c25112272e6'
+         'fd160e17a3047886579dc75c45ee943f')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-# for PATCH in "${srcdir}"/*.patch; do
-#   patch -p1 <${PATCH}
-# done
+  for PATCH in "${srcdir}"/*.patch; do
+    patch -p1 <${PATCH}
+  done
 
   cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/nosuid
   cp "${srcdir}"/config_nosuid "${srcdir}"/nosuid/.config
