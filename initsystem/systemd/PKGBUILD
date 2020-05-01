@@ -7,7 +7,7 @@ esac
 
 pkgname='systemd'
 pkgver=245.5 # don't forget to update eudev _pkgver
-pkgrel=1
+pkgrel=2
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
@@ -22,7 +22,7 @@ source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.zst"
         'systemd-compare'
         'aa-systemd-compare-pre.hook'
         'zz-systemd-compare-post.hook')
-md5sums=('c9cf898a0dc5e093f34dfb08da1d8e63'
+md5sums=('876979153cb151ef3c0d3561a24c6ada'
          'SKIP'
          '055ac1655414fb8c668c8bbce6b830a5'
          'a06c94ec7b1a2802ebb8d7f2b86ecd48'
