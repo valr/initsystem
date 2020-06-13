@@ -1,7 +1,7 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=initsystem
-pkgver=1.2.0
+pkgver=1.0.0
 pkgrel=1
 pkgdesc='an init system'
 url='https://github.com/valr/initsystem'
