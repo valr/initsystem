@@ -101,12 +101,9 @@ pidwait5 120
 
 if [ $? -ne 0 ]; then
   echo "shutdown: sending SIGKILL to processes"
-  ps aux > /var/log/ps_before.shutdown
 
   killall5 -KILL
   pidwait5 120
-
-  ps aux > /var/log/ps_after.shutdown
 fi
 
 ################################################################################
