@@ -1,6 +1,6 @@
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2019 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2020 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,15 +34,17 @@ pwait() {
 }
 
 ################################################################################
-# override command variables ###################################################
+# variables and functions in service script ####################################
 ################################################################################
 
-# command variables in service script can be overridden in /etc/rc.conf
+# command variables (can be overridden in /etc/rc.conf):
+# rc_start_cmd, rc_stop_cmd, rc_reload_cmd, rc_display_cmd, rc_proc_cmd
+#
+# the command variables in service script can be overridden in /etc/rc.conf
 # for example: rc_start_cmd in script /etc/rc.d/foo can be overriden 
 #              in /etc/rc.conf by foo_start_cmd
 #
 # variables:
-# rc_start_cmd, rc_stop_cmd, rc_reload_cmd, rc_display_cmd (can be overridden in /etc/rc.conf)
 # rc_type: default="daemon"
 # rc_env: default=none
 # rc_output: default=none
@@ -54,7 +56,7 @@ pwait() {
 . /etc/rc.conf
 
 SRV="$(basename "$0" | tr '-' '_')"
-for CMD in start stop reload display; do
+for CMD in start stop reload display proc; do
   eval rc_${CMD}_cmd=\"$(eval echo "\${${SRV}_${CMD}_cmd:-\${rc_${CMD}_cmd}}")\"
 done
 
@@ -64,7 +66,7 @@ done
 
 start() {
   if [ "${rc_type:-daemon}" = "daemon" ]; then
-    pgrep -fx "${rc_start_cmd}" 1>/dev/null 2>/dev/null && return 0
+    pgrep -fx "${rc_proc_cmd:-${rc_start_cmd}}" 1>/dev/null 2>/dev/null && return 0
   fi
 
   type rc_pre_start 1>/dev/null && { rc_pre_start || return; }
@@ -78,7 +80,7 @@ start() {
 
 stop() {
   if [ "${rc_type:-daemon}" = "daemon" ]; then
-    pgrep -fx "${rc_start_cmd}" 1>/dev/null 2>/dev/null || return 0
+    pgrep -fx "${rc_proc_cmd:-${rc_start_cmd}}" 1>/dev/null 2>/dev/null || return 0
   fi
 
   if [ -z "${rc_stop_cmd}" ]; then
@@ -90,7 +92,7 @@ stop() {
   ash -c "${rc_env} ${rc_stop_cmd} ${rc_output}"; RC=$?
 
   if [ "${rc_type:-daemon}" = "daemon" ]; then
-    pwait "${rc_start_cmd}" 20 || return
+    pwait "${rc_proc_cmd:-${rc_start_cmd}}" 20 || return
   else
     [ $RC -eq 0 ] || return
   fi
@@ -107,7 +109,7 @@ restart() {
 
 reload() {
   if [ "${rc_type:-daemon}" = "daemon" ]; then
-    pgrep -fx "${rc_start_cmd}" 1>/dev/null 2>/dev/null || return 1
+    pgrep -fx "${rc_proc_cmd:-${rc_start_cmd}}" 1>/dev/null 2>/dev/null || return 1
   fi
 
   if [ -z "${rc_reload_cmd}" ]; then
@@ -122,7 +124,7 @@ display() {
 }
 
 status() {
-  PID=$(pgrep -fx "${rc_start_cmd}" 2>/dev/null | tr '\n' ' ')
+  PID=$(pgrep -fx "${rc_proc_cmd:-${rc_start_cmd}}" 2>/dev/null | tr '\n' ' ')
 
   if [ "${PID}" ]; then
     echo "$(basename "$0") is started as pid: ${PID}"; return 0

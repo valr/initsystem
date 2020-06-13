@@ -4,6 +4,7 @@ read -r INTERFACE < "/etc/$(basename "$0").interface"
 
 rc_start_cmd="/usr/bin/dhcpcd -q -b ${INTERFACE}"
 rc_stop_cmd="/usr/bin/dhcpcd -q -x ${INTERFACE}"
+rc_proc_cmd="dhcpcd: \[master\] \[ip4\] \[ip6\]" # default when interface is undefined
 
 . /etc/rc.d/rc.subr
 
