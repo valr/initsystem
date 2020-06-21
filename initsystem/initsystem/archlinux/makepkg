@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# TODO: rework this ugly script
+
 rm -f initsystem.tar.gz
 
 ( cd ..; make clean; make dist; mv initsystem.tar.gz archlinux; )
