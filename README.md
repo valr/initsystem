@@ -37,7 +37,7 @@ It is based on busybox and shell scripts.
 
 The [init process](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/src/init-og.c) is a small C program responsible to:
 * run the startup script [/etc/rc](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/etc/rc) and shutdown script [/etc/rc.shutdown](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/etc/rc.shutdown)
-* run the [/etc/respawn](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/etc/rc.respawn) script to (re)spawn getty's and invoke the login commands
+* run the [/etc/rc.respawn](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/etc/rc.respawn) script to (re)spawn getty's and invoke the login commands
 * reap the zombie processes
 
 The initsystem and [services](https://github.com/valr/initsystem/tree/master/initsystem/initsystem/etc/rc.d) are configured in [/etc/rc.conf](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/etc/rc.conf).  
@@ -58,8 +58,8 @@ It includes the modules and firmwares discovered by the Arch Linux initramfs.
 * The device manager is [eudev](https://wiki.gentoo.org/wiki/Project:Eudev) from Gentoo Linux
 * The tmpfiles utility is [opentmpfiles](https://github.com/OpenRC/opentmpfiles) from Gentoo's OpenRC
 * Users and groups are managed manually (opensysusers is not used)
-* A minimal [systemd](https://github.com/systemd/systemd) package is created to:
+* A [minimal systemd](https://github.com/valr/initsystem/blob/master/initsystem/systemd/PKGBUILD) package is created to:
     * provide fake but necessary dependencies on systemd, systemd-libs, libsystemd, systemd-sysvcompat
     * provide standard directories (modules-load, sysctl.d, tmpfiles.d, systemd unit directories)
     * provide standard systemd tmpfiles files
-    * provide a compare tool run as pacman pre & post hook scripts allowing follow-up of additions, changes, deletions of systemd unit files
+    * provide a [compare tool](https://github.com/valr/initsystem/blob/master/initsystem/systemd/systemd-compare) run as pacman [pre](https://github.com/valr/initsystem/blob/master/initsystem/systemd/aa-systemd-compare-pre.hook) & [post](https://github.com/valr/initsystem/blob/master/initsystem/systemd/zz-systemd-compare-post.hook) hook scripts allowing follow-up of additions, changes, deletions of systemd unit files
