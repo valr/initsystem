@@ -1,7 +1,7 @@
 /*
  * This file is part of initsystem
  *
- * Copyright (C) 2014-2019 Valère Monseur (valere dot monseur at ymail dot com)
+ * Copyright (C) 2014-2020 Valère Monseur (valere dot monseur at ymail dot com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@
 
 static sigset_t signal_set;
 
-static char** split_command (char *command)
+static char** split_command(char *command)
 {
     static char* argv[MAX_ARG_NUM];
     static char arg[MAX_STR_LEN];
@@ -88,22 +88,22 @@ static char** split_command (char *command)
     return argv;
 }
 
-static pid_t spawn_command (char **argv)
+static pid_t spawn_command(char **argv)
 {
-    pid_t pid = fork ();
+    pid_t pid = fork();
 
     switch (pid)
     {
         case 0:
-            sigprocmask (SIG_UNBLOCK, &signal_set, NULL);
-            setsid ();
-            execvp (*argv, argv);
-            sleep (3);
-            _exit (EXIT_FAILURE);
+            sigprocmask(SIG_UNBLOCK, &signal_set, NULL);
+            setsid();
+            execvp(*argv, argv);
+            sleep(3);
+            _exit(EXIT_FAILURE);
             break;
 
         case -1:
-            sleep (3);
+            sleep(3);
             pid = 0;
             break;
     }
@@ -111,21 +111,21 @@ static pid_t spawn_command (char **argv)
     return pid;
 }
 
-static void exec_command (char **argv)
+static void exec_command(char **argv)
 {
-    execvp (*argv, argv);
+    execvp(*argv, argv);
 }
 
-static time_t get_time ()
+static time_t get_time()
 {
     struct timespec time;
 
-    clock_gettime (CLOCK_MONOTONIC, &time);
+    clock_gettime(CLOCK_MONOTONIC, &time);
 
     return time.tv_sec;
 }
 
-static void write_wtmp (short type, pid_t pid, char *line, char *id, char *user)
+static void write_wtmp(short type, pid_t pid, char *line, char *id, char *user)
 {
     struct utmp utmp = {};
     struct utsname uts;
@@ -134,25 +134,25 @@ static void write_wtmp (short type, pid_t pid, char *line, char *id, char *user)
     utmp.ut_type = type;
     utmp.ut_pid = pid;
 
-    strncpy (utmp.ut_line, line, sizeof (utmp.ut_line));
-    strncpy (utmp.ut_id, id, sizeof (utmp.ut_id));
-    strncpy (utmp.ut_name, user, sizeof (utmp.ut_name));
+    strncpy(utmp.ut_line, line, sizeof(utmp.ut_line));
+    strncpy(utmp.ut_id, id, sizeof(utmp.ut_id));
+    strncpy(utmp.ut_name, user, sizeof(utmp.ut_name));
 
-    if (uname (&uts) == 0)
+    if (uname(&uts) == 0)
     {
-        strncpy (utmp.ut_host, uts.release, sizeof (utmp.ut_host));
+        strncpy(utmp.ut_host, uts.release, sizeof(utmp.ut_host));
     }
 
-    if (gettimeofday (&tv, NULL) == 0)
+    if (gettimeofday(&tv, NULL) == 0)
     {
         utmp.ut_tv.tv_sec = tv.tv_sec;
         utmp.ut_tv.tv_usec = tv.tv_usec;
     }
 
-    updwtmp (WTMP_FILE, &utmp);
+    updwtmp(WTMP_FILE, &utmp);
 }
 
-int main (int argc, char **argv)
+int main(int argc, char **argv)
 {
     pid_t spawn_pid = 0, dead_pid = 0;
     pid_t init_pid = -1;
@@ -165,22 +165,22 @@ int main (int argc, char **argv)
     char reexec_cmd[MAX_STR_LEN];
     char reexec_arg[MAX_STR_LEN];
 
-    if (getpid () != 1)
+    if (getpid() != 1)
         return EXIT_FAILURE;
 
-    setsid ();
-    reboot (RB_DISABLE_CAD);
-    putenv ("PATH=/bin:/sbin:/usr/bin:/usr/sbin");
-    umask (S_IWGRP | S_IWOTH);
-    chdir ("/");
+    setsid();
+    reboot(RB_DISABLE_CAD);
+    putenv("PATH=/bin:/sbin:/usr/bin:/usr/sbin");
+    umask(S_IWGRP | S_IWOTH);
+    chdir("/");
 
-    sigfillset (&signal_set);
-    sigprocmask (SIG_BLOCK, &signal_set, NULL);
+    sigfillset(&signal_set);
+    sigprocmask(SIG_BLOCK, &signal_set, NULL);
 
     if (argc == 1)
     {
-        init_pid = spawn_pid = spawn_command (split_command ("/etc/rc"));
-        alarm (300);
+        init_pid = spawn_pid = spawn_command(split_command("/etc/rc"));
+        alarm(300);
     }
     else
     {
@@ -188,40 +188,40 @@ int main (int argc, char **argv)
         {
             if (respawn_idx + 1 < argc)
             {
-                sscanf (argv[respawn_idx + 1], "%d", &respawn_pid[respawn_idx]);
-                memset (argv[respawn_idx + 1], '\0', strlen (argv[respawn_idx + 1]));
+                sscanf(argv[respawn_idx + 1], "%d", &respawn_pid[respawn_idx]);
+                memset(argv[respawn_idx + 1], '\0', strlen(argv[respawn_idx + 1]));
             }
         }
     }
 
     while (1)
     {
-        switch (sigwaitinfo (&signal_set, NULL))
+        switch (sigwaitinfo(&signal_set, NULL))
         {
             case SIGCHLD:
-                while ((dead_pid = waitpid (-1, NULL, WNOHANG)) > 0)
+                while ((dead_pid = waitpid(-1, NULL, WNOHANG)) > 0)
                 {
                     if (spawn_pid == dead_pid)
                     {
                         if (spawn_pid == init_pid)
                         {
-                            write_wtmp (BOOT_TIME, 0, "~", "~~", "reboot");
+                            write_wtmp(BOOT_TIME, 0, "~", "~~", "reboot");
                             init_pid = -1;
                         }
 
                         spawn_pid = 0;
-                        alarm (0);
+                        alarm(0);
                     }
 
                     for (respawn_idx = 0; respawn_idx < RESPAWN_CNT; respawn_idx++)
                     {
                         if (respawn_pid[respawn_idx] == 0 || respawn_pid[respawn_idx] == dead_pid)
                         {
-                            if (respawn_tim[respawn_idx] <= get_time () && spawn_pid == 0)
+                            if (respawn_tim[respawn_idx] <= get_time() && spawn_pid == 0)
                             {
-                                sprintf (respawn_cmd, "/etc/rc.respawn %d", respawn_idx + 1);
-                                respawn_pid[respawn_idx] = spawn_command (split_command (respawn_cmd));
-                                respawn_tim[respawn_idx] = get_time () + 7;
+                                sprintf(respawn_cmd, "/etc/rc.respawn %d", respawn_idx + 1);
+                                respawn_pid[respawn_idx] = spawn_command(split_command(respawn_cmd));
+                                respawn_tim[respawn_idx] = get_time() + 7;
                             }
                             else
                                 respawn_pid[respawn_idx] = 0;
@@ -233,7 +233,7 @@ int main (int argc, char **argv)
             case SIGALRM:
                 if (spawn_pid == init_pid)
                 {
-                    write_wtmp (BOOT_TIME, 0, "~", "~~", "reboot");
+                    write_wtmp(BOOT_TIME, 0, "~", "~~", "reboot");
                     init_pid = -1;
                 }
 
@@ -243,9 +243,9 @@ int main (int argc, char **argv)
                 {
                     if (respawn_pid[respawn_idx] == 0)
                     {
-                        sprintf (respawn_cmd, "/etc/rc.respawn %d", respawn_idx + 1);
-                        respawn_pid[respawn_idx] = spawn_command (split_command (respawn_cmd));
-                        respawn_tim[respawn_idx] = get_time () + 7;
+                        sprintf(respawn_cmd, "/etc/rc.respawn %d", respawn_idx + 1);
+                        respawn_pid[respawn_idx] = spawn_command(split_command(respawn_cmd));
+                        respawn_tim[respawn_idx] = get_time() + 7;
                     }
                 }
                 break;
@@ -253,42 +253,42 @@ int main (int argc, char **argv)
             case SIGTERM:
                 if (spawn_pid == 0)
                 {
-                    write_wtmp (RUN_LVL, 0, "~~", "~~", "shutdown");
-                    spawn_pid = spawn_command (split_command ("/etc/rc.shutdown poweroff"));
-                    alarm (300);
+                    write_wtmp(RUN_LVL, 0, "~~", "~~", "shutdown");
+                    spawn_pid = spawn_command(split_command("/etc/rc.shutdown poweroff"));
+                    alarm(300);
                 }
                 break;
 
             case SIGUSR1:
                 if (spawn_pid == 0)
                 {
-                    write_wtmp (RUN_LVL, 0, "~~", "~~", "shutdown");
-                    spawn_pid = spawn_command (split_command ("/etc/rc.shutdown reboot"));
-                    alarm (300);
+                    write_wtmp(RUN_LVL, 0, "~~", "~~", "shutdown");
+                    spawn_pid = spawn_command(split_command("/etc/rc.shutdown reboot"));
+                    alarm(300);
                 }
                 break;
 
             case SIGUSR2:
                 if (spawn_pid == 0)
                 {
-                    write_wtmp (RUN_LVL, 0, "~~", "~~", "shutdown");
-                    spawn_pid = spawn_command (split_command ("/etc/rc.shutdown halt"));
-                    alarm (300);
+                    write_wtmp(RUN_LVL, 0, "~~", "~~", "shutdown");
+                    spawn_pid = spawn_command(split_command("/etc/rc.shutdown halt"));
+                    alarm(300);
                 }
                 break;
 
             case SIGQUIT:
                 if (spawn_pid == 0)
                 {
-                    strcpy (reexec_cmd, argv[0]);
+                    strcpy(reexec_cmd, argv[0]);
 
                     for (respawn_idx = 0; respawn_idx < RESPAWN_CNT; respawn_idx++)
                     {
-                        sprintf (reexec_arg, " %d", respawn_pid[respawn_idx]);
-                        strcat (reexec_cmd, reexec_arg);
+                        sprintf(reexec_arg, " %d", respawn_pid[respawn_idx]);
+                        strcat(reexec_cmd, reexec_arg);
                     }
 
-                    exec_command (split_command (reexec_cmd));
+                    exec_command(split_command(reexec_cmd));
                 }
                 break;
         }
