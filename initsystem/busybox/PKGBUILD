@@ -1,8 +1,8 @@
 # Maintainer: valr <valere dot monseur at ymail dot com>
 
 pkgname=busybox
-pkgver=1.31.1
-pkgrel=2
+pkgver=1.32.0
+pkgrel=1
 pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
 license=('GPL')
@@ -11,12 +11,12 @@ groups=('initsystem')
 source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
         'config_suid'
-        'glibc-2.31.patch')
+        '0001-hwclock-make-glibc-2.31-compatible.patch')
         # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch
-md5sums=('70913edaf2263a157393af07565c17f0'
-         '47f0d40a7c767fbbb46140aac8c6ee90'
-         '2c33d9c11da7be1523cd8c25112272e6'
-         'fd160e17a3047886579dc75c45ee943f')
+md5sums=('9576986f1a960da471d03b72a62f13c7'
+         'b8e9f5719dc1bffad7aa18bc00d5c9c0'
+         '4c5df64e701601ac1092065da7f005db'
+         '67bc46326a0cb6ee86a3e661c7771a0f')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
