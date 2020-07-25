@@ -52,7 +52,7 @@ mount -t tmpfs -o nosuid,nodev shm /dev/shm
 
 echo "initscript: setting clock"
 
-hwclock --systz -u
+hwclock -s -u
 
 ################################################################################
 # hostname #####################################################################
