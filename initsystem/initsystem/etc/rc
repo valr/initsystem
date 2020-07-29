@@ -162,7 +162,7 @@ fi
 # random number generator ######################################################
 ################################################################################
 
-echo "initscript: initializing random number generator"
+echo "initscript: initializing random numbers generator"
 
 RANDOM_SEED=/var/lib/misc/random-seed
 
