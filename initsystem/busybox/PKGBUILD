@@ -11,12 +11,14 @@ groups=('initsystem')
 source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
         'config_suid'
-        '0001-hwclock-make-glibc-2.31-compatible.patch')
+        '0001-hwclock-make-glibc-2.31-compatible.patch'
+        'Makefile.flags.patch')
         # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch
 md5sums=('9576986f1a960da471d03b72a62f13c7'
          'b8e9f5719dc1bffad7aa18bc00d5c9c0'
          '4c5df64e701601ac1092065da7f005db'
-         '67bc46326a0cb6ee86a3e661c7771a0f')
+         '67bc46326a0cb6ee86a3e661c7771a0f'
+         '711fd2475933fad30cfe2229c346e5b6')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"

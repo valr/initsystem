@@ -1,0 +1,11 @@
+--- a/Makefile.flags.orig	2020-09-08 20:33:07.980531860 +0200
++++ b/Makefile.flags	2020-09-08 20:33:36.250876042 +0200
+@@ -150,7 +150,7 @@ endif
+ # fall back to using a temp file:
+ CRYPT_AVAILABLE := $(shell echo 'int main(void){return 0;}' >crypttest.c; $(CC) $(CFLAGS) -lcrypt -o /dev/null crypttest.c >/dev/null 2>&1 && echo "y"; rm crypttest.c)
+ ifeq ($(CRYPT_AVAILABLE),y)
+-LDLIBS += m rt crypt
++LDLIBS += m rt
+ else
+ LDLIBS += m rt
+ endif
