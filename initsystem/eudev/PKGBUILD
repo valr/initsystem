@@ -3,7 +3,7 @@
 _pkgver=247.3 # systemd pkgver
 
 pkgname=eudev
-pkgver=3.2.9
+pkgver=3.2.10
 pkgrel=1
 pkgdesc='device manager in userspace'
 url='https://wiki.gentoo.org/wiki/Project:Eudev'
@@ -22,7 +22,7 @@ source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz
         'udev-hwdb.hook'
         'udev-initcpio.hook'
         'udev-initcpio.install')
-md5sums=('dedfb1964f6098fe9320de827957331f'
+md5sums=('60b135a189523f333cea5f71a3345c8d'
          'SKIP'
          '7fce0d7c0ecace6c34e44fe6e24470ee'
          'ce83380d8400d9ece7c93ef6bfe78f86'
