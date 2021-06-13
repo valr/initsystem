@@ -1,0 +1,15 @@
+#!/bin/ash
+
+rc_type="nodaemon"
+rc_env="PATH=/usr/bin"
+
+rc_start_cmd="/usr/bin/nft -f /etc/nftables.conf"
+rc_reload_cmd="/usr/bin/nft flush ruleset; /usr/bin/nft -f /etc/nftables.conf"
+rc_stop_cmd="/usr/bin/nft flush ruleset"
+rc_display_cmd="/usr/bin/nft list ruleset"
+
+. /etc/rc.d/rc.subr
+
+rc_run "start stop reload display" $@
+
+# vim: set filetype=sh:
