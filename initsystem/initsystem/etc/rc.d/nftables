@@ -1,15 +1,18 @@
 #!/bin/ash
 
+# Important notes:
+# 'flush ruleset' is expected to be the first rule in the ruleset (/etc/nftables.conf)
+# There is no 'stop' in rc_run. The loaded ruleset will remain active.
+
 rc_type="nodaemon"
 rc_env="PATH=/usr/bin"
 
 rc_start_cmd="/usr/bin/nft -f /etc/nftables.conf"
-rc_reload_cmd="/usr/bin/nft flush ruleset; /usr/bin/nft -f /etc/nftables.conf"
-rc_stop_cmd="/usr/bin/nft flush ruleset"
+rc_reload_cmd="/usr/bin/nft -f /etc/nftables.conf"
 rc_display_cmd="/usr/bin/nft list ruleset"
 
 . /etc/rc.d/rc.subr
 
-rc_run "start stop reload display" $@
+rc_run "start reload display" $@
 
 # vim: set filetype=sh:
