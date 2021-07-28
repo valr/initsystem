@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2019 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2021 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -86,7 +86,8 @@ for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/de
 
   grep -v '^[[:space:]]*$' $IFILE | grep -E -v '^[[:space:]]*(#|;)' | \
   while read -r MODULE; do
-    modprobe $MODULE
+    # TEMPORARY: busybox doesn't support zstd (de)compression yet
+    /usr/bin/modprobe $MODULE
   done
 done
 

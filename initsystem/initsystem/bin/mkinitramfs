@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2014-2019 Valère Monseur (valere dot monseur at ymail dot com)
+# Copyright (C) 2014-2021 Valère Monseur (valere dot monseur at ymail dot com)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -160,6 +160,11 @@ add_module() {
     esac
 
     install -D -m644 /usr/lib/modules/$VERSION/$MODULE $BASE/lib/modules/$VERSION/$MODULE
+
+    # TEMPORARY: busybox doesn't support zstd (de)compression yet
+    case $MODULE in
+      *.zst) /usr/bin/zstd -dfq --rm $BASE/lib/modules/$VERSION/$MODULE ;;
+    esac
   done
 }
 
@@ -178,6 +183,9 @@ for FILE in $(/usr/bin/lsinitramfs $IMAGE); do
     usr/lib/firmware/*) add_firmware ${FILE#usr} ;;
   esac
 done
+
+# TEMPORARY: busybox doesn't support zstd (de)compression yet
+sed -i 's/\.zst$//' $BASE/etc/modules
 
 depmod -b $BASE $VERSION
 
