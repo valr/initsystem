@@ -32,6 +32,6 @@ fi
 # respawn commands #############################################################
 ################################################################################
 
-exec getty -l $PATH/login 38400 tty$1 linux
+exec getty -l $PATH/login 38400 tty"$1" linux
 
 # vim: set filetype=sh:
