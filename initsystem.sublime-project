@@ -1,10 +1,22 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": ".",
+			"folder_exclude_patterns": [
+				".cache"
+			]
 		}
 	],
 	"settings": {
-		"lsp_format_on_save": true
+		"lsp_format_on_save": true,
+		"LSP": {
+			"clangd": {
+				"enabled": true,
+				"command": [
+					"clangd",
+					"--compile-commands-dir=initsystem/initsystem"
+				]
+			}
+		}
 	}
 }
