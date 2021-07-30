@@ -52,8 +52,8 @@ mount -t tmpfs -o nosuid,nodev shm /dev/shm
 
 echo "initscript: setting hostname"
 
-if [ $HOSTNAME ]; then
-  hostname $HOSTNAME
+if [ "$HOSTNAME" ]; then
+  hostname "$HOSTNAME"
 fi
 
 ################################################################################
@@ -80,14 +80,14 @@ DIR3=/usr/lib/modules-load.d
 
 for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/dev/null | sort -u); do
 
-  [ -r $DIR3/$FILE ] && IFILE=$DIR3/$FILE
-  [ -r $DIR2/$FILE ] && IFILE=$DIR2/$FILE
-  [ -r $DIR1/$FILE ] && IFILE=$DIR1/$FILE
+  [ -r $DIR3/"$FILE" ] && IFILE=$DIR3/"$FILE"
+  [ -r $DIR2/"$FILE" ] && IFILE=$DIR2/"$FILE"
+  [ -r $DIR1/"$FILE" ] && IFILE=$DIR1/"$FILE"
 
-  grep -v '^[[:space:]]*$' $IFILE | grep -E -v '^[[:space:]]*(#|;)' | \
+  grep -v '^[[:space:]]*$' "$IFILE" | grep -E -v '^[[:space:]]*(#|;)' | \
   while read -r MODULE; do
     # TEMPORARY: busybox doesn't support zstd (de)compression yet
-    /usr/bin/modprobe $MODULE
+    /usr/bin/modprobe "$MODULE"
   done
 done
 
@@ -127,11 +127,11 @@ DIR3=/usr/lib/sysctl.d
 
 for FILE in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -exec basename '{}' \; 2>/dev/null | sort -u); do
 
-  [ -r $DIR3/$FILE ] && IFILE=$DIR3/$FILE
-  [ -r $DIR2/$FILE ] && IFILE=$DIR2/$FILE
-  [ -r $DIR1/$FILE ] && IFILE=$DIR1/$FILE
+  [ -r $DIR3/"$FILE" ] && IFILE=$DIR3/"$FILE"
+  [ -r $DIR2/"$FILE" ] && IFILE=$DIR2/"$FILE"
+  [ -r $DIR1/"$FILE" ] && IFILE=$DIR1/"$FILE"
 
-  sysctl -q -p $IFILE
+  sysctl -q -p "$IFILE"
 done
 
 ################################################################################
@@ -201,13 +201,13 @@ done
 
 echo "initscript: setting console keymap and font"
 
-if [ $CONSOLE_KEYMAP ]; then
-  /usr/bin/loadkeys $CONSOLE_KEYMAP
+if [ "$CONSOLE_KEYMAP" ]; then
+  /usr/bin/loadkeys "$CONSOLE_KEYMAP"
 fi
 
-if [ $CONSOLE_FONT ]; then
+if [ "$CONSOLE_FONT" ]; then
   for TTY in /dev/tty[0-9]*; do
-    /usr/bin/setfont $CONSOLE_FONT -C $TTY
+    /usr/bin/setfont "$CONSOLE_FONT" -C "$TTY"
   done
 fi
 
