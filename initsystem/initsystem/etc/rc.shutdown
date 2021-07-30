@@ -148,7 +148,7 @@ sync
 
 echo "shutdown: unmounting filesystems"
 
-cat /proc/self/mounts | cut -d ' ' -f 2 | sort -r | \
+cut -d ' ' -f 2 < /proc/self/mounts | sort -r | \
 while read -r MOUNT; do
   case "$MOUNT" in
     /|/proc|/sys|/run|/dev|/dev/pts) ;;
