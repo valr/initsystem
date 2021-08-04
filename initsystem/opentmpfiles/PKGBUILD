@@ -1,4 +1,4 @@
-# Maintainer: valr <valere dot monseur at ymail dot com>
+# Maintainer: Valère Monseur <archlinux at vale dot re>
 
 pkgname=opentmpfiles
 pkgver=0.3.1

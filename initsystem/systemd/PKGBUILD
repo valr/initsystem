@@ -1,4 +1,4 @@
-# Maintainer: valr <valere dot monseur at ymail dot com>
+# Maintainer: Valère Monseur <archlinux at vale dot re>
 
 case "${CARCH}" in
   x86_64) _repo=https://mirror.f4st.host/archlinux/core/os/x86_64/ ;;
