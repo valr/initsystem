@@ -25,3 +25,5 @@ package() {
   install -D -m 644 "${srcdir}"/tmpfiles.hook "${pkgdir}"/usr/share/libalpm/hooks/tmpfiles.hook
   install -D -m 644 "${srcdir}/${pkgname}-${pkgver}"/LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
+
+# vim: set filetype=sh:
