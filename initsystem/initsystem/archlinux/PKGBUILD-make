@@ -1,0 +1,8 @@
+#!/bin/bash
+
+DIR="$(dirname "$(dirname "$(realpath "${BASH_SOURCE[0]}")")")"
+
+make -C "$DIR" dist && mv -f "$DIR"/initsystem.tar.gz "$DIR"/archlinux
+cd "$DIR"/archlinux && makepkg -cf --skipchecksums
+
+# vim: set filetype=sh:
