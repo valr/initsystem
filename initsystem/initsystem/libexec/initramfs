@@ -55,8 +55,8 @@ rescue_shell() {
 }
 
 wait_filesystem() {
-  for i in $(seq $2); do
-    if [ -e $(findfs $1) ]; then
+  for i in $(seq "$2"); do
+    if [ -e "$(findfs "$1")" ]; then
       return
     fi
 
@@ -114,16 +114,16 @@ for COMMAND in $(cat /proc/cmdline); do
   esac
 done
 
-if [ -z $BREAK ]; then
+if [ -z "$BREAK" ]; then
   BREAK="nobreak"
 fi
 
-if [ -z $INIT ]; then
+if [ -z "$INIT" ]; then
   echo "initramfs: using default init=/sbin/init"
   INIT=/sbin/init
 fi
 
-if [ -z $ROOT ]; then
+if [ -z "$ROOT" ]; then
   echo "initramfs: missing root filesystem"
   rescue_shell
 fi
@@ -135,14 +135,14 @@ fi
 echo "initramfs: loading modules"
 
 while IFS= read -r MODULE; do
-  modprobe $MODULE
+  modprobe "$MODULE"
 done < /etc/modules
 
 ################################################################################
 # pre-mount break ##############################################################
 ################################################################################
 
-if [ $BREAK = 'premount' ]; then
+if [ "$BREAK" = 'premount' ]; then
   echo "initramfs: break on pre-mount"
   rescue_shell
 fi
@@ -153,22 +153,22 @@ fi
 
 echo "initramfs: waiting for root filesystem $ROOT"
 
-wait_filesystem $ROOT 240
+wait_filesystem "$ROOT" 240
 
-ROOT=$(findfs $ROOT) # get the filesystem device
-eval $(blkid $ROOT | awk '{print $NF}') # get the filesystem type
+ROOT=$(findfs "$ROOT") # get the filesystem device
+eval $(blkid "$ROOT" | awk '{print $NF}') # get the filesystem type
 
 echo "initramfs: checking root filesystem $ROOT ($TYPE)"
 
 touch /etc/fstab
 ln -s /proc/self/mounts /etc/mtab
 
-fsck -T -t $TYPE $ROOT
+fsck -T -t "$TYPE" "$ROOT"
 check_fsck $?
 
 echo "initramfs: mounting root filesystem read-only"
 
-mount -r -t $TYPE $ROOT /newroot
+mount -r -t "$TYPE" "$ROOT" /newroot
 
 if [ $? -ne 0 ]; then
   echo "initramfs: cannot mount root filesystem"
@@ -186,7 +186,7 @@ check_fsck $?
 # post-mount break #############################################################
 ################################################################################
 
-if [ $BREAK = 'postmount' ]; then
+if [ "$BREAK" = 'postmount' ]; then
   echo "initramfs: break on post-mount"
   rescue_shell
 fi
@@ -197,7 +197,7 @@ fi
 
 echo "initramfs: checking init program $INIT"
 
-if [ ! -x /newroot/$INIT ]; then
+if [ ! -x /newroot/"$INIT" ]; then
   echo "initramfs: init program doesn't exist or is not executable"
   rescue_shell
 fi
@@ -219,7 +219,7 @@ umount /proc
 
 echo "initramfs: switching root filesystem"
 
-exec env -i /bin/switch_root /newroot $INIT
+exec env -i /bin/switch_root /newroot "$INIT"
 
 echo "initramfs: cannot switch root filesystem and execute init program"
 
