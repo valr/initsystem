@@ -211,11 +211,7 @@ install -m755 /usr/lib/initsystem/initramfs "$BASE"/init
 
 echo "mkinitramfs: generating initramfs archive"
 
-cd $BASE
-
-find . | cpio -o -H newc | gzip > $IMAGE.cpio.gz
-
-cd ..
+(cd "$BASE" && find . | cpio -o -H newc | gzip > "$IMAGE".cpio.gz)
 
 echo "mkinitramfs: cleaning temporary files"
 
