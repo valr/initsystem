@@ -153,7 +153,8 @@ while read -r MOUNT; do
   case "$MOUNT" in
     /|/proc|/sys|/run|/dev|/dev/pts) ;;
     *) echo "unmounting $MOUNT"
-       umount -r "$MOUNT" || { sleep 10; umount -l "$MOUNT"; sleep 10; }
+       umount -r "$MOUNT"
+       mountpoint -q "$MOUNT" && { sleep 7; umount -l "$MOUNT"; sleep 7; }
        ;;
   esac
 done
