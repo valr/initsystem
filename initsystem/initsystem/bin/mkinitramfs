@@ -39,9 +39,9 @@ fi
 # parameters ###################################################################
 ################################################################################
 
-IMAGE=$1
+IMAGE="$1"
 
-if [ ! -r $IMAGE ]; then
+if [ ! -r "$IMAGE" ]; then
   echo "mkinitramfs: $IMAGE does not exist"
   exit 1
 fi
@@ -54,14 +54,14 @@ echo ">>> generating $IMAGE.cpio.gz <<<"
 
 echo "mkinitramfs: creating temporary base directory"
 
-BASE=$(mktemp -d /tmp/initramfs.XXXXXX)
+BASE="$(mktemp -d /tmp/initramfs.XXXXXX)"
 
 if [ $? -ne 0 ]; then
   echo "mkinitramfs: cannot create temporary base directory"
   exit 1
 fi
 
-trap 'rm -rf $BASE; echo "mkinitramfs: an error has occurred, aborting!"; exit 1' INT TERM EXIT
+trap 'rm -rf "$BASE"; echo "mkinitramfs: an error has occurred, aborting!"; exit 1' INT TERM EXIT
 
 ################################################################################
 # directory structure ##########################################################
@@ -71,7 +71,7 @@ echo "mkinitramfs: creating directory structure"
 
 for DIRECTORY in bin dev etc etc/modprobe.d lib lib64 mnt newroot proc root \
                  run sbin sys tmp usr usr/bin usr/lib usr/lib64 usr/sbin var; do
-  install -d -m755 $BASE/$DIRECTORY
+  install -d -m755 "$BASE/$DIRECTORY"
 done
 
 ################################################################################
@@ -80,15 +80,15 @@ done
 
 echo "mkinitramfs: copying configuration files"
 
-echo "root:x:0:0:root:/root:/bin/ash" > $BASE/etc/passwd
-echo "root::::::::" > $BASE/etc/shadow
-echo "root:x:0:root" > $BASE/etc/group
-echo "tty:x:5:" >> $BASE/etc/group
+echo "root:x:0:0:root:/root:/bin/ash" > "$BASE"/etc/passwd
+echo "root::::::::" > "$BASE"/etc/shadow
+echo "root:x:0:root" > "$BASE"/etc/group
+echo "tty:x:5:" >> "$BASE"/etc/group
 
-dumpkmap > $BASE/etc/keymap
+dumpkmap > "$BASE"/etc/keymap
 
-install -m644 /dev/null $BASE/etc/ld.so.conf
-install -m644 /etc/localtime $BASE/etc/localtime
+install -m644 /dev/null "$BASE"/etc/ld.so.conf
+install -m644 /etc/localtime "$BASE"/etc/localtime
 
 ################################################################################
 # statically linked binaries ###################################################
@@ -96,12 +96,12 @@ install -m644 /etc/localtime $BASE/etc/localtime
 
 echo "mkinitramfs: copying statically linked binaries"
 
-install -m755 /usr/bin/busybox $BASE/usr/bin/busybox
-install -m4755 /usr/bin/busybox-suid $BASE/usr/bin/busybox-suid
+install -m755 /usr/bin/busybox "$BASE"/usr/bin/busybox
+install -m4755 /usr/bin/busybox-suid "$BASE"/usr/bin/busybox-suid
 
 for BINARY in /usr/bin/busybox /usr/bin/busybox-suid; do
-  for APPLET in $($BASE/$BINARY --list); do
-    ln -s $BINARY $BASE/bin/$APPLET
+  for APPLET in $("$BASE/$BINARY" --list); do
+    ln -s "$BINARY" "$BASE/bin/$APPLET"
   done
 done
 
@@ -112,89 +112,89 @@ done
 echo "mkinitramfs: copying dynamically linked binaries"
 
 add_binary() {
-  FILE=$(readlink -f $1)
+  FILE="$(readlink -f "$1")"
 
-  if [ ! -e $BASE/$FILE ]; then
-    install -D $FILE $BASE/$FILE
+  if [ ! -e "$BASE/$FILE" ]; then
+    install -D "$FILE" "$BASE/$FILE"
   fi
 
-  if [ $FILE != $1 ]; then
-    if [ ! -L $BASE/$1 ]; then
-      ln -s $FILE $BASE/$1
+  if [ "$FILE" != "$1" ]; then
+    if [ ! -L "$BASE/$1" ]; then
+      ln -s "$FILE" "$BASE/$1"
     fi
   fi
 }
 
 add_binaries() {
-  add_binary $1
+  add_binary "$1"
 
-  for BINARY in $(/usr/bin/ldd $1 | grep -o '/[^ ]\+'); do
-    add_binary $BINARY
+  for BINARY in $(/usr/bin/ldd "$1" | grep -o '/[^ ]\+'); do
+    add_binary "$BINARY"
   done
 }
 
 for FILESYSTEM in ext2 ext3 ext4 fat vfat msdos; do
-  add_binaries /usr/bin/fsck.$FILESYSTEM
+  add_binaries /usr/bin/fsck."$FILESYSTEM"
 done
 
-/usr/bin/ldconfig -r $BASE -f /etc/ld.so.conf -C /etc/ld.so.cache
+/usr/bin/ldconfig -r "$BASE" -f /etc/ld.so.conf -C /etc/ld.so.cache
 
 ################################################################################
 # modules and firmwares ########################################################
 ################################################################################
 
-VERSION=$(/usr/bin/lsinitramfs $IMAGE | grep '^usr/lib/modules/' | awk -F / 'END{print $4}')
+VERSION="$(/usr/bin/lsinitramfs "$IMAGE" | grep '^usr/lib/modules/' | awk -F / 'END{print $4}')"
 
 echo "mkinitramfs: copying kernel modules and firmwares ($VERSION)"
 
 add_module() {
-  REGEXP=$(basename $1 | sed 's/[-_]/[\\-_]/g')
-  MODULES=$(grep "/${REGEXP}.*:" /usr/lib/modules/$VERSION/modules.dep)
+  REGEXP="$(basename "$1" | sed 's/[-_]/[\\-_]/g')"
+  MODULES="$(grep "/${REGEXP}.*:" /usr/lib/modules/"$VERSION"/modules.dep)"
 
   for MODULE in $MODULES; do
     case $MODULE in
       *:)
         MODULE=${MODULE%:}
-        basename $MODULE >> $BASE/etc/modules
+        basename "$MODULE" >> "$BASE"/etc/modules
         ;;
     esac
 
-    install -D -m644 /usr/lib/modules/$VERSION/$MODULE $BASE/lib/modules/$VERSION/$MODULE
+    install -D -m644 "/usr/lib/modules/$VERSION/$MODULE" "$BASE/lib/modules/$VERSION/$MODULE"
 
     # TEMPORARY: busybox doesn't support zstd (de)compression yet
     case $MODULE in
-      *.zst) /usr/bin/zstd -dfq --rm $BASE/lib/modules/$VERSION/$MODULE ;;
+      *.zst) /usr/bin/zstd -dfq --rm "$BASE/lib/modules/$VERSION/$MODULE" ;;
     esac
   done
 }
 
 add_firmware() {
-  if [ ! -d $1 ]; then
-    install -D $1 $BASE/$1
+  if [ ! -d "$1" ]; then
+    install -D "$1" "$BASE/$1"
   fi
 }
 
-touch $BASE/etc/modules
-mkdir -p $BASE/lib/modules/$VERSION
+touch "$BASE"/etc/modules
+mkdir -p "$BASE"/lib/modules/"$VERSION"
 
-for FILE in $(/usr/bin/lsinitramfs $IMAGE); do
+for FILE in $(/usr/bin/lsinitramfs "$IMAGE"); do
   case $FILE in
-    usr/lib/modules/*.ko*) add_module $FILE ;;
-    usr/lib/firmware/*) add_firmware ${FILE#usr} ;;
+    usr/lib/modules/*.ko*) add_module "$FILE" ;;
+    usr/lib/firmware/*) add_firmware "${FILE#usr}" ;;
   esac
 done
 
 # TEMPORARY: busybox doesn't support zstd (de)compression yet
-sed -i 's/\.zst$//' $BASE/etc/modules
+sed -i 's/\.zst$//' "$BASE"/etc/modules
 
-depmod -b $BASE $VERSION
+depmod -b "$BASE" "$VERSION"
 
 DIR1=/etc/modprobe.d
 DIR2=/run/modprobe.d
 DIR3=/lib/modprobe.d
 
 for OPTION in $(find $DIR1 $DIR2 $DIR3 -name '*.conf' -print 2>/dev/null); do
-  install -m644 $OPTION $BASE/etc/modprobe.d
+  install -m644 "$OPTION" "$BASE"/etc/modprobe.d
 done
 
 ################################################################################
@@ -203,7 +203,7 @@ done
 
 echo "mkinitramfs: copying initscript"
 
-install -m755 /usr/lib/initsystem/initramfs $BASE/init
+install -m755 /usr/lib/initsystem/initramfs "$BASE"/init
 
 ################################################################################
 # initramfs ####################################################################
@@ -219,15 +219,15 @@ cd ..
 
 echo "mkinitramfs: cleaning temporary files"
 
-rm -rf $BASE
+rm -rf "$BASE"
 
 echo "mkinitramfs: listing summary of initramfs archive"
 
-echo "configuration files $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E -c '^(etc)')"
-echo "binaries $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E -c '^(bin|sbin|usr/bin|usr/sbin)')"
-echo "libraries $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E '^(lib|lib64|usr/lib|usr/lib64)' | grep -v -E -c '^lib/(firmware|modules)')"
-echo "modules $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E -c '^(lib/modules)')"
-echo "firmwares $(/usr/bin/lsinitramfs $IMAGE.cpio.gz | grep -E -c '^(lib/firmware)')"
+echo "configuration files $(/usr/bin/lsinitramfs "$IMAGE".cpio.gz | grep -E -c '^(etc)')"
+echo "binaries $(/usr/bin/lsinitramfs "$IMAGE".cpio.gz | grep -E -c '^(bin|sbin|usr/bin|usr/sbin)')"
+echo "libraries $(/usr/bin/lsinitramfs "$IMAGE".cpio.gz | grep -E '^(lib|lib64|usr/lib|usr/lib64)' | grep -v -E -c '^lib/(firmware|modules)')"
+echo "modules $(/usr/bin/lsinitramfs "$IMAGE".cpio.gz | grep -E -c '^(lib/modules)')"
+echo "firmwares $(/usr/bin/lsinitramfs "$IMAGE".cpio.gz | grep -E -c '^(lib/firmware)')"
 
 echo ">>> generation done <<<"
 

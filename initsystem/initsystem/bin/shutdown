@@ -38,7 +38,7 @@ case $(basename "$0") in
   poweroff) kill -TERM 1 ;;
   reboot)   kill -USR1 1 ;;
   shutdown)
-    case $1 in
+    case "$1" in
       -h) kill -USR2 1 ;;
       -p) kill -TERM 1 ;;
       -r) kill -USR1 1 ;;

@@ -169,7 +169,7 @@ mount -o remount,ro /
 
 sync; sync; sync;
 
-case $1 in
+case "$1" in
   halt)
     echo "shutdown: system is halting"
     /usr/bin/busybox halt -f -d 7

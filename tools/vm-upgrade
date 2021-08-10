@@ -52,7 +52,7 @@ if ps ax | grep [a]rchlinux-"$1" &>/dev/null; then
 fi
 
 wait_device() {
-  for i in $(seq $2); do
+  for i in $(seq "$2"); do
     if [ -e "$1" ]; then
       return 0
     fi
