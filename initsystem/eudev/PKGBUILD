@@ -1,6 +1,6 @@
 # Maintainer: Valère Monseur <archlinux at vale dot re>
 
-_pkgver=249.2 # systemd pkgver
+_pkgver=249.5 # systemd pkgver
 
 pkgname=eudev
 pkgver=3.2.10
@@ -25,8 +25,8 @@ source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz
 md5sums=('60b135a189523f333cea5f71a3345c8d'
          'SKIP'
          '7fce0d7c0ecace6c34e44fe6e24470ee'
-         'ce83380d8400d9ece7c93ef6bfe78f86'
-         '1fb90e5caf8cb8e96253aeb49ed2dcdf')
+         '7a238690f224080368913abe55dc94e9'
+         '9a8bb20741d3371d37de8b6a66c214a5')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
