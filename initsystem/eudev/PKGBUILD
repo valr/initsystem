@@ -1,6 +1,6 @@
 # Maintainer: Valère Monseur <archlinux at vale dot re>
 
-_pkgver=250 # systemd pkgver
+_pkgver=250.1 # systemd pkgver
 
 pkgname=eudev
 pkgver=3.2.10
