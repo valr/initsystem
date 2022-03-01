@@ -54,6 +54,11 @@ package() {
   mv "${srcdir}"/usr/lib/tmpfiles.d/etc.conf "${pkgdir}"/usr/lib/tmpfiles.d/etc.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/home.conf "${pkgdir}"/usr/lib/tmpfiles.d/home.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/legacy.conf "${pkgdir}"/usr/lib/tmpfiles.d/legacy.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/static-nodes-permissions.conf "${pkgdir}"/usr/lib/tmpfiles.d/static-nodes-permissions.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/systemd.conf "${pkgdir}"/usr/lib/tmpfiles.d/systemd.conf
+  sed -e '/journal/ s/^#*/#/' -i "${pkgdir}"/usr/lib/tmpfiles.d/systemd.conf
+  sed -e '/systemd/ s/^#*/#/' -i "${pkgdir}"/usr/lib/tmpfiles.d/systemd.conf
+  mv "${srcdir}"/usr/lib/tmpfiles.d/tmp.conf "${pkgdir}"/usr/lib/tmpfiles.d/tmp.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/var.conf "${pkgdir}"/usr/lib/tmpfiles.d/var.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/x11.conf "${pkgdir}"/usr/lib/tmpfiles.d/x11.conf
 
