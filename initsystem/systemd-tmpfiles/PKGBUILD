@@ -397,16 +397,18 @@ package_systemd-sysvcompat() {
 package_systemd-tmpfiles() {
   pkgdesc='systemd tmpfiles'
   license=('LGPL2.1')
-  depends=('systemd')
+  depends=('systemd' 'acl' 'libcap')
 
   install -d -m0755 "$pkgdir"/usr/bin
-  ln -s systemd-tmpfiles.standalone "$pkgdir"/usr/bin/systemd-tmpfiles
+  install -D -m0755 "$srcdir"/build/systemd-tmpfiles.standalone "$pkgdir"/usr/bin/tmpfiles
 
   install -d -m0755 "$pkgdir"/usr/share/man/man5
-  ln -s tmpfiles.d.5.gz "$pkgdir"/usr/share/man/man5/tmpfiles.d.5.gz
+  install -D -m0644 "$srcdir"/build/man/tmpfiles.d.5 "$pkgdir"/usr/share/man/man5/tmpfiles.d.5
+  gzip "$pkgdir"/usr/share/man/man5/tmpfiles.d.5
 
   install -d -m0755 "$pkgdir"/usr/share/man/man8
-  ln -s systemd-tmpfiles.8.gz "$pkgdir"/usr/share/man/man8/systemd-tmpfiles.8.gz
+  install -D -m0644 "$srcdir"/build/man/systemd-tmpfiles.8 "$pkgdir"/usr/share/man/man8/tmpfiles.8
+  gzip "$pkgdir"/usr/share/man/man8/tmpfiles.8
 }
 
 # vim:ft=sh syn=sh et sw=2:
