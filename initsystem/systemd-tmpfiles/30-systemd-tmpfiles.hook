@@ -1,5 +1,5 @@
 [Trigger]
-Type = File
+Type = Path
 Operation = Install
 Operation = Upgrade
 Target = usr/lib/tmpfiles.d/*.conf
@@ -7,5 +7,4 @@ Target = usr/lib/tmpfiles.d/*.conf
 [Action]
 Description = Creating temporary files...
 When = PostTransaction
-Exec = /bin/sh -c 'while read -r f; do /usr/bin/tmpfiles --create "$(basename "$f")"; done'
-NeedsTargets
+Exec = /usr/share/libalpm/scripts/systemd-hook tmpfiles
