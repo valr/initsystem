@@ -17,8 +17,8 @@ Configure your bootloader to use init=/sbin/init-og.
 Reboot into your new initsystem.
 
 
-Install _eudev_, _opentmpfiles_ and _systemd_ (minimal) packages. This will replace the official systemd and systemd-libs packages.  
-Install all the packages in the _pkgbuild/core_ directory.  
+Install _eudev_, _systemd_ (minimal) and _systemd-tmpfiles_ (standalone) packages. This will replace the official systemd and systemd-libs packages.
+Then install all the packages in the _pkgbuild/core_ directory.  
 
 
 If needed, build and install the packages in the _pkgbuild/extra_ directory (carefully follow the build dependencies!).
@@ -56,12 +56,12 @@ It includes the modules and firmwares discovered by the Arch Linux initramfs.
 
 ## Packages
 
-* Statically compiled [busybox](https://www.busybox.net/) with almost all commands included
-* The device manager is [eudev](https://wiki.gentoo.org/wiki/Project:Eudev) from Gentoo Linux
-* The tmpfiles utility is [opentmpfiles](https://github.com/OpenRC/opentmpfiles) from Gentoo's OpenRC
-* Users and groups are managed manually (opensysusers is not used)
+* Statically compiled [busybox](https://www.busybox.net/) with almost all commands included.
+* The device manager is [eudev](https://wiki.gentoo.org/wiki/Project:Eudev) from Gentoo Linux.
 * A [minimal systemd](https://github.com/valr/initsystem/blob/master/initsystem/systemd/PKGBUILD) package is created to:
     * provide fake but necessary dependencies on systemd, systemd-libs, libsystemd, systemd-sysvcompat
     * provide standard directories (modules-load, sysctl.d, tmpfiles.d, systemd unit directories)
     * provide standard systemd tmpfiles files
     * provide a [compare tool](https://github.com/valr/initsystem/blob/master/initsystem/systemd/systemd-compare) run as pacman [pre](https://github.com/valr/initsystem/blob/master/initsystem/systemd/aa-systemd-compare-pre.hook) & [post](https://github.com/valr/initsystem/blob/master/initsystem/systemd/zz-systemd-compare-post.hook) hook scripts allowing follow-up of additions, changes, deletions of systemd unit files
+* The [tmpfiles](https://github.com/valr/initsystem/blob/main/initsystem/systemd-tmpfiles/PKGBUILD#L397) utility is a standalone build of systemd-tmpfiles.
+* Users and groups are managed manually. There is no replacement for systemd-sysusers.
