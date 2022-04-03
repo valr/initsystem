@@ -10,8 +10,8 @@
 
 pkgbase=samba
 pkgname=('smbclient' 'samba')
-pkgver=4.15.5
-pkgrel=1
+pkgver=4.16.0
+pkgrel=4
 arch=(x86_64)
 url="https://www.samba.org"
 license=('GPL3')
@@ -19,16 +19,18 @@ makedepends=('python' 'python-markdown' 'python-dnspython' 'docbook-xsl' 'pkg-co
              'readline' 'tevent' 'acl' 'libldap' 'libcap' 'ldb' 'krb5' 'pam'
              'systemd' 'gnutls' 'talloc' 'tdb' 'dbus' 'libaio'
              'perl-parse-yapp' 'libnsl' 'libtirpc' 'rpcsvc-proto' 'jansson'
-             'ceph-libs' 'liburing')
+             'ceph-libs' 'liburing' 'perl-json' 'glusterfs')
 optdepends=(
              'python-dnspython: samba_dnsupdate and samba_upgradedns in AD setup'
+             'python-markdown: for samba-tool domain schemeupgrade'
+             'glusterfs: for vfs_glusterfs support'
 )
 source=(https://us1.samba.org/samba/ftp/stable/${pkgbase}-${pkgver}.tar{.gz,.asc}
         samba.logrotate
         samba.pam
         samba.conf)
 validpgpkeys=('81F5E2832BD2545A1897B713AA99442FB680B620') #Samba Distribution Verification Key <samba-bugs@samba.org>
-sha512sums=('808e0f15931bab18a1e36298528a01a1250efaef9f99508dd620d6936dd4a2fc3ccc64ab9dcc94bd73460697d16d6ca0652ccbcdbe1644ffedce0137d796d3ca'
+sha512sums=('cea6bab64021779d217669e58612d192b907c2c481ef30e40e449bc6b8f8993a9b7b7b5bfcfebe54d8f70b8f720893cfa77a9d674ef8e07dd45a55a0fbc673e2'
             'SKIP'
             '2ba0691ded467e4d6e40821f6de58c00f8962209efe2e60284c0c87756ab471c22c3d63b77d506e48c90ed0d852a2a24e41be1d499cf74a73cb99da0b503c858'
             '1e6183ab0eb812b3ef687ac2c26ce78f7cb30540f606d20023669ac00ba04075487fb72e4dc89cc05dab0269ff6aca98fc1167cc75669c225b88b592482fbf67'
@@ -83,7 +85,7 @@ build() {
 package_smbclient() {
 pkgdesc="Tools to access a server's filespace and printers via SMB"
 depends=('popt' 'cifs-utils' 'tdb' 'ldb'
-         'tevent' 'libgcrypt' 'python' 'python-markdown' 'python-dnspython' 'talloc' 'readline' 'gnutls'
+         'tevent' 'libgcrypt' 'python' 'talloc' 'readline' 'gnutls'
          'libbsd' 'libldap' 'libcups' 'libarchive' 'libnsl' 'jansson'
          'libldb.so' 'libtdb.so' 'libtevent.so' 'libreadline.so' 'icu')
 replaces=('libwbclient')
@@ -196,7 +198,7 @@ sys.path.insert(0, '/usr/lib/python${_pyver}/site-packages')" \
 
   # Fix waf installing the wrong permissions for sudoers.d
   chmod 750 ${pkgdir}/etc/sudoers.d
-  chmod 600 ${pkgdir}/etc/sudoers.d/ctdb
+  chmod 440 ${pkgdir}/etc/sudoers.d/ctdb
 }
 
 # vim: ts=2 sw=2 et:
