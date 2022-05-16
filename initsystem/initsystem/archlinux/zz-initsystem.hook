@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = glibc
+
+[Action]
+Description = Reexecuting init process...
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/zz-initsystem

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if grep -q init-og /proc/1/comm; then
+  kill -QUIT 1
+fi
+
+# vim: set filetype=sh:
