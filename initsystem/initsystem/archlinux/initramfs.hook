@@ -1,9 +1,9 @@
 [Trigger]
-Type = File
 Operation = Install
 Operation = Upgrade
-Target = usr/lib/initcpio/*
+Type = Path
 Target = usr/lib/firmware/*
+Target = usr/lib/initcpio/*
 Target = usr/lib/modules/*/vmlinuz
 
 [Trigger]
@@ -18,4 +18,4 @@ Target = initsystem
 [Action]
 Description = Rebuilding initramfs...
 When = PostTransaction
-Exec = /usr/share/libalpm/scripts/zz-initramfs
+Exec = /usr/share/libalpm/scripts/initramfs

@@ -3,8 +3,9 @@ Operation = Install
 Operation = Upgrade
 Type = Package
 Target = glibc
+Target = initsystem
 
 [Action]
 Description = Reexecuting init process...
 When = PostTransaction
-Exec = /usr/share/libalpm/scripts/zz-initsystem
+Exec = /usr/share/libalpm/scripts/initsystem

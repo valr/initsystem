@@ -1,20 +1,8 @@
 
-reexec_init() {
-  if grep -q init-og /proc/1/comm; then
-    kill -QUIT 1
-  fi
-}
-
 post_install() {
   printf '==> You have to configure the init system in /etc/rc.conf\n'
   printf '    You can optionally define extra startup commands in /etc/rc.local\n'
   printf '    You can optionally define extra shutdown commands in /etc/rc.shutdown.local\n'
-
-  reexec_init
-}
-
-post_upgrade() {
-  reexec_init
 }
 
 # vim: set filetype=sh:

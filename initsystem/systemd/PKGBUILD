@@ -2,12 +2,11 @@
 
 case "${CARCH}" in
   x86_64) _repo=https://mirror.f4st.host/archlinux/core/os/x86_64/ ;;
-  aarch64) _repo=http://fr.mirror.archlinuxarm.org/aarch64/core ;;
 esac
 
 pkgname='systemd'
-pkgver=250.4 # don't forget to update eudev _pkgver
-pkgrel=2
+pkgver=250.5 # don't forget to update eudev _pkgver
+pkgrel=1
 pkgdesc='minimal configuration from systemd'
 url='https://www.github.com/systemd/systemd'
 license=('GPL2')
@@ -20,13 +19,13 @@ replaces=('libsystemd')
 source=("${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.zst"
         "${_repo}/systemd-${pkgver}-${pkgrel}-${CARCH}.pkg.tar.zst.sig"
         'systemd-compare'
-        'aa-systemd-compare-pre.hook'
-        'zz-systemd-compare-post.hook')
-md5sums=('719327cf8c5d8515aef7661f64bb2c2f'
+        'systemd-compare-pre.hook'
+        'systemd-compare-post.hook')
+md5sums=('75aeada78c0b416317215e412b877ece'
          'SKIP'
          '055ac1655414fb8c668c8bbce6b830a5'
-         'a06c94ec7b1a2802ebb8d7f2b86ecd48'
-         'd4cd8fbed18cf41de43c77d720d81367')
+         'df2fbd65657503c0cbcfc960e3b9b9d9'
+         '53add35b55c575f516fdac1bfabdd73e')
 
 # The idea of this package is to keep the required non-binary files from
 # the systemd original package to avoid recreating and maintaining them manually
@@ -65,8 +64,8 @@ package() {
   # systemd-compare tool
 
   install -D -m 755 "${srcdir}"/systemd-compare "${pkgdir}"/usr/share/libalpm/scripts/systemd-compare
-  install -D -m 644 "${srcdir}"/aa-systemd-compare-pre.hook "${pkgdir}"/usr/share/libalpm/hooks/aa-systemd-compare-pre.hook
-  install -D -m 644 "${srcdir}"/zz-systemd-compare-post.hook "${pkgdir}"/usr/share/libalpm/hooks/zz-systemd-compare-post.hook
+  install -D -m 644 "${srcdir}"/systemd-compare-pre.hook "${pkgdir}"/usr/share/libalpm/hooks/00-systemd-compare-pre.hook
+  install -D -m 644 "${srcdir}"/systemd-compare-post.hook "${pkgdir}"/usr/share/libalpm/hooks/99-systemd-compare-post.hook
 }
 
 # vim: set filetype=sh:

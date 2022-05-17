@@ -1,15 +1,15 @@
 # Maintainer: Valère Monseur <archlinux at vale dot re>
 
-_pkgver=250.4 # systemd pkgver
+_pkgver=250.5 # systemd pkgver
 
 pkgname=eudev
-pkgver=3.2.10
+pkgver=3.2.11
 pkgrel=1
 pkgdesc='device manager in userspace'
-url='https://wiki.gentoo.org/wiki/Project:Eudev'
+url='https://github.com/eudev-project/eudev'
 license=('GPL2')
 groups=('initsystem')
-arch=('x86_64' 'aarch64')
+arch=('x86_64')
 backup=('etc/udev/udev.conf')
 depends=('glib2' 'kmod' 'util-linux')
 makedepends=('gobject-introspection' 'gperf')
@@ -17,14 +17,14 @@ optdepends=('btrfs-progs: btrfs utilities for eudev rules')
 provides=("udev=${_pkgver}" 'libudev.so')
 conflicts=('udev' 'libudev.so')
 replaces=('udev' 'libudev.so')
-source=("https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz"
-        "https://dev.gentoo.org/~blueness/${pkgname}/${pkgname}-${pkgver}.tar.gz.asc"
+source=("https://github.com/eudev-project/eudev/releases/download/v${pkgver}/eudev-${pkgver}.tar.gz"
+        "https://github.com/eudev-project/eudev/releases/download/v${pkgver}/eudev-${pkgver}.tar.gz.asc"
         'udev-hwdb.hook'
         'udev-initcpio.hook'
         'udev-initcpio.install')
-md5sums=('60b135a189523f333cea5f71a3345c8d'
+md5sums=('417ba948335736d4d81874fba47a30f7'
          'SKIP'
-         '7fce0d7c0ecace6c34e44fe6e24470ee'
+         'df0f7cc9b3cc57bc11ac371670d24663'
          '7a238690f224080368913abe55dc94e9'
          '9a8bb20741d3371d37de8b6a66c214a5')
 

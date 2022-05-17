@@ -1,8 +1,8 @@
 [Trigger]
-Type = File
 Operation = Install
 Operation = Upgrade
 Operation = Remove
+Type = Path
 Target = etc/udev/hwdb.d/*
 Target = usr/lib/udev/hwdb.d/*
 

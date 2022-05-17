@@ -8,18 +8,16 @@ url='https://github.com/valr/initsystem'
 license=('GPL')
 install='initsystem.install'
 groups=('initsystem')
-arch=('x86_64' 'aarch64')
+arch=('x86_64')
 backup=('etc/rc.conf' 'etc/rc.local' 'etc/rc.shutdown.local' 'etc/rc.respawn')
 depends=('busybox' 'dosfstools' 'e2fsprogs' 'kbd' 'kmod' 'mkinitcpio')
 source=('initsystem.tar.gz'
-        'zz-initramfs.hook'
-        'zz-initramfs'
-        'zz-initsystem.hook'
-        'zz-initsystem')
-md5sums=('54cd9b0b0947fbe8d3b86eced438a317'
-         'a0075e1e70c381bda79684714990a657'
+        'initramfs.hook' 'initramfs'
+        'initsystem.hook' 'initsystem')
+md5sums=('3cc62e4f2a1667650a96391ad3b6ad36'
+         'a65af0b1182ea8e142cd62481618fd7c'
          'fb944467dc23a750b051f09284a02dd1'
-         '720039cc2bb033b161b09f52807e21db'
+         '630dffd9ccc13625d4a05750d92df6a0'
          '2295b25865ebbab9a800af3c0fb36702')
 
 build() {
@@ -29,10 +27,11 @@ build() {
 package() {
   make bindir=/usr/bin sbindir=/usr/bin DESTDIR="${pkgdir}" install
 
-  install -D -m 644 zz-initramfs.hook "${pkgdir}"/usr/share/libalpm/hooks/zz-initramfs.hook
-  install -D -m 755 zz-initramfs "${pkgdir}"/usr/share/libalpm/scripts/zz-initramfs
-  install -D -m 644 zz-initsystem.hook "${pkgdir}"/usr/share/libalpm/hooks/zz-initsystem.hook
-  install -D -m 755 zz-initsystem "${pkgdir}"/usr/share/libalpm/scripts/zz-initsystem
+  install -D -m 644 initramfs.hook "${pkgdir}"/usr/share/libalpm/hooks/99-initramfs.hook
+  install -D -m 755 initramfs "${pkgdir}"/usr/share/libalpm/scripts/initramfs
+  install -D -m 644 initsystem.hook "${pkgdir}"/usr/share/libalpm/hooks/99-initsystem.hook
+  install -D -m 755 initsystem "${pkgdir}"/usr/share/libalpm/scripts/initsystem
+
   install -D -m 644 LICENSE "${pkgdir}"/usr/share/licenses/"${pkgname}"/LICENSE
 }
 
