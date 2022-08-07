@@ -1,0 +1,18 @@
+#!/bin/ash
+
+read -r INTERFACE < "/etc/wireguard/$(basename "$0").interface"
+
+rc_type="nodaemon"
+rc_env="WG_ENDPOINT_RESOLUTION_RETRIES=infinity"
+#rc_output="2>/dev/null"
+
+rc_start_cmd="/usr/bin/wg-quick up ${INTERFACE}"
+rc_stop_cmd="/usr/bin/wg-quick down ${INTERFACE}"
+rc_reload_cmd="/bin/bash -c 'exec /usr/bin/wg syncconf ${INTERFACE} <(exec /usr/bin/wg-quick strip ${INTERFACE})'"
+rc_display_cmd="/usr/bin/wg show all"
+
+. /etc/rc.d/rc.subr
+
+rc_run "start stop restart reload display" $@
+
+# vim: set filetype=sh:
