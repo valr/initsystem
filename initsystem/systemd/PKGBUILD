@@ -42,6 +42,8 @@ package() {
   install -d -m 755 "${pkgdir}"/usr/lib/sysctl.d/
   install -d -m 755 "${pkgdir}"/usr/lib/tmpfiles.d/
 
+  install -d -m 755 "${pkgdir}"/usr/share/factory/etc/
+
   # directories to follow-up for changes using systemd-compare
 
   install -d -m 755 "${pkgdir}"/usr/lib/systemd/system
@@ -60,6 +62,8 @@ package() {
   mv "${srcdir}"/usr/lib/tmpfiles.d/tmp.conf "${pkgdir}"/usr/lib/tmpfiles.d/tmp.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/var.conf "${pkgdir}"/usr/lib/tmpfiles.d/var.conf
   mv "${srcdir}"/usr/lib/tmpfiles.d/x11.conf "${pkgdir}"/usr/lib/tmpfiles.d/x11.conf
+  mv "${srcdir}"/usr/share/factory/etc/locale.conf "${pkgdir}"/usr/share/factory/etc/locale.conf
+  mv "${srcdir}"/usr/share/factory/etc/pam.d "${pkgdir}"/usr/share/factory/etc/pam.d
 
   # systemd-compare tool
 
