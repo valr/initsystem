@@ -64,5 +64,5 @@ It includes the modules and firmwares discovered by the Arch Linux initramfs.
     * provide standard directories (modules-load, sysctl.d, tmpfiles.d, systemd unit directories)
     * provide standard systemd tmpfiles files
     * provide a [compare tool](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd/systemd-compare) run as pacman [pre](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd/systemd-compare-pre.hook) & [post](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd/systemd-compare-post.hook) hook scripts allowing follow-up of additions, changes, deletions of systemd unit files
-* The [tmpfiles](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd-tmpfiles/PKGBUILD#L397) utility is a standalone build of systemd-tmpfiles.
+* The [tmpfiles](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd-tmpfiles/PKGBUILD#L395) utility is a standalone build of systemd-tmpfiles.
 * Users and groups are managed manually. There is no replacement for systemd-sysusers.
