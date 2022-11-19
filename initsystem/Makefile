@@ -30,6 +30,6 @@ clean:
 	@if [ -d sbin ]; then rmdir sbin; fi
 
 dist:
-	@tar -caf initsystem.tar.gz LICENSE Makefile archlinux bin etc libexec src
+	@tar -caf initsystem.tar.gz LICENSE Makefile bin etc libexec src
 
 .PHONY: install uninstall clean dist

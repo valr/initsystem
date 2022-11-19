@@ -18,8 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Howto extract the initramfs content:
-# gunzip initramfs-linux.cpio.gz
-# busybox cpio -i -d -H newc -F initramfs-linux.cpio
+#   gunzip initramfs-linux.cpio.gz
+#   busybox cpio -i -d -H newc -F initramfs-linux.cpio
 
 export PATH=/opt/busybox
 export LC_ALL=C

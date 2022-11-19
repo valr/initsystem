@@ -4,12 +4,13 @@ An init system (what a surprise!) for [Arch Linux](https://www.archlinux.org)
 
 # Installation
 
-Build all the packages in the _initsystem_ and _pkgbuild/core_ directories.  
+Build the _initsystem_ package in the archlinux directory (using makepkg script).  
+Build all the packages in the _packages/initsystem_ and _packages/core_ directories.  
 Note that the initramfs and related tools in this repo only support gzip format.  
-It has to be set with parameter `COMPRESSION="gzip"` in /etc/mkinitcpio.conf.
+It has to be configured with parameter `COMPRESSION="gzip"` in /etc/mkinitcpio.conf.
 
 
-Install the _busybox_ and _initsystem_ packages.  
+Install the _initsystem_ and _busybox_ packages.  
 Configure your hostname, keymap, font and services in /etc/rc.conf.  
 Configure your bootloader to use init=/sbin/init-og.
 
@@ -17,15 +18,15 @@ Configure your bootloader to use init=/sbin/init-og.
 Reboot into your new initsystem.
 
 
-Install _eudev_, _systemd_ (minimal) and _systemd-tmpfiles_ (standalone) packages. This will replace the official systemd and systemd-libs packages.
-Then install all the packages in the _pkgbuild/core_ directory.  
+Install _eudev_, _systemd_ (minimal) and _systemd-tmpfiles (standalone)_ packages. This will replace the official systemd and systemd-libs packages.
+Then install all the packages in the _packages/core_ directory.  
 
 
-If needed, build and install the packages in the _pkgbuild/extra_ directory (carefully follow the build dependencies!).
+If needed, build and install the packages in the _packages/extra_ directory (carefully follow the build dependencies!).
 
 
 Additionally, you should add 'initsystem' to the IgnoreGroup entry of /etc/pacman.conf to avoid unneeded upgrade of the initsystem packages.
-All packages in the _pkgbuild_ directories should be added to the IgnorePkg entry for the same reason.
+All packages in the _packages_ directories should be added to the IgnorePkg entry for the same reason.
 
 
 Finally, review and adapt your configuration to remove the systemd specific parameters, files, ... (there are just too many to list them all).
@@ -51,17 +52,17 @@ Alternative commands are [shutdown](https://github.com/valr/initsystem/blob/mast
 ## Initramfs
 
 The [initramfs](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/libexec/initramfs) is also based on busybox and shell scripts.
-It is [generated](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/bin/mkinitramfs) by a pacman [hook](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/archlinux/zz-initramfs.hook) [script](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/archlinux/zz-initramfs).  
+It is [generated](https://github.com/valr/initsystem/blob/master/initsystem/initsystem/bin/mkinitramfs) by a pacman [hook](https://github.com/valr/initsystem/blob/master/initsystem/archlinux/initramfs.hook) [script](https://github.com/valr/initsystem/blob/master/initsystem/archlinux/initramfs).  
 It includes the modules and firmwares discovered by the Arch Linux initramfs.  
 
 ## Packages
 
 * Statically compiled [busybox](https://www.busybox.net/) with almost all commands included.
 * The device manager is [eudev](https://wiki.gentoo.org/wiki/Project:Eudev) from Gentoo Linux.
-* A [minimal systemd](https://github.com/valr/initsystem/blob/master/initsystem/systemd/PKGBUILD) package is created to:
+* A [minimal systemd](https://github.com/valr/initsystem/blob/master/initsystem/packages/initsystem/systemd/PKGBUILD) package is created to:
     * provide fake but necessary dependencies on systemd, systemd-libs, libsystemd, systemd-sysvcompat
     * provide standard directories (modules-load, sysctl.d, tmpfiles.d, systemd unit directories)
     * provide standard systemd tmpfiles files
-    * provide a [compare tool](https://github.com/valr/initsystem/blob/master/initsystem/systemd/systemd-compare) run as pacman [pre](https://github.com/valr/initsystem/blob/master/initsystem/systemd/aa-systemd-compare-pre.hook) & [post](https://github.com/valr/initsystem/blob/master/initsystem/systemd/zz-systemd-compare-post.hook) hook scripts allowing follow-up of additions, changes, deletions of systemd unit files
-* The [tmpfiles](https://github.com/valr/initsystem/blob/main/initsystem/systemd-tmpfiles/PKGBUILD#L397) utility is a standalone build of systemd-tmpfiles.
+    * provide a [compare tool](https://github.com/valr/initsystem/blob/master/initsystem/packages/initsystem/systemd/systemd-compare) run as pacman [pre](https://github.com/valr/initsystem/blob/master/initsystem/packages/initsystem/systemd/systemd-compare-pre.hook) & [post](https://github.com/valr/initsystem/blob/master/initsystem/packages/initsystem/systemd/systemd-compare-post.hook) hook scripts allowing follow-up of additions, changes, deletions of systemd unit files
+* The [tmpfiles](https://github.com/valr/initsystem/blob/main/initsystem/packages/initsystem/systemd-tmpfiles/PKGBUILD#L397) utility is a standalone build of systemd-tmpfiles.
 * Users and groups are managed manually. There is no replacement for systemd-sysusers.

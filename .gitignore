@@ -1,5 +1,5 @@
+.cache
 *.pkg.tar.xz
-*.sublime-workspace
 *.tar.asc
 *.tar.bz2
 *.tar.bz2.sig
@@ -14,5 +14,4 @@
 *.tar.zst
 *.tar.zst.asc
 *.tar.zst.sig
-.cache
 compile_commands.json
