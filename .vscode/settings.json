@@ -1,4 +1,4 @@
 {
-    "makefile.compileCommandsPath": "./initsystem/compile_commands.json",
-    "makefile.makeDirectory": "./initsystem"
+  "makefile.compileCommandsPath": "./initsystem/compile_commands.json",
+  "makefile.makeDirectory": "./initsystem"
 }
