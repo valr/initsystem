@@ -1,0 +1,3 @@
+#!/bin/sh
+
+[ -x /usr/bin/archlinux-keyring-wkd-sync ] && /usr/bin/archlinux-keyring-wkd-sync 2>&1 | /usr/bin/logger -t archlinux-keyring-sync
