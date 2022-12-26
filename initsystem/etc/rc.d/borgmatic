@@ -1,0 +1,13 @@
+#!/bin/ash
+
+rc_type="nodaemon"
+rc_env="PATH=/usr/bin"
+
+rc_start_cmd="/usr/bin/borgmatic --log-file-verbosity 1 --log-file /var/log/borgmatic.log --no-environment-interpolation"
+rc_display_cmd="/usr/bin/borgmatic rlist rinfo"
+
+. /etc/rc.d/rc.subr
+
+rc_run "start display" $@
+
+# vim: set filetype=sh:
