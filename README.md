@@ -55,7 +55,7 @@ It includes the modules and firmwares discovered by the Arch Linux initramfs.
 - The device manager is [eudev](https://wiki.gentoo.org/wiki/Project:Eudev) from Gentoo Linux.
 - A [minimal systemd](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd/PKGBUILD) package is created to:
   - provide fake but necessary dependencies on systemd, systemd-libs, libsystemd, systemd-sysvcompat
-  - provide standard directories (modules-load, sysctl.d, tmpfiles.d, systemd unit directories)
+  - provide standard directories (modules-load.d, sysctl.d, tmpfiles.d, systemd unit directories)
   - provide standard systemd tmpfiles files
   - provide a [compare tool](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd/systemd-compare) run as pacman [pre](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd/systemd-compare-pre.hook) & [post](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd/systemd-compare-post.hook) hook scripts allowing follow-up of additions, changes, deletions of systemd unit files
 - The [tmpfiles](https://github.com/valr/initsystem/blob/main/packages/initsystem/systemd-tmpfiles/PKGBUILD#L395) utility is a standalone build of systemd-tmpfiles.
