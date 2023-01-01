@@ -2,6 +2,7 @@
 *.pkg.tar.xz
 *.tar.asc
 *.tar.bz2
+*.tar.bz2.asc
 *.tar.bz2.sig
 *.tar.bz2.sign
 *.tar.gz
