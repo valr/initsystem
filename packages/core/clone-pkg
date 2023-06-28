@@ -1,0 +1,6 @@
+#!/bin/bash
+
+pkgctl repo clone --protocol=https --switch="1.14.8-1" dbus
+pkgctl repo clone --protocol=https --switch="0.24.1-1" p11-kit
+pkgctl repo clone --protocol=https --switch="4.0.3-1" procps-ng
+pkgctl repo clone --protocol=https --switch="2.39.1-1" util-linux
