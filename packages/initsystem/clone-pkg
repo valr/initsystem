@@ -1,4 +1,0 @@
-#!/bin/bash
-
-pkgctl repo clone --protocol=https --switch="1.36.1-1" busybox
-pkgctl repo clone --protocol=https --switch="253.5-2" systemd

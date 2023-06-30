@@ -1,7 +1,7 @@
 # Maintainer: Valère Monseur <archlinux at vale dot re>
 
 pkgname=busybox
-pkgver=1.33.1
+pkgver=1.36.1
 pkgrel=1
 pkgdesc='utilities for rescue and embedded systems'
 url='http://www.busybox.net/'
@@ -10,20 +10,18 @@ arch=('x86_64' 'aarch64')
 groups=('initsystem')
 source=("${url}/downloads/${pkgname}-${pkgver}.tar.bz2"
         'config_nosuid'
-        'config_suid'
-        'Makefile.flags.patch')
+        'config_suid')
         # http://busybox.net/downloads/fixes-"${pkgver}"/busybox-"${pkgver}"-{CVE-2016-2147,CVE-2016-2148,ash-recursive-heredocs}.patch
-md5sums=('7f9f8acf026ed11dfa9b672c41b204e0'
-         '3e41627817ba17f226a35018b5d347c1'
-         '77fc4557e653e99ece90806095eb29ec'
-         '711fd2475933fad30cfe2229c346e5b6')
+md5sums=('0fc591bc9f4e365dfd9ade0014f32561'
+         '485f39baed662f7bc7954856e32a12cf'
+         'f10d3ea9b39bb1af6db8033c767cc65a')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
 
-  for PATCH in "${srcdir}"/*.patch; do
-    patch -p1 <${PATCH}
-  done
+  #for PATCH in "${srcdir}"/*.patch; do
+  #  patch -p1 <${PATCH}
+  #done
 
   cp -r "${srcdir}/${pkgname}-${pkgver}" "${srcdir}"/nosuid
   cp "${srcdir}"/config_nosuid "${srcdir}"/nosuid/.config
