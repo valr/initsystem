@@ -15,11 +15,11 @@ pkgctl repo clone --protocol=https --switch="1.9.22-1" jack2
 pkgctl repo clone --protocol=https --switch="2.0.0-1" pcsclite
 pkgctl repo clone --protocol=https --switch="122-1" polkit
 pkgctl repo clone --protocol=https --switch="16.1-6" pulseaudio
-pkgctl repo clone --protocol=https --switch="4.18.3-2" samba
-pkgctl repo clone --protocol=https --switch="4.1.1-1" syslog-ng
+pkgctl repo clone --protocol=https --switch="4.18.5-2" samba
+pkgctl repo clone --protocol=https --switch="4.2.0-1" syslog-ng
 pkgctl repo clone --protocol=https --switch="2.9.4-4" udisks2
-pkgctl repo clone --protocol=https --switch="21.1.8-1" xorg-server
+pkgctl repo clone --protocol=https --switch="21.1.8-2" xorg-server
 
 # initsystem
 pkgctl repo clone --protocol=https --switch="1.36.1-1" busybox
-pkgctl repo clone --protocol=https --switch="253.5-2" systemd
+pkgctl repo clone --protocol=https --switch="254-1" systemd
