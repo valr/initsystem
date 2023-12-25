@@ -1,0 +1,23 @@
+pkgbase = pcsclite
+	pkgdesc = PC/SC Architecture smartcard middleware library
+	pkgver = 2.0.1
+	pkgrel = 1
+	url = https://pcsclite.apdu.fr/
+	arch = x86_64
+	license = BSD
+	makedepends = systemd
+	makedepends = polkit
+	depends = libsystemd.so
+	depends = libudev.so
+	depends = libpolkit-gobject-1.so
+	optdepends = python: API call trace logging with the pcsc-spy
+	optdepends = ccid: USB Chip/Smart Card Interface Devices driver
+	provides = libpcsclite.so
+	provides = libpcscspy.so
+	source = https://pcsclite.apdu.fr/files/pcsc-lite-2.0.1.tar.bz2
+	source = https://pcsclite.apdu.fr/files/pcsc-lite-2.0.1.tar.bz2.asc
+	validpgpkeys = F5E11B9FFE911146F41D953D78A1B4DFE8F9C57E
+	sha256sums = 5edcaf5d4544403bdab6ee2b5d6c02c6f97ea64eebf0825b8d0fa61ba417dada
+	sha256sums = SKIP
+
+pkgname = pcsclite
