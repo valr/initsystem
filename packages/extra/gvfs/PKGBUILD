@@ -6,7 +6,7 @@ pkgname=(
   gvfs
   gvfs-{smb,afc,gphoto2,goa,mtp,nfs,google}
 )
-pkgver=1.52.1
+pkgver=1.52.2
 pkgrel=1
 pkgdesc="Virtual filesystem implementation for GIO"
 url="https://wiki.gnome.org/Projects/gvfs"
@@ -45,7 +45,7 @@ makedepends=(
   smbclient
 )
 groups=(gnome)
-_commit=56b44a2d8219169996c80d519aa34af6027a3063  # tags/1.52.1^0
+_commit=d8db4325894d0ee4e77ba1e7eec595856279f69c  # tags/1.52.2^0
 source=(
   "git+https://gitlab.gnome.org/GNOME/gvfs.git#commit=$_commit"
   gvfsd.hook
