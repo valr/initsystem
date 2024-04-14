@@ -3,7 +3,7 @@
 
 pkgname=syslog-ng
 pkgver=4.4.0
-pkgrel=4
+pkgrel=8
 pkgdesc="Next-generation syslogd with advanced networking and filtering capabilities"
 arch=('x86_64')
 url="https://www.syslog-ng.com/products/open-source-log-management/"
@@ -14,6 +14,7 @@ depends=(
   'curl'
   'glib2'
   'glibc'
+# 'grpc'
   'json-c'
   'libcap'
   'libnet'

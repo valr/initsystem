@@ -1,7 +1,7 @@
 pkgbase = syslog-ng
 	pkgdesc = Next-generation syslogd with advanced networking and filtering capabilities
 	pkgver = 4.4.0
-	pkgrel = 4
+	pkgrel = 8
 	url = https://www.syslog-ng.com/products/open-source-log-management/
 	arch = x86_64
 	license = GPL2

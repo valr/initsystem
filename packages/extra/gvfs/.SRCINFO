@@ -1,16 +1,16 @@
 pkgbase = gvfs
 	pkgdesc = Virtual filesystem implementation for GIO
-	pkgver = 1.52.2
-	pkgrel = 1
+	pkgver = 1.54.0
+	pkgrel = 2
 	url = https://wiki.gnome.org/Projects/gvfs
 	arch = x86_64
 	groups = gnome
-	license = LGPL
+	license = LGPL-2.0-only
 	makedepends = dbus
 	makedepends = docbook-xsl
 	makedepends = git
 	makedepends = gtk-doc
-	makedepends = gtk3
+	makedepends = gtk4
 	makedepends = libgdata
 	makedepends = libgoa
 	makedepends = libgphoto2
@@ -18,13 +18,15 @@ pkgbase = gvfs
 	makedepends = libmtp
 	makedepends = libnfs
 	makedepends = meson
+	makedepends = msgraph
 	makedepends = openssh
 	makedepends = python
+	makedepends = python-packaging
 	makedepends = smbclient
 	depends = avahi
 	depends = dconf
 	depends = fuse3
-	depends = gcr
+	depends = gcr-4
 	depends = gsettings-desktop-schemas
 	depends = libarchive
 	depends = libbluray
@@ -34,9 +36,9 @@ pkgbase = gvfs
 	depends = libsoup3
 	depends = psmisc
 	depends = udisks2
-	source = git+https://gitlab.gnome.org/GNOME/gvfs.git#commit=d8db4325894d0ee4e77ba1e7eec595856279f69c
+	source = git+https://gitlab.gnome.org/GNOME/gvfs.git#commit=b22df75010588b062705b5d72bc5ca8811e62f72
 	source = gvfsd.hook
-	b2sums = SKIP
+	b2sums = 4571eab5ecc717109b926448c46a63f3e55d0f7caf91c8a50dffde5bd3b96d5d6e61b8295a25c96eb06244b8d76412c0b4fcefd8a14d447fc30a24564356d6de
 	b2sums = 08a830600964d2c896d7f107d9558053a32eb6b9166433d6e29b58d4c38e318cbb7fdf7b8230cf72d433df65f4698b9ad86624bf7d3c30c883db325d51335189
 
 pkgname = gvfs
@@ -47,43 +49,49 @@ pkgname = gvfs
 	optdepends = gvfs-gphoto2: gphoto2 (PTP camera/MTP media player) support
 	optdepends = gvfs-mtp: MTP device support
 	optdepends = gvfs-nfs: NFS support
+	optdepends = gvfs-onedrive: Microsoft OneDrive support
 	optdepends = gvfs-smb: SMB/CIFS (Windows client) support
 	replaces = gvfs-obexftp
 	replaces = gvfs-afp
 
 pkgname = gvfs-smb
 	pkgdesc = Virtual filesystem implementation for GIO (SMB/CIFS backend; Windows client)
-	depends = gvfs=1.52.2
+	depends = gvfs=1.54.0
 	depends = smbclient>=4.12.0
 
 pkgname = gvfs-afc
 	pkgdesc = Virtual filesystem implementation for GIO (AFC backend; Apple mobile devices)
-	depends = gvfs=1.52.2
+	depends = gvfs=1.54.0
 	depends = libimobiledevice
 	depends = usbmuxd
 
 pkgname = gvfs-gphoto2
 	pkgdesc = Virtual filesystem implementation for GIO (gphoto2 backend; PTP camera, MTP media player)
-	depends = gvfs=1.52.2
+	depends = gvfs=1.54.0
 	depends = libgphoto2
 
 pkgname = gvfs-goa
 	pkgdesc = Virtual filesystem implementation for GIO (Gnome Online Accounts backend; cloud storage)
-	depends = gvfs=1.52.2
+	depends = gvfs=1.54.0
 	depends = libgoa
 
 pkgname = gvfs-mtp
 	pkgdesc = Virtual filesystem implementation for GIO (MTP backend; Android, media player)
-	depends = gvfs=1.52.2
+	depends = gvfs=1.54.0
 	depends = libmtp
 
 pkgname = gvfs-nfs
 	pkgdesc = Virtual filesystem implementation for GIO (NFS backend)
 	install = gvfs-nfs.install
-	depends = gvfs=1.52.2
+	depends = gvfs=1.54.0
 	depends = libnfs
 
 pkgname = gvfs-google
 	pkgdesc = Virtual filesystem implementation for GIO (Google Drive backend)
-	depends = gvfs-goa=1.52.2
+	depends = gvfs-goa=1.54.0
 	depends = libgdata
+
+pkgname = gvfs-onedrive
+	pkgdesc = Virtual filesystem implementation for GIO (Microsoft OneDrive backend)
+	depends = gvfs-goa=1.54.0
+	depends = msgraph

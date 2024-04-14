@@ -11,7 +11,7 @@ Cinnamon also wants to use gnome-keyring-daemon.
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/daemon/gnome-keyring-pkcs11.desktop.in.in b/daemon/gnome-keyring-pkcs11.desktop.in.in
-index b43e1e9db241..80434cbd9ad8 100644
+index 3e36603fac70..bb729caddfd1 100644
 --- a/daemon/gnome-keyring-pkcs11.desktop.in.in
 +++ b/daemon/gnome-keyring-pkcs11.desktop.in.in
 @@ -3,7 +3,7 @@ Type=Application
@@ -24,7 +24,7 @@ index b43e1e9db241..80434cbd9ad8 100644
  X-GNOME-Autostart-Phase=PreDisplayServer
  X-GNOME-AutoRestart=false
 diff --git a/daemon/gnome-keyring-secrets.desktop.in.in b/daemon/gnome-keyring-secrets.desktop.in.in
-index dd9deec773c1..b6d7b2d05dbd 100644
+index 799caeea4306..6c836a2a7ec9 100644
 --- a/daemon/gnome-keyring-secrets.desktop.in.in
 +++ b/daemon/gnome-keyring-secrets.desktop.in.in
 @@ -3,7 +3,7 @@ Type=Application
@@ -37,7 +37,7 @@ index dd9deec773c1..b6d7b2d05dbd 100644
  X-GNOME-Autostart-Phase=PreDisplayServer
  X-GNOME-AutoRestart=false
 diff --git a/daemon/gnome-keyring-ssh.desktop.in.in b/daemon/gnome-keyring-ssh.desktop.in.in
-index 38aa24cbf387..163ff5545bfd 100644
+index fd7657a4d0cc..8f9847033507 100644
 --- a/daemon/gnome-keyring-ssh.desktop.in.in
 +++ b/daemon/gnome-keyring-ssh.desktop.in.in
 @@ -3,7 +3,7 @@ Type=Application
