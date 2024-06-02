@@ -2,7 +2,7 @@
 
 # This file is part of initsystem
 #
-# Copyright (C) 2015-2021 Valère Monseur (archlinux at vale dot re)
+# Copyright (C) 2015-2024 Valère Monseur (archlinux at vale dot re)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +25,11 @@ export PATH=/opt/busybox
 export LC_ALL=C
 
 while [ $# -gt 0 ]; do
-  gunzip -c "$1" | cpio -it 2>/dev/null | sort
+  if [[ "$1" == *.gz ]]; then
+    gunzip -c "$1" | cpio -it 2>/dev/null | sort
+  else
+    cpio -it < "$1" 2>/dev/null | sort
+  fi
   shift
 done
 
