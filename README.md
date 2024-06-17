@@ -7,8 +7,8 @@ An init system (what a surprise!) for [Arch Linux](https://www.archlinux.org)
 
 Build the _initsystem_ package in the archlinux directory (using makepkg script).  
 Build all the packages in the _packages/initsystem_ and _packages/core_ directories.  
-Note that the initramfs and related tools in this repo only support gzip format.  
-It has to be configured with parameter `COMPRESSION="gzip"` in /etc/mkinitcpio.conf.
+
+mkinitcpio has to be configured with parameter `COMPRESSION="cat"` or `COMPRESSION="gzip"` in /etc/mkinitcpio.conf. The initramfs and related tools in this repo only support gzip or uncompressed format.
 
 Install the _initsystem_ and _busybox_ packages.  
 Configure your hostname, keymap, font and services in /etc/rc.conf.  
