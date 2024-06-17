@@ -1,7 +1,7 @@
 # Maintainer: Valère Monseur <archlinux at vale dot re>
 
 # dependency: UDEV_VERSION in eudev/configure.ac has to be >= libudev_req in libgudev/meson.build
-_pkgver=255.4 # systemd pkgver
+_pkgver=255.7 # systemd pkgver
 
 pkgname=eudev
 pkgver=3.2.14

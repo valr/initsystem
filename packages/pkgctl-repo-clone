@@ -4,22 +4,22 @@
 pkgctl repo clone --protocol=https --switch="1.14.10-2" dbus
 pkgctl repo clone --protocol=https --switch="0.25.3-1" p11-kit
 pkgctl repo clone --protocol=https --switch="4.0.4-3" procps-ng
-pkgctl repo clone --protocol=https --switch="2.40-2" util-linux
+pkgctl repo clone --protocol=https --switch="2.40.1-1" util-linux
 
 # extra
 pkgctl repo clone --protocol=https --switch="1.4.7-2" colord
-pkgctl repo clone --protocol=https --switch="1:2.4.7-2" cups
+pkgctl repo clone --protocol=https --switch="2:2.4.9-1" cups
 pkgctl repo clone --protocol=https --switch="1:46.1-2" gnome-keyring
-pkgctl repo clone --protocol=https --switch="1.54.0-2" gvfs
+pkgctl repo clone --protocol=https --switch="1.54.1-1" gvfs
 pkgctl repo clone --protocol=https --switch="1.9.22-1" jack2
-pkgctl repo clone --protocol=https --switch="2.0.3-1" pcsclite
+pkgctl repo clone --protocol=https --switch="2.2.3-1" pcsclite
 pkgctl repo clone --protocol=https --switch="124-2" polkit
 pkgctl repo clone --protocol=https --switch="17.0-3" pulseaudio
-pkgctl repo clone --protocol=https --switch="4.20.0-2" samba
-pkgctl repo clone --protocol=https --switch="4.4.0-8" syslog-ng
+pkgctl repo clone --protocol=https --switch="4.20.1-2" samba
+pkgctl repo clone --protocol=https --switch="4.6.0-4" syslog-ng
 pkgctl repo clone --protocol=https --switch="2.10.1-4" udisks2
 pkgctl repo clone --protocol=https --switch="21.1.13-1" xorg-server
 
 # initsystem
-pkgctl repo clone --protocol=https --switch="1.36.1-1" busybox
-pkgctl repo clone --protocol=https --switch="255.4-2" systemd
+pkgctl repo clone --protocol=https --switch="1.36.1-2" busybox
+pkgctl repo clone --protocol=https --switch="255.7-1" systemd
