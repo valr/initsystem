@@ -1,4 +1,5 @@
 [udisks2]
-source = "git"
-git = "https://github.com/storaged-project/udisks"
+source = "github"
+github = "storaged-project/udisks"
+use_max_tag = true
 prefix = "udisks-"

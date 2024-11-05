@@ -16,7 +16,7 @@ pkgname=(
   gvfs-smb
   gvfs-wsdd
 )
-pkgver=1.54.1
+pkgver=1.56.1
 pkgrel=1
 pkgdesc="Virtual filesystem implementation for GIO"
 url="https://gitlab.gnome.org/GNOME/gvfs"
@@ -49,6 +49,7 @@ makedepends=(
   dbus
   docbook-xsl
   git
+  glib2-devel
   libgdata
   libgoa
   libgphoto2
@@ -60,7 +61,6 @@ makedepends=(
   msgraph
   openssh
   python
-  python-packaging
   smbclient
   wsdd
 )
@@ -69,7 +69,7 @@ source=(
   "git+https://gitlab.gnome.org/GNOME/gvfs.git#tag=$pkgver"
   gvfsd.hook
 )
-b2sums=('bc18e7a8129e3a09a3db98111cc68b1b87fc2793eb766ad42791b6897ad6c94d4c80a5778c6f33bc7991dd35a75d596d6112d01ff2392ca9d4cc374ee616fa01'
+b2sums=('27f18f387c73244db68995cea5d8b25f95588d3ec78a3a245b8facbfba551f2959339356fe58b1a49f035282379c6f067a2ed2b0f6836ea28f64996949f2a050'
         'a0356a49c419dc69466c591d5e69701b865bb97ca336ea6d8bca0f0d9173b832b73d9f2c701d572a0245957d39c9a38ab6dff4ea7c737c34f2a1a28d93c0427f')
 
 prepare() {
